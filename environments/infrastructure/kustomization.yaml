@@ -1,14 +1,3 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources: []
-patches:
-  - target:
-      kind: ServiceAccount
-      name: kustomize-controller
-      namespace: flux-system
-    path: patches/serviceaccount.yaml
-  - target:
-      kind: Deployment
-      name: kustomize-controller
-      namespace: flux-system
-    path: patches/deployment.yaml

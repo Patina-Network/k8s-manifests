@@ -11,7 +11,7 @@ appd app env:
   just decrypt apps/{{ env }}/{{ app }}/secrets.yaml
 
 reconcile *args:
-  flux reconcile ks k8s-universe-root -n flux-system --with-source {{ args }}
+  flux reconcile ks flux-system --with-source {{ args }}
 
 watch:
   watch "git log -1 && echo '---' && kubectl get pods -A && echo '---' && flux get kustomizations"

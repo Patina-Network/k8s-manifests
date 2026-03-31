@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: codebloom
+  namespace: staging
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: codebloom
+  endpoints:
+    - port: http-web
+      path: /actuator/prometheus
+      interval: 30s
+      basicAuth:
+        username:
+          name: codebloom-staging-secrets
+          key: PROMETHEUS_USERNAME
+        password:
+          name: codebloom-staging-secrets
+          key: PROMETHEUS_PASSWORD

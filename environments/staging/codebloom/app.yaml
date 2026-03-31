@@ -1,0 +1,16 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: codebloom-staging
+  namespace: flux-system
+spec:
+  interval: 5m
+  path: ./apps/staging/codebloom
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: k8s-universe
+    namespace: flux-system
+  targetNamespace: staging
+  decryption:
+    provider: sops

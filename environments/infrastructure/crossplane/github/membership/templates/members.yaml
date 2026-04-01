@@ -1,6 +1,6 @@
 {{- range .Values.members }}
 ---
-apiVersion: user.github.m.upbound.io/v1beta1
+apiVersion: user.github.upbound.io/v1alpha1
 kind: Membership
 metadata:
   name: {{ .username | lower }}

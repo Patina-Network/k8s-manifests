@@ -28,12 +28,13 @@ spec:
       containers:
         - name: codebloom
           image: tahminator/codebloom
+          args:
+            - --spring.config.additional-location=file:/config/
           ports:
             - containerPort: 8080
           volumeMounts:
             - name: spring-config
-              mountPath: /config/application.yaml
-              subPath: application.yaml
+              mountPath: /config
               readOnly: true
           readinessProbe:
             # todo: enable actuator readiness

@@ -1,0 +1,14 @@
+{{- range .Values.members }}
+---
+apiVersion: user.github.m.upbound.io/v1beta1
+kind: Membership
+metadata:
+  name: {{ .username | lower }}
+  namespace: {{ $.Values.namespace }}
+spec:
+  forProvider:
+    username: {{ .username }}
+    role: {{ default "member" .role }}
+  providerConfigRef:
+    name: {{ $.Values.providerConfigName }}
+{{- end }}

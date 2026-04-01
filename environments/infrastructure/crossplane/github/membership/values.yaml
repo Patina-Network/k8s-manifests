@@ -1,0 +1,9 @@
+namespace: crossplane-system
+providerConfigName: github
+members:
+  - username: tahminator
+    role: admin
+  - username: arklian
+    role: admin
+  - username: Arshadul-Monir
+    role: admin

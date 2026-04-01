@@ -1,5 +1,5 @@
 # External Spring overrides for staging.
-# This file is mounted into the container at /config/application.yaml.
+# This file is mounted into the container at /config/application-stg.yaml.
 
 springdoc:
   swagger-ui:

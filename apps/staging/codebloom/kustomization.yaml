@@ -8,7 +8,7 @@ resources:
 configMapGenerator:
   - name: codebloom-spring-config
     files:
-      - application.yaml
+      - application-stg.yaml
 commonLabels:
   app: codebloom
   environment: staging

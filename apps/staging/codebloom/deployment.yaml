@@ -21,11 +21,20 @@ spec:
         app: codebloom
         version: "N/A" # replaced from kustomization.yaml
     spec:
+      volumes:
+        - name: spring-config
+          configMap:
+            name: codebloom-spring-config
       containers:
         - name: codebloom
           image: tahminator/codebloom
           ports:
             - containerPort: 8080
+          volumeMounts:
+            - name: spring-config
+              mountPath: /config/application.yaml
+              subPath: application.yaml
+              readOnly: true
           readinessProbe:
             # todo: enable actuator readiness
             httpGet:

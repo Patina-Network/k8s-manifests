@@ -5,6 +5,10 @@ resources:
   - secrets.yaml
   - service.yaml
   # - monitor.yaml
+configMapGenerator:
+  - name: codebloom-spring-config
+    files:
+      - application.yaml
 commonLabels:
   app: codebloom
   environment: staging

@@ -21,6 +21,9 @@ spec:
         namespace: flux-system
       interval: 12h
   values:
+    provider:
+      packages:
+        - xpkg.upbound.io/coopnorge/provider-github:v0.13.0
     replicas: 1
     rbacManager:
       replicas: 1

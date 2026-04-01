@@ -3,6 +3,8 @@ teams:
   - name: codebloom
     privacy: closed
     members:
+      - username: arklian
+        role: member
       - username: Arshadul-Monir
         role: member
   - name: admin

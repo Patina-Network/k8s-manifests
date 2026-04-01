@@ -1,0 +1,14 @@
+providerConfigName: github
+teams:
+  - name: codebloom
+    privacy: closed
+    members:
+      - username: Arshadul-Monir
+        role: member
+  - name: admin
+    privacy: closed
+    members:
+      - username: tahminator
+        role: maintainer
+      - username: arklian
+        role: maintainer

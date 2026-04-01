@@ -1,0 +1,18 @@
+{{- range .Values.teams }}
+{{- $teamName := .name | lower }}
+{{- range .members }}
+---
+apiVersion: team.github.upbound.io/v1alpha1
+kind: TeamMembership
+metadata:
+  name: {{ printf "%s-%s" $teamName (.username | lower) }}
+spec:
+  forProvider:
+    role: {{ default "member" .role }}
+    username: {{ .username }}
+    teamIdRef:
+      name: {{ $teamName }}
+  providerConfigRef:
+    name: {{ $.Values.providerConfigName }}
+{{- end }}
+{{- end }}

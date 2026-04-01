@@ -1,0 +1,13 @@
+{{- range .Values.teams }}
+---
+apiVersion: team.github.upbound.io/v1alpha1
+kind: Team
+metadata:
+  name: {{ .name | lower }}
+spec:
+  forProvider:
+    name: {{ .name }}
+    privacy: {{ default "closed" .privacy }}
+  providerConfigRef:
+    name: {{ $.Values.providerConfigName }}
+{{- end }}

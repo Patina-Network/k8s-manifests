@@ -10,7 +10,7 @@ repositories:
       - "@Patina-Network/admin"
   existing-repository:
     existing: true
-    visibility: public
+    visibility: private
     read:
       - "@Patina-Network/read-only"
     write:

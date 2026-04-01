@@ -6,6 +6,8 @@ metadata:
   name: {{ .username | lower }}
   namespace: {{ $.Values.namespace }}
 spec:
+  # uncomment this to protect resources from being churned when doing a heavy migration
+  deletionPolicy: Orphan
   forProvider:
     username: {{ .username }}
     role: {{ default "member" .role }}

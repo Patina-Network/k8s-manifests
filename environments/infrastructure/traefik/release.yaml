@@ -23,6 +23,7 @@ spec:
   values:
     additionalArguments:
       - --certificatesresolvers.letsencrypt.acme.email=admin@patinanetwork.org
+      # todo: make more permanent
       - --certificatesresolvers.letsencrypt.acme.storage=/data/acme.json
       - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
     deployment:

@@ -33,6 +33,13 @@
               "type": "string"
             }
           },
+          "maintain": {
+            "type": "array",
+            "description": "GitHub team slugs that should have maintain access to the repository, for example @Patina-Network/codebloom.",
+            "items": {
+              "type": "string"
+            }
+          },
           "write": {
             "type": "array",
             "description": "GitHub team slugs that should have push access to the repository, for example @Patina-Network/codebloom.",

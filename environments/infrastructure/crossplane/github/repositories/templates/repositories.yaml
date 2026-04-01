@@ -13,9 +13,10 @@ spec:
   forProvider:
     name: {{ $repoName }}
     visibility: {{ $repo.visibility }}
+    # enforce rebase org-wide
     allowMergeCommit: false
-    allowRebaseMerge: false
-    allowSquashMerge: true
+    allowRebaseMerge: true
+    allowSquashMerge: false
     deleteBranchOnMerge: true
   providerConfigRef:
     name: {{ $.Values.providerConfigName }}

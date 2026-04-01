@@ -16,6 +16,22 @@ spec:
   providerConfigRef:
     name: {{ $.Values.providerConfigName }}
 {{- end }}
+{{- range $teamSlug := default (list) $repo.maintain }}
+{{- $teamName := (last (splitList "/" ($teamSlug | trimPrefix "@"))) }}
+---
+apiVersion: team.github.upbound.io/v1alpha1
+kind: TeamRepository
+metadata:
+  name: {{ printf "%s-maintainer-%s" $repoResourceName ($teamName | lower | replace "_" "-" | replace "." "-") }}
+spec:
+  forProvider:
+    permission: maintain
+    repository: {{ $repoName }}
+    teamIdRef:
+      name: {{ $teamName | lower }}
+  providerConfigRef:
+    name: {{ $.Values.providerConfigName }}
+{{- end }}
 {{- range $teamSlug := default (list) $repo.write }}
 {{- $teamName := (last (splitList "/" ($teamSlug | trimPrefix "@"))) }}
 ---

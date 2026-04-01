@@ -18,6 +18,7 @@ spec:
               - ~DEFAULT_BRANCH
             exclude: []
     rules:
+      # enforce linear history org-wide
       - requiredLinearHistory: true
   providerConfigRef:
     name: {{ $.Values.providerConfigName }}

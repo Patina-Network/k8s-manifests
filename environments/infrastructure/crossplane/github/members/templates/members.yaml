@@ -6,7 +6,6 @@ metadata:
   name: {{ .username | lower }}
   namespace: {{ $.Values.namespace }}
 spec:
-  deletionPolicy: Orphan
   forProvider:
     username: {{ .username }}
     role: {{ default "member" .role }}

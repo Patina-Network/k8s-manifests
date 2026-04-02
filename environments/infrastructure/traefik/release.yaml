@@ -22,7 +22,7 @@ spec:
       interval: 12h
   values:
     additionalArguments:
-      - --certificatesresolvers.letsencrypt.acme.email=admin@patinanetwork.org
+      - --certificatesresolvers.letsencrypt.acme.email=tech@patinanetwork.org
       # todo: make more permanent
       - --certificatesresolvers.letsencrypt.acme.storage=/data/acme.json
       - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web

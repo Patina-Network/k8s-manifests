@@ -1,13 +1,7 @@
 # override any codebloom properties here
 
-#TODO: wait for Codebloom to move scheduled to a configuration
-# spring:
-#   scheduling:
-#     enabled: false
-
-springdoc:
-  swagger-ui:
+codebloom:
+  scheduling:
     enabled: false
-  api-docs:
+  notify:
     enabled: false
-    version: OPENAPI_3_0

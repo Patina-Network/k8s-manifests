@@ -11,12 +11,36 @@ teams:
         role: member
       - username: Arshadul-Monir
         role: member
+      - username: SelinaZhu26
+        role: member
+      - username: Allimonae
+        role: member
+      - username: RandyJDean
+        role: member
+      - username: rootandroo
+        role: member
+      - username: isabellalam12
+        role: member
+      - username: MalihaT111
+        role: member
   codebloom:
     privacy: closed
     members:
       - username: arklian
         role: member
       - username: Arshadul-Monir
+        role: member
+      - username: SelinaZhu26
+        role: member
+      - username: Allimonae
+        role: member
+      - username: RandyJDean
+        role: member
+      - username: rootandroo
+        role: member
+      - username: isabellalam12
+        role: member
+      - username: MalihaT111
         role: member
   admin:
     privacy: closed

@@ -7,6 +7,10 @@ codebloom:
     enabled: false
 
 management:
+  endpoint:
+    env:
+      # /actuator/* is pwd protected so this is ok
+      show-values: "always"
   endpoints:
     web:
       exposure:

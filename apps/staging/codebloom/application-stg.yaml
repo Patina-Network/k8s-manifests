@@ -5,3 +5,10 @@ codebloom:
     enabled: false
   notify:
     enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # add beans and env
+        include: prometheus, health, beans, env

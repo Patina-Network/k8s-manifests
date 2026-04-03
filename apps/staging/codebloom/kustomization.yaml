@@ -14,7 +14,7 @@ commonLabels:
   environment: staging
 images:
   - name: tahminator/codebloom
-    newTag: staging-cf171ff # update me to change version
+    newTag: staging-c329020 # update me to change version
 
 replacements:
   - source:

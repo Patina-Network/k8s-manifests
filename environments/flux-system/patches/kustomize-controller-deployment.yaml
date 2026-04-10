@@ -11,3 +11,16 @@ spec:
     metadata:
       labels:
         azure.workload.identity/use: "true"
+    spec:
+      containers:
+        - name: manager
+          args:
+            - --events-addr=http://notification-controller.$(RUNTIME_NAMESPACE).svc.cluster.local./
+            - --watch-all-namespaces=true
+            - --log-level=info
+            - --log-encoding=json
+            - --enable-leader-election
+            - --concurrent=4
+            - --requeue-dependency=30s
+            - --no-cross-namespace-refs=true
+            - --no-remote-bases=true

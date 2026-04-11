@@ -9,7 +9,7 @@ spec:
   interval: 1m0s
   ref:
     branch: main
-  url: https://github.com/Patina-Network/k8s-universe
+  url: https://github.com/Patina-Network/k8s-manifests
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

@@ -1,4 +1,4 @@
-# `k8s-universe`
+# `k8s-manifests`
 
 ## How to setup Flux on a new cluster
 

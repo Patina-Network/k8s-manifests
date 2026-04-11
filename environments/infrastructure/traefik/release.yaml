@@ -51,6 +51,7 @@ spec:
             enabled: true
     service:
       annotations:
-        service.beta.kubernetes.io/azure-load-balancer-resource-group: MC_PatinaTesting_k8s-universe_eastus
+        # az aks show --resource-group PatinaTestingK8s --name k8s-manifests --query nodeResourceGroup -o tsv
+        service.beta.kubernetes.io/azure-load-balancer-resource-group: MC_PatinaTestingK8s_k8s-manifests_eastus
         service.beta.kubernetes.io/azure-pip-name: traefik-public-ip
       type: LoadBalancer

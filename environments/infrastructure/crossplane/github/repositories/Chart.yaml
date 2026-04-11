@@ -1,4 +1,0 @@
-apiVersion: v2
-name: github-repositories
-type: application
-version: 1.0.1

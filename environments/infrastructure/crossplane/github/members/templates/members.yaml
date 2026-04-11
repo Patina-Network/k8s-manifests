@@ -8,7 +8,7 @@ metadata:
 spec:
   # swap this to protect resources from being churned when doing a heavy migration
   # deletionPolicy: Orphan
-  deletionPolicy: Orphan
+  deletionPolicy: {{ ternary "Orphan" "Delete" (eq .username "arklian") }}
   forProvider:
     username: {{ .username }}
     role: {{ default "member" .role }}

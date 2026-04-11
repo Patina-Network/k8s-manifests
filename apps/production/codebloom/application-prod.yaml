@@ -2,9 +2,9 @@
 
 codebloom:
   scheduling:
-    enabled: false
+    enabled: true
   notify:
-    enabled: false
+    enabled: true
 
 management:
   endpoint:

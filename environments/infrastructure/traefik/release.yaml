@@ -50,13 +50,7 @@ spec:
       kubernetesCRD:
         enabled: true
     ports:
-      web:
-        http:
-          redirections:
-            entryPoint:
-              to: websecure
-              scheme: https
-              priority: 10
+      web: {}
       websecure:
         http:
           tls:

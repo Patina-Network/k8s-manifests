@@ -24,7 +24,7 @@ spec:
     additionalArguments:
       - --certificatesresolvers.letsencrypt.acme.email=tech@patinanetwork.org
       - --certificatesresolvers.letsencrypt.acme.storage=/data/acme.json
-      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
+      - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
     persistence:
       enabled: true
       name: traefik-data

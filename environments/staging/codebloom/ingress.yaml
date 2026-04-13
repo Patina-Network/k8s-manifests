@@ -7,7 +7,7 @@ spec:
   entryPoints:
     - web
   routes:
-    - match: Host(`stg.k8s.codebloom.patinanetwork.org`) && PathPrefix(`/`)
+    - match: Host(`staging.k8s.codebloom.patinanetwork.org`) && PathPrefix(`/`)
       kind: Rule
       middlewares:
         - name: redirect-to-https
@@ -24,7 +24,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`stg.k8s.codebloom.patinanetwork.org`) && PathPrefix(`/`)
+    - match: Host(`staging.k8s.codebloom.patinanetwork.org`) && PathPrefix(`/`)
       kind: Rule
       services:
         - name: codebloom

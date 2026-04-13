@@ -6,12 +6,6 @@ codebloom:
   notify:
     enabled: false
 
-spring:
-  datasource:
-    hikari:
-      maximum-pool-size: 4
-      minimum-idle: 2
-
 management:
   endpoint:
     env:

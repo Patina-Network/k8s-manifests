@@ -7,6 +7,9 @@ metadata:
     kubernetes.io/cluster-service: "true"
     addonmanager.kubernetes.io/mode: EnsureExists
 # https://learn.microsoft.com/en-us/azure/aks/use-metrics-server-vertical-pod-autoscaler
+# there are no automated deployments for this, if you would like to redeploy this
+# ask someone on @Patina-Network/admin to run `kubectl apply -f <here>` for you
+# TODO: investigate if the main yaml can be patched to include stakater annotation
 data:
   NannyConfiguration: |-
     apiVersion: nannyconfig/v1alpha1

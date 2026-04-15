@@ -16,7 +16,7 @@ spec:
       basicAuth:
         username:
           name: codebloom-production-secrets
-          key: PROMETHEUS_USERNAME
+          key: ACTUATOR_USERNAME
         password:
           name: codebloom-production-secrets
-          key: PROMETHEUS_PASSWORD
+          key: ACTUATOR_PASSWORD

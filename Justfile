@@ -11,13 +11,10 @@ d file *args:
   just decrypt {{ file }} {{ args }}
 
 appe app env:
-  just basee {{ app }} {{ args }}
+  just basee {{ app }} {{ env }}
 
 appd app env:
-  just based {{ app }} {{ args }}
-
-appd app env:
-  just decrypt base/{{ env }}/{{ app }}/secrets.yaml
+  just based {{ app }} {{ env }}
 
 basee app env:
   just encrypt base/{{ env }}/{{ app }}/secrets.yaml

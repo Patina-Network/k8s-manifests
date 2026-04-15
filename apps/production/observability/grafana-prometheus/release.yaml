@@ -61,7 +61,10 @@ spec:
           label: grafana_dashboard
           labelValue: "1"
           searchNamespace: ALL
-          folderAnnotation: "K8S"
+          # https://github.com/grafana/helm-charts/issues/527#issuecomment-982319638
+          annotations:
+            grafana_folder: "K8S"
+          folderAnnotation: grafana_folder
           provider:
             foldersFromFilesStructure: true
     prometheus:

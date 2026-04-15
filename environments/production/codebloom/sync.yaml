@@ -5,7 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 5m
-  path: ./apps/production/codebloom
+  path: ./base/production/codebloom
   prune: true
   sourceRef:
     kind: GitRepository

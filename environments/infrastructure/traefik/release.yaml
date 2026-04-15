@@ -5,7 +5,6 @@ metadata:
   namespace: infrastructure
 spec:
   interval: 30m
-  targetNamespace: traefik
   install:
     createNamespace: true
     crds: Create

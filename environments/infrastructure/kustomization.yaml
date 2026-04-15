@@ -4,3 +4,6 @@ resources:
   - namespace.yaml
   - traefik
   - postgres
+  - grafana-prometheus
+  - loki
+  - promtail

@@ -3,5 +3,6 @@ kind: Kustomization
 resources:
   - infrastructure
   - flux-system
+  - kube-system
   - staging
   - production

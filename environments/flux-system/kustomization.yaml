@@ -4,6 +4,7 @@ resources:
   - gotk-components.yaml
   - gotk-sync.yaml
   - repositories
+  - reloader
 
 # https://davidelettieri.it/2023/11/01/flux-and-sops-on-aks-with-workload-identity
 patches:

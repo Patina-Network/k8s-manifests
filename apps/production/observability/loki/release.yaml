@@ -44,7 +44,6 @@ spec:
       replicas: 1
       persistence:
         enabled: true
-        storageClass: loki
         size: 10Gi
       resources:
         requests:

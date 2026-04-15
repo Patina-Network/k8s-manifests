@@ -15,8 +15,15 @@ spec:
         kind: HelmRepository
         name: grafana
         namespace: flux-system
-  valuesFrom:
-    - kind: ConfigMap
-      name: promtail-config
-      valuesKey: config.yaml
-  values: {}
+  values:
+    # https://github.com/grafana/helm-charts/blob/main/charts/promtail/values.yaml
+    config:
+      clients:
+        - url: http://loki.infrastructure.svc.cluster.local:3100/loki/api/v1/push
+    resources:
+      limits:
+        cpu: 200m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi

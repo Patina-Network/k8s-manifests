@@ -1,0 +1,88 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+  namespace: infrastructure
+spec:
+  interval: 1h
+  releaseName: kube-prometheus-stack
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      version: "83.4.2"
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+        namespace: flux-system
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+  values:
+    # https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
+    grafana:
+      enabled: true
+      admin:
+        existingSecret: grafana-secrets
+        userKey: ADMIN_USER
+        passwordKey: ADMIN_PASSWORD
+      additionalDataSources:
+        - name: Loki
+          type: loki
+          url: http://loki.infrastructure.svc.cluster.local:3100
+          access: proxy
+          isDefault: false
+          jsonData:
+            maxLines: 1000
+      operator:
+        folder: K8S
+      grafana.ini:
+        server:
+          root_url: https://grafana.patinanetwork.org
+        database:
+          type: postgres
+          host: postgres.infrastructure.svc.cluster.local:5432
+          name: grafana
+          user: $__env{DB_USER}
+          password: $__env{DB_PASSWORD}
+        # smtp:
+        #   enabled: true
+        #   host: $__env{SMTP_HOST}
+        #   user: $__env{SMTP_USER}
+        #   password: $__env{SMTP_PASSWORD}
+        #   from_address: $__env{SMTP_USER}
+        #   from_name: Grafana (k8s-personal)
+      envFromSecrets:
+        - name: grafana-secrets
+      sidecar:
+        dashboards:
+          enabled: true
+          label: grafana_dashboard
+          labelValue: "1"
+          searchNamespace: ALL
+          # https://github.com/grafana/helm-charts/issues/527#issuecomment-982319638
+          annotations:
+            grafana_folder: "K8S"
+          folderAnnotation: grafana_folder
+          provider:
+            foldersFromFilesStructure: true
+    prometheus:
+      enabled: true
+      prometheusSpec:
+        retention: 14d
+        serviceMonitorSelectorNilUsesHelmValues: false
+        serviceMonitorNamespaceSelectorNilUsesHelmValues: false
+        scrapeConfigSelectorNilUsesHelmValues: false
+        scrapeConfigNamespaceSelectorNilUsesHelmValues: false
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              accessModes:
+                - "ReadWriteOnce"
+              resources:
+                requests:
+                  storage: 5Gi
+    nodeExporter:
+      enabled: true
+    kubeStateMetrics:
+      enabled: true

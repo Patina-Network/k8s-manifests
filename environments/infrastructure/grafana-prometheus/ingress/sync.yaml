@@ -1,0 +1,24 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: grafana-infrastructure
+  namespace: flux-system
+# q: why is ingress split up?
+# a: because kustomization diffing is not very smart, and without it
+# we have a cyclical dependency where:
+# - traefik needs grafana for ServiceMonitor
+# - grafana needs traefik for IngressRoute
+spec:
+  interval: 10m
+  dependsOn:
+    - name: grafana-prometheus-infrastructure
+    - name: traefik-infrastructure
+    - name: middleware-infrastructure
+  path: ./base/infrastructure/grafana-prometheus/ingress
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  targetNamespace: infrastructure
+  decryption:
+    provider: sops

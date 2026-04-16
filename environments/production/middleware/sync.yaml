@@ -1,13 +1,15 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: loki-infrastructure
+  name: middleware-production
   namespace: flux-system
 spec:
-  interval: 10m
-  path: ./base/infrastructure/loki
+  interval: 5m
+  path: ./base/production/middleware
+  dependsOn:
+    - name: traefik-infrastructure
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
-  targetNamespace: infrastructure
+  targetNamespace: production

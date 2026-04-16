@@ -6,6 +6,9 @@ metadata:
 spec:
   interval: 5m
   path: ./base/staging/codebloom
+  dependsOn:
+    - name: traefik-infrastructure
+    - name: middleware-staging
   prune: true
   sourceRef:
     kind: GitRepository

@@ -35,10 +35,12 @@ then reach out to a `@Patina-Network/infra` member.
 >
 > Go to `./environments/flux-system/patches/kustomize-controller-service-account.yaml` and follow the instructions in there to get
 > & update the new client ID
+>
+> If the controller gets stuck authenticating, redo the rollout with `kubectl rollout restart deploy/kustomize-controller -n flux-system`.
 
 1. Update `./environments/flux-system/gotk-sync.yaml` to point to your public repository link.
 
-1. Authenticate into your cluster (test with `k get pods` to ensure that authentication succeeded)
+1. Authenticate into your cluster (test with `kubectl get pods -A` to ensure that authentication succeeded)
 
 1. Run `kubectl apply -k ./environments/flux-system` to kick off Flux.
 

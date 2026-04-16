@@ -1,3 +1,12 @@
+re-auth:
+  az logout && just auth
+
+auth:
+  az login && kubelogin remove-cache-dir && kubelogin convert-kubeconfig -l azurecli && just get-creds
+
+get-creds:
+  az aks get-credentials --resource-group k8s --name k8s-manifests --overwrite-existing --file ./.kube/config
+
 encrypt file *args:
   just install-pre-commit && sops --encrypt --in-place {{ file }} {{ args }}
 

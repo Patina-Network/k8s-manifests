@@ -14,7 +14,6 @@ spec:
   path: ./base/infrastructure/postgres/cluster
   dependsOn:
     - name: postgres-infrastructure
-    - name: traefik-infrastructure
   prune: true
   sourceRef:
     kind: GitRepository

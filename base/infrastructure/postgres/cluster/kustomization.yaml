@@ -8,6 +8,5 @@ kind: Kustomization
 # - flux tries to do both at the same time, fails
 resources:
   - cluster.yaml
-  - ingress.yaml
   - secrets.yaml
   - service.yaml

@@ -53,6 +53,9 @@ then reach out to a `@Patina-Network/infra` member.
 > You should run `kubectl apply -k environments/infrastructure` to install all CRDs. This may also provision some resources but Flux should take over and handle
 > drift after that.
 
+> [!NOTE]
+> You may need to update `./infrastructure/traefik/release.yaml` and point Traefik to the right public IP resource.
+
 ### How to output and view Helm templates
 
 ```bash

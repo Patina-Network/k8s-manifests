@@ -1,0 +1,24 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: postgres-cluster-infrastructure
+  namespace: flux-system
+# q: why is cluster split up?
+# a: because kustomization diffing is not very smart, and without it
+# we have a possible race condition where:
+# - we need crds from cnpg operator
+# - postgres needs crds
+# - flux tries to do both at the same time, fails
+spec:
+  interval: 10m
+  path: ./base/infrastructure/postgres/cluster
+  dependsOn:
+    - name: postgres-infrastructure
+    - name: traefik-infrastructure
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  targetNamespace: infrastructure
+  decryption:
+    provider: sops

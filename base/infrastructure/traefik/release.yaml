@@ -67,9 +67,9 @@ spec:
         protocol: TCP
     service:
       annotations:
-        # az aks show --resource-group PatinaTestingK8s --name k8s-manifests --query nodeResourceGroup -o tsv
-        service.beta.kubernetes.io/azure-load-balancer-resource-group: MC_PatinaTestingK8s_k8s-manifests_eastus
-        # az network public-ip show --resource-group MC_PatinaTestingK8s_k8s-manifests_eastus --name traefik-public-ip --query ipAddress -o tsv
+        # az aks show --resource-group k8s --name k8s-manifests --query nodeResourceGroup -o tsv
+        service.beta.kubernetes.io/azure-load-balancer-resource-group: MC_k8s_k8s-manifests_eastus
+        # az network public-ip show --resource-group MC_k8s_k8s-manifests_eastus --name traefik-public-ip --query ipAddress -o tsv
         # this is managed by `platform-infra`
         service.beta.kubernetes.io/azure-pip-name: traefik-public-ip
       type: LoadBalancer

@@ -32,7 +32,10 @@ then reach out to a `@Patina-Network/infra` member.
 
 1. Authenticate into your cluster (test with `k get pods` to ensure that authentication succeeded)
 
-1. Run `kubectl apply -k ./environments/flux-system` to kick off Flux
+1. Run `kubectl apply -k ./environments/flux-system` to kick off Flux.
+
+> [!NOTE]
+> Applying `flux-system` will fail. Watch the pods and ensure that the Flux controllers are up and online first, then run the same command again.
 
 > [!NOTE]
 > Flux may get stuck due to the fact that Flux isn't smart enough to install CRDs first (see [here](https://github.com/fluxcd/helm-controller/issues/387)).

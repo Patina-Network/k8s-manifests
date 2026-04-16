@@ -38,6 +38,11 @@ then reach out to a `@Patina-Network/infra` member.
 > Applying `flux-system` will fail. Watch the pods and ensure that the Flux controllers are up and online first, then run the same command again.
 
 > [!NOTE]
+> `kustomize-controller` requires access to secrets, which is tied to a service account + RBAC.
+> Go to `./environments/flux-system/patches/kustomize-controller-service-account.yaml` and follow the instructions in there to get
+> & update the new client ID
+
+> [!NOTE]
 > Flux may get stuck due to the fact that Flux isn't smart enough to install CRDs first (see [here](https://github.com/fluxcd/helm-controller/issues/387)).
 > You should run `kubectl apply -k environments/infrastructure` to install all CRDs. This may also provision some resources but Flux should take over and handle
 > drift after that.

@@ -9,6 +9,8 @@ brew install direnv
 brew install just
 # kubernetes
 brew install kubectl
+# (optional) adds `kubens` and `kubectx`, very useful
+brew install kubectx
 # azure cli
 brew install az
 # required for kubectl RBAC

@@ -22,17 +22,17 @@ spec:
               image: patinanetwork/pg-az:1.0.0
               env:
                 - name: PGHOST
-                  value: postgres-shared-rw
+                  value: postgres.infrastructure.svc.cluster.local
                 - name: PGUSER
                   valueFrom:
                     secretKeyRef:
                       name: postgres-backup-creds
-                      key: username
+                      key: PGUSER
                 - name: PGPASSWORD
                   valueFrom:
                     secretKeyRef:
                       name: postgres-backup-creds
-                      key: password
+                      key: PGPASSWORD
                 - name: AZURE_STORAGE_ACCOUNT
                   value: "infrastructure4k8s"
                 - name: AZURE_STORAGE_CONTAINER

@@ -1,0 +1,67 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup
+  namespace: infrastructure
+spec:
+  schedule: "0 0 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            azure.workload.identity/use: "true"
+        spec:
+          serviceAccountName: infrastructure-sa
+          restartPolicy: OnFailure
+          containers:
+            - name: backup
+              image: tahminator/pg-az:1.0.0
+              env:
+                - name: PGHOST
+                  value: postgres-shared-rw
+                - name: PGUSER
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgres-backup-creds
+                      key: username
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgres-backup-creds
+                      key: password
+                - name: AZURE_STORAGE_ACCOUNT
+                  value: "infrastructure4k8s"
+                - name: AZURE_STORAGE_CONTAINER
+                  value: "db-backup"
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -e
+                  DATE=$(date +%Y-%m-%d_%H-%M-%S)
+                  echo "--- Starting Backup Session: $DATE ---"
+
+                  az login --service-principal \
+                    --username "$AZURE_CLIENT_ID" \
+                    --tenant "$AZURE_TENANT_ID" \
+                    --federated-token "$(cat "$AZURE_FEDERATED_TOKEN_FILE")" \
+                    --allow-no-subscriptions
+
+                  DBS=$(psql -At -c "SELECT datname FROM pg_database WHERE datistemplate = false AND datname NOT IN ('postgres', 'dbms_job_procedure', 'cnpg_monitoring');")
+
+                  for DB in $DBS; do
+                    echo "Backing up database: $DB"
+                    pg_dump -d "$DB" --clean --if-exists --create | gzip > "/tmp/$DB.sql.gz"
+                    az storage blob upload \
+                      --auth-mode login \
+                      --account-name "$AZURE_STORAGE_ACCOUNT" \
+                      --container-name "$AZURE_STORAGE_CONTAINER" \
+                      --name "pg/$DATE/$DB.sql.gz" \
+                      --file "/tmp/$DB.sql.gz" \
+                      --overwrite true
+                    rm -f "/tmp/$DB.sql.gz"
+                  done
+
+                  echo "--- Backup Session Completed ---"

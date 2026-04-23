@@ -3,6 +3,8 @@ kind: CronJob
 metadata:
   name: postgres-backup
   namespace: infrastructure
+# if we need a backup urgently, get `@Patina-Network/infra` and ask them to run
+# kubectl -n infrastructure create job --from=cronjob/postgres-backup postgres-backup-manual-$(date +%s)
 spec:
   schedule: "0 0 * * *"
   concurrencyPolicy: Forbid
@@ -17,7 +19,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: backup
-              image: tahminator/pg-az:1.0.0
+              image: patinanetwork/pg-az:1.0.0
               env:
                 - name: PGHOST
                   value: postgres-shared-rw

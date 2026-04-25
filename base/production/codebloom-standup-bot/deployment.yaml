@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codebloom-standup-bot
+  namespace: production
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: codebloom-standup-bot
+  template:
+    metadata:
+      labels:
+        app: codebloom-standup-bot
+        version: "N/A" # replaced from kustomization.yaml
+    spec:
+      containers:
+        - name: codebloom-standup-bot
+          image: tahminator/codebloom-standup-bot
+          envFrom:
+            - secretRef:
+                name: codebloom-standup-bot-production-secrets
+          resources:
+            requests:
+              memory: "2Mi"
+              cpu: "15m"
+            limits:
+              memory: "4Mi"
+              cpu: "200m"
+          env:
+            - name: VERSION
+              value: "N/A" # replaced from kustomization.yaml

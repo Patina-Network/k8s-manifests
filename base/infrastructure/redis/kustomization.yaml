@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - deployment.yaml
+  - pvc.yaml
+  - secrets.yaml
+  - service.yaml
+images:
+  - name: redis
+    newTag: 8.6.2-alpine # update me to change version
+
+replacements:
+  - source:
+      kind: Deployment
+      name: redis
+      fieldPath: spec.template.spec.containers.[name=redis].image
+      options:
+        delimiter: ":"
+        index: 1
+    targets:
+      - select:
+          kind: Deployment
+          name: redis
+        fieldPaths:
+          - spec.template.metadata.labels.version

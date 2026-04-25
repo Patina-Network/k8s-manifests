@@ -5,6 +5,7 @@ resources:
   - traefik
   - middleware
   - postgres
+  - redis
   - grafana-prometheus
   - loki
   - promtail

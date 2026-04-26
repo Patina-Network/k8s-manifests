@@ -11,6 +11,7 @@ metadata:
 spec:
   interval: 10m
   dependsOn:
+    - name: cert-manager-issuer-infrastructure
     - name: grafana-prometheus-infrastructure
     - name: traefik-infrastructure
     - name: middleware-infrastructure

@@ -7,6 +7,7 @@ spec:
   interval: 5m
   path: ./base/staging/codebloom
   dependsOn:
+    - name: cert-manager-issuer-infrastructure
     - name: traefik-infrastructure
     - name: middleware-staging
   prune: true

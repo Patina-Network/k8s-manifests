@@ -7,6 +7,7 @@ spec:
   interval: 5m
   path: ./base/production/codebloom
   dependsOn:
+    - name: cert-manager-issuer-infrastructure
     - name: traefik-infrastructure
     - name: middleware-production
   prune: true

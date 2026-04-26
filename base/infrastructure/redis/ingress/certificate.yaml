@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: redis-k8s-tls
+  namespace: infrastructure
+spec:
+  secretName: redis-k8s-tls
+  dnsNames:
+    - redis.k8s.patinanetwork.org
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer

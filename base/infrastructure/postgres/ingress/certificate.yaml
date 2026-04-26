@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: postgres-k8s-tls
+  namespace: infrastructure
+spec:
+  secretName: postgres-k8s-tls
+  dnsNames:
+    - db.k8s.patinanetwork.org
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer

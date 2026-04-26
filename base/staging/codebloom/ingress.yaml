@@ -30,4 +30,4 @@ spec:
         - name: codebloom
           port: 80
   tls:
-    certResolver: letsencrypt
+    secretName: staging-codebloom-tls

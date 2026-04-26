@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: staging-codebloom-tls
+  namespace: staging
+spec:
+  secretName: staging-codebloom-tls
+  dnsNames:
+    - staging.k8s.codebloom.patinanetwork.org
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer

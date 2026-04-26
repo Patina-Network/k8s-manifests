@@ -6,4 +6,5 @@ kind: Kustomization
 # - traefik needs grafana for ServiceMonitor
 # - grafana needs traefik for IngressRoute
 resources:
+  - certificate.yaml
   - ingress.yaml

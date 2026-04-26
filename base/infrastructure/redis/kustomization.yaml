@@ -2,7 +2,10 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - deployment.yaml
-  - pvc.yaml
+  # TODO: figure out a solution to low 4 Disk limit for single node
+  # _NOTE_: IF WE NEED PERSISTENCE WE NEED TO FIGURE OUT A SOLUTION
+  # TO SAID PROBLEM
+  # - pvc.yaml
   - secrets.yaml
   - service.yaml
 images:

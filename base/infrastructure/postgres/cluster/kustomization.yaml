@@ -10,3 +10,4 @@ resources:
   - cluster.yaml
   - secrets.yaml
   - service.yaml
+  - podmonitor.yaml

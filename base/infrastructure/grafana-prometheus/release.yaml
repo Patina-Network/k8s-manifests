@@ -72,6 +72,8 @@ spec:
         retention: 14d
         serviceMonitorSelectorNilUsesHelmValues: false
         serviceMonitorNamespaceSelectorNilUsesHelmValues: false
+        podMonitorSelectorNilUsesHelmValues: false
+        podMonitorNamespaceSelectorNilUsesHelmValues: false
         scrapeConfigSelectorNilUsesHelmValues: false
         scrapeConfigNamespaceSelectorNilUsesHelmValues: false
         storageSpec:

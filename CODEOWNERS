@@ -1,3 +1,8 @@
 * @Patina-Network/infra
 
+# allow codebloom team to update image properties as needed w/o approval from infra team
+base/infrastructure/production/codebloom/kustomization.yaml @Patina-Network/infra
+base/infrastructure/production-standup-bot/codebloom/kustomization.yaml @Patina-Network/infra
+base/infrastructure/staging/codebloom/kustomization.yaml @Patina-Network/infra
+
 CODEOWNERS @Patina-Network/admin

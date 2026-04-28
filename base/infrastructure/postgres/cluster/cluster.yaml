@@ -6,6 +6,10 @@ metadata:
   namespace: infrastructure
 spec:
   instances: 1
+  # TODO: Decide what we want to do in long term, 2 replicas or some downtime during node upgrades
+  # cluster does not support surge, so this is the only solution at this affinity;
+  # on the upside, downtime should be very minimal due to current AKS configurations
+  enablePDB: false
   imageName: ghcr.io/cloudnative-pg/postgresql:16
   storage:
     size: 12Gi

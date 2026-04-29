@@ -57,6 +57,8 @@ spec:
           env:
             - name: VERSION
               value: "N/A" # replaced from kustomization.yaml
+            - name: VITE_STAGING
+              value: "true"
           envFrom:
             - secretRef:
                 name: codebloom-staging-secrets

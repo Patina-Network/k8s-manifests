@@ -1,10 +1,13 @@
-# override any codebloom properties here
+# override any Spring app properties here
 
-codebloom:
-  scheduling:
-    enabled: false
-  notify:
-    enabled: false
+springdoc:
+  swagger-ui:
+    enabled: true
+  api-docs:
+    enabled: true
+
+server:
+  url: https://stg.codebloom.patinanetwork.org
 
 management:
   endpoint:

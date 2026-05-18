@@ -24,8 +24,23 @@ spec:
   entryPoints:
     - websecure
   routes:
+    - match: Host(`stg.codebloom.patinanetwork.org`) && (Path(`/actuator/health/liveness`) || Path(`/actuator/health/readiness`))
+      kind: Rule
+      priority: 10
+      services:
+        - name: codebloom
+          port: 80
+    - match: Host(`stg.codebloom.patinanetwork.org`) && PathPrefix(`/actuator`)
+      kind: Rule
+      priority: 5
+      middlewares:
+        - name: basic-auth
+      services:
+        - name: codebloom
+          port: 80
     - match: Host(`stg.codebloom.patinanetwork.org`) && PathPrefix(`/`)
       kind: Rule
+      priority: 1
       services:
         - name: codebloom
           port: 80

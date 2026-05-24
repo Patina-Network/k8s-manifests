@@ -35,7 +35,7 @@ edit file *args:
 
 # edit a secrets file in `./base` using shortcuts
 # e.g. if i want to edit `./base/production/codebloom/secrets.yaml`
-# i would do `just editbase codebloom production`
+# i would do `just editbase production codebloom`
 editbase env app:
   just edit base/{{ env }}/{{ app }}/secrets.yaml
 

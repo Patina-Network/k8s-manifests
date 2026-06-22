@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: patchats
+  namespace: staging
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: patchats
+  template:
+    metadata:
+      labels:
+        app: patchats
+        version: "N/A" # replaced from kustomization.yaml
+    spec:
+      volumes:
+        - name: spring-config
+          configMap:
+            name: patchats-spring-config
+      containers:
+        - name: patchats
+          image: Patina-Network/patchats
+          args:
+            - --spring.config.additional-location=file:/config/
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: spring-config
+              mountPath: /config
+              readOnly: true
+          readinessProbe:
+            # todo: enable actuator readiness
+            httpGet:
+              path: /api
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 10
+            failureThreshold: 10
+          livenessProbe:
+            # todo: enable actuator health
+            httpGet:
+              path: /api
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 5
+          env:
+            - name: VERSION
+              value: "N/A" # replaced from kustomization.yaml
+            - name: VITE_STAGING
+              value: "true"
+          envFrom:
+            - secretRef:
+                name: patchats-staging-secrets
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "40m"
+            limits:
+              memory: "1024Mi"
+              cpu: "1000m"

@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: production-patchats-tls
+  namespace: production
+spec:
+  secretName: production-patchats-tls
+  dnsNames:
+    - patchats.patinanetwork.org
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer

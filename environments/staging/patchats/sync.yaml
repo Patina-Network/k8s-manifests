@@ -1,0 +1,19 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: patchats-staging
+  namespace: flux-system
+spec:
+  interval: 5m
+  path: ./base/staging/patchats
+  dependsOn:
+    - name: cert-manager-issuer-infrastructure
+    - name: traefik-infrastructure
+    - name: middleware-staging
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  targetNamespace: staging
+  decryption:
+    provider: sops

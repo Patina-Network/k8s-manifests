@@ -1,0 +1,48 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: patchats-web
+  namespace: staging
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`stg.patchats.patinanetwork.org`) && PathPrefix(`/`)
+      kind: Rule
+      middlewares:
+        - name: redirect-to-https
+      services:
+        - name: patchats
+          port: 80
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: patchats-websecure
+  namespace: staging
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`stg.patchats.patinanetwork.org`) && (Path(`/actuator/health/liveness`) || Path(`/actuator/health/readiness`))
+      kind: Rule
+      priority: 10
+      services:
+        - name: patchats
+          port: 80
+    - match: Host(`stg.patchats.patinanetwork.org`) && PathPrefix(`/actuator`)
+      kind: Rule
+      priority: 5
+      middlewares:
+        - name: basic-auth
+      services:
+        - name: patchats
+          port: 80
+    - match: Host(`stg.patchats.patinanetwork.org`) && PathPrefix(`/`)
+      kind: Rule
+      priority: 1
+      services:
+        - name: patchats
+          port: 80
+  tls:
+    secretName: staging-patchats-tls

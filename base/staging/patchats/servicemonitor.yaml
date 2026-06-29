@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: patchats
+  namespace: staging
+spec:
+  selector:
+    matchLabels:
+      app: patchats
+  endpoints:
+    - port: http-web
+      path: /actuator/prometheus
+      interval: 30s
+      basicAuth:
+        username:
+          name: patchats-staging-secrets
+          key: ACTUATOR_USERNAME
+        password:
+          name: patchats-staging-secrets
+          key: ACTUATOR_PASSWORD

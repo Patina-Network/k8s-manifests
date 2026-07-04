@@ -81,10 +81,12 @@ spec:
             failureThreshold: 5
           resources:
             requests:
-              cpu: 500m
+              # node is a small single node (~1900m allocatable, mostly claimed);
+              # keep the reservation low and let the JVM burst up to the limit.
+              cpu: 200m
               memory: 1Gi
             limits:
-              cpu: "2"
+              cpu: 1000m
               memory: 2Gi
   volumeClaimTemplates:
     - metadata:

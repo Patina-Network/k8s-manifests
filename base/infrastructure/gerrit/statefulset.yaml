@@ -54,6 +54,11 @@ spec:
         # (idempotent) then starts the daemon.
         - name: gerrit
           image: patinanetwork/gerrit # replaced from kustomization.yaml
+          env:
+            - name: CANONICAL_WEB_URL
+              value: https://gerrit.patinanetwork.org/
+            - name: HTTPD_LISTEN_URL
+              value: proxy-http://*:8080/
           ports:
             - containerPort: 8080
               name: http

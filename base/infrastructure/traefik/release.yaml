@@ -27,12 +27,7 @@ spec:
       - --accesslog.fields.names.ClientUsername=drop
       - --accesslog.fields.headers.defaultmode=keep
     persistence:
-      enabled: true
-      name: traefik-data
-      accessMode: ReadWriteOnce
-      size: 1Gi
-      path: /data
-      storageClass: default
+      enabled: false
     podSecurityContext:
       runAsNonRoot: true
       runAsUser: 65532

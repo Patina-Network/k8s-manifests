@@ -1,0 +1,15 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: gerrit-infrastructure
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: ./base/infrastructure/gerrit
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  targetNamespace: infrastructure
+  decryption:
+    provider: sops

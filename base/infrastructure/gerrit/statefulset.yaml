@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: gerrit
+  namespace: infrastructure
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  serviceName: gerrit
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gerrit
+  template:
+    metadata:
+      labels:
+        app: gerrit
+        version: "N/A" # replaced from kustomization.yaml
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        # 1000 = `gerrit` user in upstream img
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+      volumes:
+        - name: gerrit-config
+          configMap:
+            name: gerrit-config
+        - name: secure-config
+          secret:
+            secretName: gerrit-secure-config
+      initContainers:
+        # Lay down our config into the persisted, writable etc dir before the
+        # main container's entrypoint runs `gerrit init`. The oauth plugin is
+        # baked into patinanetwork/gerrit, so there's nothing to fetch.
+        - name: config
+          image: patinanetwork/gerrit # replaced from kustomization.yaml
+          command:
+            - sh
+            - -c
+            - |
+              set -eu
+              mkdir -p /var/gerrit/etc
+              cp /config/gerrit.config /var/gerrit/etc/gerrit.config
+              cp /secure/secure.config /var/gerrit/etc/secure.config
+          volumeMounts:
+            - { name: gerrit-config, mountPath: /config, readOnly: true }
+            - { name: secure-config, mountPath: /secure, readOnly: true }
+            - { name: site, mountPath: /var/gerrit/etc, subPath: etc }
+      containers:
+        # No command override: the image entrypoint runs `gerrit init`
+        # (idempotent) then starts the daemon.
+        - name: gerrit
+          image: patinanetwork/gerrit # replaced from kustomization.yaml
+          ports:
+            - containerPort: 8080
+              name: http
+          volumeMounts:
+            - { name: site, mountPath: /var/gerrit/git, subPath: git }
+            - { name: site, mountPath: /var/gerrit/index, subPath: index }
+            - { name: site, mountPath: /var/gerrit/cache, subPath: cache }
+            - { name: site, mountPath: /var/gerrit/data, subPath: data }
+            - { name: site, mountPath: /var/gerrit/etc, subPath: etc }
+          readinessProbe:
+            httpGet:
+              path: /config/server/version
+              port: 8080
+            initialDelaySeconds: 45
+            periodSeconds: 15
+            timeoutSeconds: 10
+            failureThreshold: 20
+          livenessProbe:
+            httpGet:
+              path: /config/server/version
+              port: 8080
+            initialDelaySeconds: 180
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 5
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: site
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: managed-csi
+        resources:
+          requests:
+            storage: 20Gi

@@ -7,6 +7,7 @@ resources:
   - middleware
   - postgres
   - redis
+  - gerrit
   - grafana-prometheus
   - loki
   - promtail

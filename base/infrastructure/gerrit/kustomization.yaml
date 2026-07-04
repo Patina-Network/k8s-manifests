@@ -11,8 +11,9 @@ configMapGenerator:
 commonLabels:
   app: gerrit
 images:
+  # plugins have to be added at Patina-Network/dockerfiles
   - name: patinanetwork/gerrit
-    newTag: 1.0.5 # update me to change version
+    newTag: 1.0.6 # update me to change version
 
 replacements:
   - source:

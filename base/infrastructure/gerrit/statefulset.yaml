@@ -45,6 +45,7 @@ spec:
               mkdir -p /var/gerrit/etc
               cp /config/gerrit.config /var/gerrit/etc/gerrit.config
               cp /secure/secure.config /var/gerrit/etc/secure.config
+              cp /secure/github-oauth.key /var/gerrit/etc/github-oauth.key
           volumeMounts:
             - { name: gerrit-config, mountPath: /config, readOnly: true }
             - { name: secure-config, mountPath: /secure, readOnly: true }

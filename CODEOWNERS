@@ -1,16 +1,16 @@
 * @Patina-Network/infra
 
 # allow codebloom team to update image & app properties as needed w/o approval from infra team
-base/infrastructure/production/codebloom-standup-bot/kustomization.yaml @Patina-Network/codebloom
-base/infrastructure/production/codebloom/kustomization.yaml @Patina-Network/codebloom
-base/infrastructure/production/codebloom/application-prod.yaml @Patina-Network/codebloom
-base/infrastructure/staging/codebloom/kustomization.yaml @Patina-Network/codebloom
-base/infrastructure/staging/codebloom/application-stg.yaml @Patina-Network/codebloom
+base/production/codebloom-standup-bot/kustomization.yaml @Patina-Network/codebloom
+base/production/codebloom/kustomization.yaml @Patina-Network/codebloom
+base/production/codebloom/application-prod.yaml @Patina-Network/codebloom
+base/staging/codebloom/kustomization.yaml @Patina-Network/codebloom
+base/staging/codebloom/application-stg.yaml @Patina-Network/codebloom
 
 # allow patchats team to update image & app properties as needed w/o approval from infra team
-base/infrastructure/production/patchats/kustomization.yaml @Patina-Network/patchats
-base/infrastructure/production/patchats/application-prod.yaml @Patina-Network/patchats
-base/infrastructure/staging/patchats/kustomization.yaml @Patina-Network/patchats
-base/infrastructure/staging/patchats/application-stg.yaml @Patina-Network/patchats
+base/production/patchats/kustomization.yaml @Patina-Network/patchats
+base/production/patchats/application-prod.yaml @Patina-Network/patchats
+base/staging/patchats/kustomization.yaml @Patina-Network/patchats
+base/staging/patchats/application-stg.yaml @Patina-Network/patchats
 
 CODEOWNERS @Patina-Network/admin

@@ -6,3 +6,4 @@ resources:
   #  - ./codebloom-standup-bot
   - ./middleware
   - ./azure
+  - ./patchats

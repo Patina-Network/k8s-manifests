@@ -15,8 +15,8 @@ commonLabels:
   app: patchats
   environment: production
 images:
-  - name: Patina-Network/patchats
-    newTag: c0aa3e0
+  - name: patinanetwork/patchats
+    newTag: v3_test # update me to change version
 
 replacements:
   - source:

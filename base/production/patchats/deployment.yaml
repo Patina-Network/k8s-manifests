@@ -27,7 +27,7 @@ spec:
             name: patchats-spring-config
       containers:
         - name: patchats
-          image: Patina-Network/patchats
+          image: patinanetwork/patchats
           args:
             - --spring.config.additional-location=file:/config/
           ports:

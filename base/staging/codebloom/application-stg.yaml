@@ -19,3 +19,20 @@ management:
       exposure:
         # add beans and env
         include: prometheus, health, beans, env
+
+logging:
+  structured:
+    format:
+      console: ecs
+    json:
+      add:
+        sha: "${app.commit.sha}"
+      stacktrace:
+        root: first
+        max-length: 12288
+        include-common-frames: true
+        include-hashes: true
+
+ff:
+  # duels: true
+  user-metrics: true

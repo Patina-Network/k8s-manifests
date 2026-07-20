@@ -16,7 +16,7 @@ commonLabels:
   environment: production
 images:
   - name: patinanetwork/patchats
-    newTag: v3_test # update me to change version
+    newTag: 88d87db
 
 replacements:
   - source:

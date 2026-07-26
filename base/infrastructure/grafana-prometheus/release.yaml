@@ -34,6 +34,30 @@ spec:
           isDefault: false
           jsonData:
             maxLines: 1000
+        - name: Postgres (codebloom-prod)
+          type: postgres
+          url: postgres.infrastructure.svc.cluster.local:5432
+          access: proxy
+          isDefault: false
+          user: grafana-all-ro-sa
+          jsonData:
+            database: codebloom-prod
+            sslmode: require
+            postgresVersion: 1600
+          secureJsonData:
+            password: $GRAFANA_RO_DB_PASSWORD
+        - name: Postgres (codebloom-stg)
+          type: postgres
+          url: postgres.infrastructure.svc.cluster.local:5432
+          access: proxy
+          isDefault: false
+          user: grafana-all-ro-sa
+          jsonData:
+            database: codebloom-stg
+            sslmode: require
+            postgresVersion: 1600
+          secureJsonData:
+            password: $GRAFANA_RO_DB_PASSWORD
       operator:
         folder: K8S
       grafana.ini:

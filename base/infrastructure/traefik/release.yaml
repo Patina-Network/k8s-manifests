@@ -4,6 +4,7 @@ metadata:
   name: traefik
   namespace: infrastructure
 spec:
+  # https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml
   interval: 30m
   install:
     createNamespace: true
@@ -20,6 +21,10 @@ spec:
         namespace: flux-system
       interval: 12h
   values:
+    metrics:
+      prometheus:
+        service:
+          enabled: true
     additionalArguments:
       - --metrics.prometheus=true
       - --accesslog=true

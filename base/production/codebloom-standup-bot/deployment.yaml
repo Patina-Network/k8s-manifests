@@ -30,10 +30,10 @@ spec:
           resources:
             requests:
               memory: "2Mi"
-              cpu: "15m"
+              cpu: "1m"
             limits:
               memory: "4Mi"
-              cpu: "200m"
+              cpu: "25m"
           env:
             - name: VERSION
               value: "N/A" # replaced from kustomization.yaml

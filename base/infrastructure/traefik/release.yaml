@@ -23,6 +23,8 @@ spec:
   values:
     metrics:
       prometheus:
+        headerLabels:
+          host: X-Forwarded-Host
         service:
           enabled: true
     additionalArguments:

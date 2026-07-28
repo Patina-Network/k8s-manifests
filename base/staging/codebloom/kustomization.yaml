@@ -16,7 +16,7 @@ commonLabels:
   environment: staging
 images:
   - name: tahminator/codebloom
-    newTag: bf2cceb # update me to change version
+    newTag: "bf2cceb" # update me to change version
 
 replacements:
   - source:

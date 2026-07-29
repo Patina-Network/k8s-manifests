@@ -24,6 +24,20 @@ spec:
   entryPoints:
     - websecure
   routes:
+    - match: Host(`patchats.patinanetwork.org`) && (Path(`/actuator/health/liveness`) || Path(`/actuator/health/readiness`))
+      kind: Rule
+      priority: 10
+      services:
+        - name: patchats
+          port: 80
+    - match: Host(`patchats.patinanetwork.org`) && PathPrefix(`/actuator`)
+      kind: Rule
+      priority: 5
+      middlewares:
+        - name: basic-auth
+      services:
+        - name: patchats
+          port: 80
     - match: Host(`patchats.patinanetwork.org`) && PathPrefix(`/`)
       kind: Rule
       middlewares:

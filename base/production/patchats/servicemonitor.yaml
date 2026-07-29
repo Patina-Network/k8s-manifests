@@ -11,10 +11,3 @@ spec:
     - port: http-web
       path: /actuator/prometheus
       interval: 30s
-      basicAuth:
-        username:
-          name: patchats-production-secrets
-          key: ACTUATOR_USERNAME
-        password:
-          name: patchats-production-secrets
-          key: ACTUATOR_PASSWORD

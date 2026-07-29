@@ -37,18 +37,16 @@ spec:
               mountPath: /config
               readOnly: true
           readinessProbe:
-            # todo: enable actuator readiness
             httpGet:
-              path: /api
+              path: /actuator/health/readiness
               port: 8080
             initialDelaySeconds: 30
             periodSeconds: 15
             timeoutSeconds: 10
             failureThreshold: 10
           livenessProbe:
-            # todo: enable actuator health
             httpGet:
-              path: /api
+              path: /actuator/health/liveness
               port: 8080
             initialDelaySeconds: 60
             periodSeconds: 30

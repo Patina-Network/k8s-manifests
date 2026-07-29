@@ -40,6 +40,8 @@ spec:
           port: 80
     - match: Host(`stg.codebloom.patinanetwork.org`) && PathPrefix(`/`)
       kind: Rule
+      middlewares:
+        - name: basic-rate-limit
       priority: 1
       services:
         - name: codebloom

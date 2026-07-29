@@ -40,6 +40,7 @@ spec:
           port: 80
     - match: Host(`patchats.patinanetwork.org`) && PathPrefix(`/`)
       kind: Rule
+      priority: 1
       middlewares:
         - name: basic-rate-limit
       services:

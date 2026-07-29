@@ -26,6 +26,8 @@ spec:
   routes:
     - match: Host(`patchats.patinanetwork.org`) && PathPrefix(`/`)
       kind: Rule
+      middlewares:
+        - name: basic-rate-limit
       services:
         - name: patchats
           port: 80

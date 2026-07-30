@@ -8,7 +8,7 @@ commonLabels:
   environment: production
 images:
   - name: tahminator/codebloom-standup-bot
-    newTag: "67eeec7" # update me to change version
+    newTag: "bdf14d3" # update me to change version
 
 replacements:
   - source:

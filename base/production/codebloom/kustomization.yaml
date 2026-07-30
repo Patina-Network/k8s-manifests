@@ -16,7 +16,7 @@ commonLabels:
   environment: production
 images:
   - name: tahminator/codebloom
-    newTag: "598e035" # update me to change version
+    newTag: "0e8cefe" # update me to change version
 
 replacements:
   - source:

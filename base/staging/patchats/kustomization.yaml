@@ -16,7 +16,7 @@ commonLabels:
   environment: staging
 images:
   - name: patinanetwork/patchats
-    newTag: staging-68666d5
+    newTag: staging-83a64ad
 
 replacements:
   - source:

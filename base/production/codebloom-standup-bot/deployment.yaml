@@ -37,3 +37,5 @@ spec:
           env:
             - name: VERSION
               value: "N/A" # replaced from kustomization.yaml
+            - name: ENVIRONMENT
+              value: production

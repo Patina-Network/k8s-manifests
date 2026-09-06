@@ -15,8 +15,8 @@ commonLabels:
   app: codebloom
   environment: production
 images:
-  - name: tahminator/codebloom
-    newTag: "0e8cefe" # update me to change version
+  - name: patinanetwork/codebloom
+    newTag: "96f71a0" # update me to change version
 
 replacements:
   - source:

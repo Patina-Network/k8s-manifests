@@ -27,7 +27,7 @@ spec:
             name: codebloom-spring-config
       containers:
         - name: codebloom
-          image: tahminator/codebloom
+          image: patinanetwork/codebloom
           args:
             - --spring.config.additional-location=file:/config/
           ports:

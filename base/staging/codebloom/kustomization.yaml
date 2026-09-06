@@ -15,8 +15,8 @@ commonLabels:
   app: codebloom
   environment: staging
 images:
-  - name: tahminator/codebloom
-    newTag: "staging-9c97fa4" # update me to change version
+  - name: patinanetwork/codebloom
+    newTag: "96f71a0" # update me to change version
 
 replacements:
   - source:

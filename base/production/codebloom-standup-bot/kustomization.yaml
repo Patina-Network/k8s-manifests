@@ -7,7 +7,7 @@ commonLabels:
   app: codebloom-standup-bot
   environment: production
 images:
-  - name: tahminator/codebloom-standup-bot
+  - name: patinanetwork/codebloom-standup-bot
     newTag: "a9096d9" # update me to change version
 
 replacements:

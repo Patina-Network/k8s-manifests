@@ -27,3 +27,12 @@ database:
 dns:
   base_domain: tailnet.patinanetwork.org
   override_local_dns: false
+
+# TODO: look into turning this on & having DERP go thru our server
+derp:
+  server:
+    enabled: false
+  urls:
+    - https://controlplane.tailscale.com/derpmap/default
+  auto_update_enabled: true
+  update_frequency: 24h

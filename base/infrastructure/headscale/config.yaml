@@ -36,3 +36,11 @@ derp:
     - https://controlplane.tailscale.com/derpmap/default
   auto_update_enabled: true
   update_frequency: 24h
+
+oidc:
+  issuer: "https://login.microsoftonline.com/88e5fbad-e2c7-474e-a963-2fbe9a0bab8f/v2.0"
+  # oauth app is managed by platform-infra
+  client_id: "7e0d5f2b-1bad-4880-bebd-f78293c6307f"
+  scope: ["openid", "profile", "email"]
+  allowed_domains:
+    - patinanetwork.onmicrosoft.com

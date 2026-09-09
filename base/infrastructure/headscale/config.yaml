@@ -1,0 +1,21 @@
+# https://github.com/juanfont/headscale/blob/main/config-example.yaml
+
+server_url: https://headscale.patinanetwork.org
+# default is 127.0.0.1, only binds to local loopback
+# needs to bind to any local addr so it can be exposed & Traefik can call
+listen_addr: 0.0.0.0:8080
+
+disable_check_updates: true
+
+database:
+  type: postgres
+  postgres:
+    host: postgres.infrastructure.svc.cluster.local
+    port: 5432
+    name: headscale
+    user: headscale-sa
+    # from env
+    pass: ""
+
+dns:
+  base_domain: tailnet.patinanetwork.org

@@ -36,6 +36,11 @@ spec:
                 secretKeyRef:
                   name: headscale-secrets
                   key: databasePassword
+            - name: HEADSCALE_OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: headscale-secrets
+                  key: oidcClientSecret
           ports:
             - containerPort: 8080
               name: http

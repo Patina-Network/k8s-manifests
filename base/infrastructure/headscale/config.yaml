@@ -7,6 +7,9 @@ listen_addr: 0.0.0.0:8080
 
 disable_check_updates: true
 
+noise:
+  private_key_path: /var/lib/headscale/noise_private.key
+
 database:
   type: postgres
   postgres:
@@ -19,3 +22,4 @@ database:
 
 dns:
   base_domain: tailnet.patinanetwork.org
+  override_local_dns: false

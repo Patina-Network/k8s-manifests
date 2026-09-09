@@ -42,5 +42,6 @@ oidc:
   # oauth app is managed by platform-infra
   client_id: "7e0d5f2b-1bad-4880-bebd-f78293c6307f"
   scope: ["openid", "profile", "email"]
+  email_verified_required: false
   allowed_domains:
     - patinanetwork.onmicrosoft.com

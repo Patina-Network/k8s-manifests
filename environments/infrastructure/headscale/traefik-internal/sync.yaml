@@ -8,6 +8,7 @@ spec:
   path: ./base/infrastructure/headscale/traefik-internal
   dependsOn:
     - name: traefik-infrastructure
+    - name: headscale-tailscale-authkey-infrastructure
   prune: true
   sourceRef:
     kind: GitRepository

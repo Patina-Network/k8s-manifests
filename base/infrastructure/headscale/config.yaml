@@ -34,13 +34,13 @@ dns:
     # is false.
     split:
       proxy.patinanetwork.org:
-        # TODO: replace with the real ClusterIP once coredns-proxy is deployed:
-        #   kubectl get svc coredns-proxy -n infrastructure -o jsonpath='{.spec.clusterIP}'
-        # That IP is only reachable from the tailnet via the route advertised
-        # by ./tailscale-router, which must be approved first:
-        #   headscale routes list
-        #   headscale routes enable -r <id-of-the-tailscale-router-route>
-        - 10.0.0.53
+        # TODO: replace with coredns-proxy's real tailnet IP, once its
+        # `tailscale` sidecar has joined (it's a tailnet node itself, see
+        # ./coredns/deployment.yaml):
+        #   headscale nodes list   # look for hostname "coredns-proxy"
+        # This is a one-time value - it won't change again since that node's
+        # identity is persisted on a PVC.
+        - 100.64.0.98
 
 # TODO: look into turning this on & having DERP go thru our server
 derp:

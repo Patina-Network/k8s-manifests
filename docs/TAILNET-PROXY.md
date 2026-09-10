@@ -3,26 +3,41 @@
 This sets up a way to expose internal services to the tailnet (only) at
 `<name>.proxy.patinanetwork.org`, without making them publicly accessible.
 
+> This is the **sidecar** variant: `coredns-proxy` and `traefik-internal`
+> each join the tailnet directly as their own node (a `tailscale` sidecar
+> container in the same pod). Compare against the `claude/headscale-traefik-coredns-beidwo`
+> branch, which instead used a single subnet-router pod advertising the
+> whole cluster Service CIDR into the tailnet. This version has a narrower
+> blast radius (only these two pods' tailnet IPs are reachable, not every
+> ClusterIP service in the cluster) at the cost of a sidecar (NET_ADMIN,
+> `/dev/net/tun`, a state PVC) on each of the two deployments instead of
+> one shared router pod.
+
 ## Pieces (all in `base/infrastructure/headscale/`)
 
-- **`coredns/`** - a CoreDNS deployment (`coredns-proxy`, ClusterIP only).
-  Answers `*.proxy.patinanetwork.org` by rewriting the query to
-  `traefik-internal.infrastructure.svc.cluster.local` and forwarding it to
-  the cluster's own DNS, so it always returns Traefik's current ClusterIP -
-  no hardcoded IPs needed on this side.
-- **`traefik-internal/`** - a second Traefik `HelmRelease` (ClusterIP only,
-  plain HTTP), completely separate from the public-facing one in
-  `base/infrastructure/traefik`. It uses its own ingressClass
-  (`traefik-internal`) and entrypoint name (`web-internal`), so the public
-  Traefik instance - which also watches `IngressRoute`s cluster-wide - never
-  has a matching entrypoint for these routes and can't accidentally serve
-  them publicly.
-- **`tailscale-router/`** - a single pod that joins the tailnet as a subnet
-  router and advertises a route for the cluster's Service CIDR. This is what
-  makes `coredns-proxy` and `traefik-internal` (both ClusterIP, i.e. normally
-  cluster-internal only) reachable from the tailnet at all.
-- `headscale`'s `config.yaml` now has a split DNS entry sending
-  `proxy.patinanetwork.org` queries to `coredns-proxy`'s ClusterIP.
+- **`coredns/`** - a CoreDNS deployment (`coredns-proxy`). Answers
+  `*.proxy.patinanetwork.org` with a static A record for
+  `traefik-internal`'s tailnet IP (via the `template` plugin - see
+  `coredns/Corefile`). Single replica: its `tailscale` sidecar carries a
+  persistent tailnet identity (state on a PVC), so it isn't horizontally
+  scalable the way a normal stateless CoreDNS would be.
+- **`traefik-internal/`** - a second Traefik `HelmRelease`, completely
+  separate from the public-facing one in `base/infrastructure/traefik`. It
+  uses its own ingressClass (`traefik-internal`) and entrypoint name
+  (`web-internal`), so the public Traefik instance - which also watches
+  `IngressRoute`s cluster-wide - never has a matching entrypoint for these
+  routes and can't accidentally serve them publicly. It listens on `:80`
+  directly (via `NET_BIND_SERVICE`, since tailnet traffic bypasses the k8s
+  Service and its usual 8000->80 port translation).
+- **`tailscale-authkey/`** - one shared preauth-key `Secret`, used by both
+  sidecars above to join the tailnet as `infra-services`-owned nodes.
+- `headscale`'s `config.yaml` has a split DNS entry sending
+  `proxy.patinanetwork.org` queries to `coredns-proxy`'s tailnet IP.
+
+Both `coredns-proxy` and `traefik-internal` still also have a normal
+ClusterIP `Service`/HelmRelease service for in-cluster traffic and
+debugging - that path is untouched. The tailnet path goes straight to each
+pod's own tailscale interface, not through those Services.
 
 To add a new proxied service later: add an `IngressRoute` (entryPoints:
 `web-internal`) next to that service, matching
@@ -35,39 +50,39 @@ To add a new proxied service later: add an `IngressRoute` (entryPoints:
 This was authored without cluster/headscale/sops access, so a few values
 can't be filled in or verified here. All are marked `TODO` inline too.
 
-1. **Confirm the cluster's Service CIDR** and update
-   `base/infrastructure/headscale/tailscale-router/deployment.yaml`'s
-   `TS_ROUTES` if it's not `10.0.0.0/16`:
-   ```
-   az aks show --resource-group k8s --name k8s-manifests \
-     --query networkProfile.serviceCidr -o tsv
-   ```
-
-2. **Generate + encrypt the subnet router's preauth key**, per the comment
-   in `base/infrastructure/headscale/tailscale-router/secrets.yaml`:
+1. **Generate + encrypt the shared preauth key**, per the comment in
+   `base/infrastructure/headscale/tailscale-authkey/secrets.yaml`:
    ```
    kubectl exec -n infrastructure deploy/headscale -- \
      headscale users create infra-services
    kubectl exec -n infrastructure deploy/headscale -- \
      headscale preauthkeys create --user infra-services --reusable --expiration 8760h
    # put the printed key into secrets.yaml, then:
-   just encrypt base/infrastructure/headscale/tailscale-router/secrets.yaml
+   just encrypt base/infrastructure/headscale/tailscale-authkey/secrets.yaml
    ```
 
-3. **Merge/deploy**, then approve the advertised route (headscale requires
-   manual route approval by default):
+2. **Merge/deploy.** Both sidecars will register themselves as new nodes on
+   first start - no manual route approval needed this time (no subnet
+   routes are advertised at all in this variant).
+
+3. **Get `traefik-internal`'s tailnet IP** and put it into
+   `base/infrastructure/headscale/coredns/Corefile`'s `answer` line
+   (replacing the `100.64.0.99` placeholder):
    ```
-   headscale routes list
-   headscale routes enable -r <id of the k8s-proxy-router route>
+   headscale nodes list   # look for hostname "traefik-internal"
    ```
 
-4. **Get `coredns-proxy`'s ClusterIP** and put it into
+4. **Get `coredns-proxy`'s tailnet IP** and put it into
    `base/infrastructure/headscale/config.yaml`'s `dns.nameservers.split`
-   entry (replacing the `10.0.0.53` placeholder), then commit so headscale
+   entry (replacing the `100.64.0.98` placeholder), then commit so headscale
    picks it up:
    ```
-   kubectl get svc coredns-proxy -n infrastructure -o jsonpath='{.spec.clusterIP}'
+   headscale nodes list   # look for hostname "coredns-proxy"
    ```
+
+Steps 3 and 4 are each one-time values: once a sidecar's state PVC exists,
+its tailnet identity (and therefore its IP) is stable across restarts and
+redeploys.
 
 ## Testing
 

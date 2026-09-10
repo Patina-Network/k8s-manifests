@@ -6,10 +6,15 @@ metadata:
 spec:
   # A second, tailnet-only Traefik instance - separate from the public-facing
   # one in ../../traefik. It uses its own ingressClass ("traefik-internal")
-  # and its own entryPoint names ("web-internal" / "websecure-internal") so
-  # that the public Traefik instance (which watches IngressRoutes cluster-wide
-  # too) never has a matching entryPoint to route them on - the routes
-  # attached here are structurally inert on the public instance.
+  # and its own entryPoint name ("web-internal") so that the public Traefik
+  # instance (which watches IngressRoutes cluster-wide too) never has a
+  # matching entryPoint to route them on - the routes attached here are
+  # structurally inert on the public instance.
+  #
+  # It joins the tailnet directly via a `tailscale` sidecar (see
+  # additionalContainers below) rather than being reached through a subnet
+  # router, so only this pod's own tailnet IP is exposed - nothing else in
+  # the cluster's Service CIDR.
   #
   # https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml
   interval: 30m
@@ -38,8 +43,66 @@ spec:
       runAsGroup: 65532
       fsGroup: 65532
       fsGroupChangePolicy: OnRootMismatch
+    securityContext:
+      # traefik binds :80 directly (see ports.web-internal below) - this pod
+      # is reached over the tailnet via its own tailscale sidecar, not
+      # through the k8s Service, so there's no Service port-translation to
+      # fall back on. NET_BIND_SERVICE lets it bind that port as non-root.
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop: ["ALL"]
+        add: ["NET_BIND_SERVICE"]
     deployment:
+      # Single replica: this pod carries its own tailnet identity (the
+      # sidecar below, state persisted on a PVC), so it can't be scaled
+      # horizontally the way the public Traefik instance can.
       replicas: 1
+      additionalVolumes:
+        - name: tailscale-state
+          persistentVolumeClaim:
+            claimName: traefik-internal-tailscale-state
+        - name: dev-net-tun
+          hostPath:
+            path: /dev/net/tun
+      additionalContainers:
+        - name: tailscale
+          image: tailscale/tailscale:v1.76.6
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+                - NET_RAW
+          env:
+            - name: TS_AUTHKEY
+              valueFrom:
+                secretKeyRef:
+                  name: tailscale-authkey
+                  key: authkey
+            - name: TS_HOSTNAME
+              value: traefik-internal
+            - name: TS_STATE_DIR
+              value: /var/lib/tailscale
+            - name: TS_KUBE_SECRET
+              value: ""
+            - name: TS_USERSPACE
+              value: "false"
+            - name: TS_ACCEPT_DNS
+              value: "false"
+            - name: TS_EXTRA_ARGS
+              value: "--login-server=https://headscale.patinanetwork.org"
+          volumeMounts:
+            - name: tailscale-state
+              mountPath: /var/lib/tailscale
+            - name: dev-net-tun
+              mountPath: /dev/net/tun
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi
     ingressClass:
       enabled: true
       isDefaultClass: false
@@ -54,6 +117,11 @@ spec:
       # instance - we don't want anything here answering to "web"/"websecure".
       # Plain HTTP only: traffic never leaves the tailnet, which is already
       # WireGuard-encrypted, so we skip provisioning TLS certs for this one.
+      #
+      # port: 80 directly (not the chart's usual 8000->80 translation) -
+      # tailnet traffic arrives straight at this pod's tailscale interface,
+      # bypassing the k8s Service entirely, so there's no Service port
+      # mapping to rely on here.
       web:
         expose:
           default: false
@@ -61,12 +129,13 @@ spec:
         expose:
           default: false
       web-internal:
-        port: 8000
+        port: 80
         expose:
           default: true
         exposedPort: 80
         protocol: TCP
     service:
-      # ClusterIP only - not publicly accessible. Reachable from the tailnet
-      # via the route advertised by ../tailscale-router.
+      # ClusterIP only - not publicly accessible. Also reachable from the
+      # tailnet directly, via this pod's own tailscale sidecar (see above) -
+      # the k8s Service itself is only relevant for in-cluster traffic.
       type: ClusterIP

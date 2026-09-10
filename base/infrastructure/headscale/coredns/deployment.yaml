@@ -6,7 +6,12 @@ metadata:
   annotations:
     reloader.stakater.com/auto: "true"
 spec:
-  replicas: 2
+  # Single replica: this pod carries its own tailnet identity (the
+  # `tailscale` sidecar below, state persisted on a PVC), so it can't be
+  # scaled horizontally the way a normal stateless CoreDNS could be.
+  replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: coredns-proxy
@@ -19,12 +24,25 @@ spec:
         - name: config
           configMap:
             name: coredns-proxy-config
+        - name: tailscale-state
+          persistentVolumeClaim:
+            claimName: coredns-proxy-tailscale-state
+        - name: dev-net-tun
+          hostPath:
+            path: /dev/net/tun
       containers:
         - name: coredns
           image: coredns/coredns # replaced from kustomization.yaml
           args:
             - -conf
             - /etc/coredns/Corefile
+          securityContext:
+            # coredns needs to bind :53 directly - this pod is reached over
+            # the tailnet via the sidecar below, not through the k8s Service,
+            # so there's no Service port-translation to fall back on.
+            capabilities:
+              add:
+                - NET_BIND_SERVICE
           ports:
             - { containerPort: 53, name: dns, protocol: UDP }
             - { containerPort: 53, name: dns-tcp, protocol: TCP }
@@ -44,6 +62,41 @@ spec:
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 15
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi
+        - name: tailscale
+          image: tailscale/tailscale # replaced from kustomization.yaml
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+                - NET_RAW
+          env:
+            - name: TS_AUTHKEY
+              valueFrom:
+                secretKeyRef:
+                  name: tailscale-authkey
+                  key: authkey
+            - name: TS_HOSTNAME
+              value: coredns-proxy
+            - name: TS_STATE_DIR
+              value: /var/lib/tailscale
+            - name: TS_KUBE_SECRET
+              value: ""
+            - name: TS_USERSPACE
+              value: "false"
+            - name: TS_ACCEPT_DNS
+              value: "false"
+            - name: TS_EXTRA_ARGS
+              value: "--login-server=https://headscale.patinanetwork.org"
+          volumeMounts:
+            - { name: tailscale-state, mountPath: /var/lib/tailscale }
+            - { name: dev-net-tun, mountPath: /dev/net/tun }
           resources:
             requests:
               cpu: 10m

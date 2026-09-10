@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: tailscale-router-state
+  name: traefik-internal-tailscale-state
   namespace: infrastructure
 spec:
   accessModes:

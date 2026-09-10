@@ -6,6 +6,8 @@ metadata:
 spec:
   interval: 10m
   path: ./base/infrastructure/headscale/coredns
+  dependsOn:
+    - name: headscale-tailscale-authkey-infrastructure
   prune: true
   sourceRef:
     kind: GitRepository

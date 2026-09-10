@@ -8,13 +8,20 @@
 }
 
 # Split-DNS zone handed to tailnet clients by headscale (see ../config.yaml).
-# Anything under *.proxy.patinanetwork.org is aliased to the internal-only
-# Traefik instance and resolved to its (cluster-local, stable) ClusterIP via
-# the cluster's own DNS - no hardcoded IPs needed here.
+# Answers *.proxy.patinanetwork.org directly with traefik-internal's own
+# tailnet IP (it's a tailnet node too - see its sidecar in ../traefik-internal).
 proxy.patinanetwork.org:53 {
     errors
     log
-    rewrite stop name regex ^(.+)\.proxy\.patinanetwork\.org\.$ traefik-internal.infrastructure.svc.cluster.local answer auto
+    template IN A proxy.patinanetwork.org {
+        match "^(?P<sub>.+)\.proxy\.patinanetwork\.org\.$"
+        # TODO: replace with traefik-internal's real tailnet IP once its
+        # sidecar has joined (`headscale nodes list`, hostname
+        # "traefik-internal") - this is a one-time value, it won't change
+        # again since that node's identity is persisted on a PVC.
+        answer "{{ .Name }} 60 IN A 100.64.0.99"
+        fallthrough
+    }
     forward . /etc/resolv.conf
     cache 30
 }

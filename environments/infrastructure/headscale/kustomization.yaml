@@ -3,6 +3,6 @@ kind: Kustomization
 resources:
   - sync.yaml
   - ingress
+  - tailscale-authkey
   - coredns
-  - tailscale-router
   - traefik-internal

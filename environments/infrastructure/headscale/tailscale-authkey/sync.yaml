@@ -1,11 +1,11 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: headscale-tailscale-router-infrastructure
+  name: headscale-tailscale-authkey-infrastructure
   namespace: flux-system
 spec:
   interval: 10m
-  path: ./base/infrastructure/headscale/tailscale-router
+  path: ./base/infrastructure/headscale/tailscale-authkey
   dependsOn:
     - name: headscale-infrastructure
   prune: true

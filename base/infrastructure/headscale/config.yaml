@@ -34,19 +34,8 @@ dns:
     # override_local_dns is false.
     split:
       proxy.patinanetwork.org:
-        # TODO: replace with proxy-coredns's real tailnet IP, once its
-        # `tailscale` sidecar has joined (it's a tailnet node itself, see
-        # ./proxy-coredns/deployment.yaml):
-        #   headscale nodes list   # look for hostname "proxy-coredns"
-        # This is a one-time value - it won't change again, since its state
-        # (via TS_KUBE_SECRET, not a PVC) persists across restarts. Unlike
-        # proxy-traefik, this one genuinely needs a literal IP here: a
-        # resolver's nameserver config can't itself be a DNS name (chicken
-        # and egg), so this is the one place in the whole setup where an IP
-        # has to be hardcoded - see ./proxy-coredns/Corefile's comment for
-        # why proxy-traefik doesn't need the same treatment.
-        # identity is persisted on a PVC.
-        - 100.64.0.98
+        # pts to `proxy-coredns`
+        - 100.64.0.2
 
 # TODO: look into turning this on & having DERP go thru our server
 derp:

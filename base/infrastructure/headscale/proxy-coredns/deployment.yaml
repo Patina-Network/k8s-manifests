@@ -86,6 +86,13 @@ spec:
         - name: tailscale
           image: tailscale/tailscale # replaced from kustomization.yaml
           securityContext:
+            # runAsUser: 0 - same cluster-specific bug as this file's coredns
+            # container above and ../proxy-traefik's tailscale sidecar:
+            # added capabilities (here NET_ADMIN/NET_RAW, needed for the TUN
+            # device and iptables/netlink) don't actually take effect for a
+            # non-root UID on this cluster.
+            runAsNonRoot: false
+            runAsUser: 0
             capabilities:
               add:
                 - NET_ADMIN

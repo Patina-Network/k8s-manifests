@@ -4,26 +4,9 @@ metadata:
   name: proxy-traefik
   namespace: infrastructure
 spec:
-  # A second, tailnet-only Traefik instance - separate from the public-facing
-  # one in ../../traefik. It uses its own ingressClass ("traefik-internal")
-  # and its own entryPoint name ("web-internal") so that the public Traefik
-  # instance (which watches IngressRoutes cluster-wide too) never has a
-  # matching entryPoint to route them on - the routes attached here are
-  # structurally inert on the public instance.
-  #
-  # It joins the tailnet directly via a `tailscale` sidecar (see
-  # additionalContainers below) rather than being reached through a subnet
-  # router, so only this pod's own tailnet IP is exposed - nothing else in
-  # the cluster's Service CIDR. See ../proxy-coredns's Corefile: it resolves
-  # *.proxy.patinanetwork.org with a CNAME straight to this pod's own
-  # MagicDNS name, so nothing here needs to publish/track its own IP either.
-  #
-  # https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml
   interval: 30m
   install:
     createNamespace: true
-    # CRDs (IngressRoute, Middleware, etc.) are already installed by the
-    # public `traefik` HelmRelease - no need to install them a second time.
     crds: Skip
   upgrade:
     crds: Skip
@@ -38,11 +21,6 @@ spec:
       interval: 12h
   values:
     serviceAccount:
-      # Our own SA (see serviceaccount.yaml) instead of the chart's
-      # auto-created one, so the tailscale sidecar's Role (get/update/patch
-      # on proxy-traefik-tailscale-state) can be bound to it. The chart's own
-      # rbac.enabled ClusterRole/ClusterRoleBinding still gets bound to this
-      # name too - both attach to the same ServiceAccount.
       name: proxy-traefik
     persistence:
       enabled: false
@@ -53,22 +31,6 @@ spec:
       fsGroup: 65532
       fsGroupChangePolicy: OnRootMismatch
     securityContext:
-      # traefik binds :80 directly (see ports.web-internal below) - this pod
-      # is reached over the tailnet via its own tailscale sidecar, not
-      # through the k8s Service, so there's no Service port-translation to
-      # fall back on.
-      #
-      # runAsUser: 0 overrides podSecurityContext's non-root default for
-      # just this container. Confirmed via disposable test pods against this
-      # cluster: NET_BIND_SERVICE does not actually let a non-root UID bind a
-      # privileged port here (a bare Python socket.bind(('0.0.0.0', 80)) with
-      # this exact capability set fails identically to Traefik's error,
-      # while the same capability set as root succeeds) - a known class of
-      # runc/containerd bug where added capabilities don't survive the
-      # container's UID switch away from root. drop: ["ALL"] means this
-      # "root" container still genuinely only holds NET_BIND_SERVICE, not
-      # full root privileges - the tailscale sidecar is unaffected and stays
-      # non-root, since it doesn't bind privileged ports.
       runAsNonRoot: false
       runAsUser: 0
       allowPrivilegeEscalation: false
@@ -77,11 +39,8 @@ spec:
         drop: ["ALL"]
         add: ["NET_BIND_SERVICE"]
     deployment:
-      # Single replica: this pod carries its own tailnet identity (the
-      # sidecar below, state persisted in a Kubernetes Secret via
-      # TS_KUBE_SECRET), so it can't be scaled horizontally the way the
-      # public Traefik instance can - two pods sharing one identity's state
-      # would fight each other.
+      # can never be more than single replica
+      # tailnet identity is tied to it
       replicas: 1
       annotations:
         reloader.stakater.com/auto: "true"
@@ -91,20 +50,8 @@ spec:
             path: /dev/net/tun
       additionalContainers:
         - name: tailscale
-          # v1.76.6 (capver 106) was below headscale v0.29.3's
-          # MinSupportedCapabilityVersion (113, first met at v1.80) - the
-          # sidecar was rejected at the /key handshake with "unsupported
-          # client version" before it ever got to presenting the authkey.
-          image: tailscale/tailscale:v1.98.10
+          image: tailscale/tailscale:v1.102.3
           securityContext:
-            # runAsUser: 0 - same cluster-specific bug as ../proxy-coredns
-            # and this file's own traefik securityContext above: added
-            # capabilities (here NET_ADMIN/NET_RAW, needed for the TUN
-            # device and iptables/netlink) don't actually take effect for a
-            # non-root UID on this cluster. Confirmed via the tailscale
-            # container's own crash log: tstun.New failed with "operation
-            # not permitted", plus xtables.lock/netlink permission errors -
-            # all symptoms of NET_ADMIN/NET_RAW silently not applying.
             runAsNonRoot: false
             runAsUser: 0
             capabilities:
@@ -119,10 +66,6 @@ spec:
                   key: authkey
             - name: TS_HOSTNAME
               value: proxy-traefik
-            # No TS_STATE_DIR/PVC: containerboot falls back to an
-            # in-container /tmp cache and treats the Secret below as the
-            # durable copy, syncing to it - so identity (and therefore this
-            # pod's MagicDNS name) survives restarts without any volume.
             - name: TS_KUBE_SECRET
               value: proxy-traefik-tailscale-state
             - name: TS_USERSPACE
@@ -151,15 +94,6 @@ spec:
       kubernetesCRD:
         enabled: true
     ports:
-      # disable the chart's default public-style entrypoints on this
-      # instance - we don't want anything here answering to "web"/"websecure".
-      # Plain HTTP only: traffic never leaves the tailnet, which is already
-      # WireGuard-encrypted, so we skip provisioning TLS certs for this one.
-      #
-      # port: 80 directly (not the chart's usual 8000->80 translation) -
-      # tailnet traffic arrives straight at this pod's tailscale interface,
-      # bypassing the k8s Service entirely, so there's no Service port
-      # mapping to rely on here.
       web:
         expose:
           default: false
@@ -173,7 +107,4 @@ spec:
         exposedPort: 80
         protocol: TCP
     service:
-      # ClusterIP only - not publicly accessible. Also reachable from the
-      # tailnet directly, via this pod's own tailscale sidecar (see above) -
-      # the k8s Service itself is only relevant for in-cluster traffic.
       type: ClusterIP

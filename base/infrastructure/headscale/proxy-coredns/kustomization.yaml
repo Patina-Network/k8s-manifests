@@ -15,8 +15,4 @@ images:
   - name: coredns/coredns
     newTag: "1.11.3" # update me to change version
   - name: tailscale/tailscale
-    # v1.76.6 (capver 106) was below headscale v0.29.3's
-    # MinSupportedCapabilityVersion (113, first met at v1.80) - the sidecar
-    # was rejected at the /key handshake with "unsupported client version"
-    # before it ever got to presenting the authkey. Needs >=v1.80.
-    newTag: "v1.98.10" # update me to change version
+    newTag: "v1.102.3" # update me to change version

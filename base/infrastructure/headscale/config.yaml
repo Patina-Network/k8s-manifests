@@ -31,7 +31,7 @@ dns:
     split:
       vpn.patinanetwork.org:
         # pts to `vpn-coredns`
-        - 100.64.0.5
+        - 100.64.0.11
 
 # managed by `platform-infra`
 policy:

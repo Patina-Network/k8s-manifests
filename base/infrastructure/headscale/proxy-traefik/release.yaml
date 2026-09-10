@@ -56,7 +56,21 @@ spec:
       # traefik binds :80 directly (see ports.web-internal below) - this pod
       # is reached over the tailnet via its own tailscale sidecar, not
       # through the k8s Service, so there's no Service port-translation to
-      # fall back on. NET_BIND_SERVICE lets it bind that port as non-root.
+      # fall back on.
+      #
+      # runAsUser: 0 overrides podSecurityContext's non-root default for
+      # just this container. Confirmed via disposable test pods against this
+      # cluster: NET_BIND_SERVICE does not actually let a non-root UID bind a
+      # privileged port here (a bare Python socket.bind(('0.0.0.0', 80)) with
+      # this exact capability set fails identically to Traefik's error,
+      # while the same capability set as root succeeds) - a known class of
+      # runc/containerd bug where added capabilities don't survive the
+      # container's UID switch away from root. drop: ["ALL"] means this
+      # "root" container still genuinely only holds NET_BIND_SERVICE, not
+      # full root privileges - the tailscale sidecar is unaffected and stays
+      # non-root, since it doesn't bind privileged ports.
+      runAsNonRoot: false
+      runAsUser: 0
       allowPrivilegeEscalation: false
       readOnlyRootFilesystem: true
       capabilities:

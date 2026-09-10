@@ -1,12 +1,12 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: redis-k8s-tls
+  name: postgres-vpn-tls
   namespace: infrastructure
 spec:
-  secretName: redis-k8s-tls
+  secretName: postgres-vpn-tls
   dnsNames:
-    - redis.k8s.patinanetwork.org
+    - db.vpn.patinanetwork.org
   issuerRef:
     name: letsencrypt
     kind: ClusterIssuer

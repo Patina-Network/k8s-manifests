@@ -9,7 +9,7 @@ spec:
   dependsOn:
     - name: cert-manager-issuer-infrastructure
     - name: postgres-cluster-infrastructure
-    - name: traefik-infrastructure
+    - name: headscale-vpn-traefik-infrastructure
   prune: true
   sourceRef:
     kind: GitRepository

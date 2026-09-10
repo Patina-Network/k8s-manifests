@@ -11,6 +11,7 @@ configMapGenerator:
       - Corefile
 commonLabels:
   app: proxy-coredns
+
 images:
   - name: coredns/coredns
     newTag: "1.11.3" # update me to change version

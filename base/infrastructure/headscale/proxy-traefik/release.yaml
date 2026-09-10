@@ -13,7 +13,7 @@ spec:
   chart:
     spec:
       chart: traefik
-      version: "39.0.7"
+      version: "" # replaced from kustomization.yaml
       sourceRef:
         kind: HelmRepository
         name: traefik
@@ -50,7 +50,7 @@ spec:
             path: /dev/net/tun
       additionalContainers:
         - name: tailscale
-          image: tailscale/tailscale:v1.102.3
+          image: tailscale/tailscale # replaced from kustomization.yaml
           securityContext:
             runAsNonRoot: false
             runAsUser: 0

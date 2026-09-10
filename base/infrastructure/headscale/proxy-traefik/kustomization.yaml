@@ -6,3 +6,18 @@ resources:
   - release.yaml
   - certificate.yaml
   - tlsstore.yaml
+configurations:
+  - imageconfig.yaml
+
+images:
+  - name: tailscale/tailscale
+    newTag: "v1.102.3" # update me to change version
+
+patches:
+  - target:
+      kind: HelmRelease
+      name: proxy-traefik
+    patch: |-
+      - op: replace
+        path: /spec/chart/spec/version
+        value: "39.0.7" # update me to change version

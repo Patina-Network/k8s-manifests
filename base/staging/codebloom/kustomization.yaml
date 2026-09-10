@@ -4,6 +4,7 @@ resources:
   - certificate.yaml
   - deployment.yaml
   - ingress.yaml
+  - ingress-proxy.yaml
   - secrets.yaml
   - service.yaml
   - servicemonitor.yaml

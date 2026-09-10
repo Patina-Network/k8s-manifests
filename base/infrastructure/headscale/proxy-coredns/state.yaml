@@ -1,0 +1,8 @@
+# filled with node's tailnet identity, do not need to be manually edited
+# check serviceaccount.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: proxy-coredns-tailscale-state
+  namespace: infrastructure
+type: Opaque

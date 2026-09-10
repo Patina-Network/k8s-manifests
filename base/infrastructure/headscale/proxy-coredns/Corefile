@@ -1,0 +1,26 @@
+.:53 {
+    errors
+    health :8080
+    ready :8181
+    forward . /etc/resolv.conf
+    cache 30
+    log
+}
+
+# Split-DNS zone handed to tailnet clients by headscale (see ../config.yaml).
+# CNAMEs *.proxy.patinanetwork.org straight into proxy-traefik's own MagicDNS
+# name - headscale resolves that itself (it's under dns.base_domain), so we
+# never have to know/track proxy-traefik's actual tailnet IP here. Format is
+# <given-name>.<base_domain> (flat, no per-user segment - verified against
+# headscale's Node.GetFQDN).
+proxy.patinanetwork.org:53 {
+    errors
+    log
+    template IN CNAME proxy.patinanetwork.org {
+        match "^(?P<sub>.+)\.proxy\.patinanetwork\.org\.$"
+        answer "{{ .Name }} 60 IN CNAME proxy-traefik.tailnet.patinanetwork.org."
+        fallthrough
+    }
+    forward . /etc/resolv.conf
+    cache 30
+}

@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxy-coredns
+  namespace: infrastructure
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  # Single replica: this pod carries its own tailnet identity (the
+  # `tailscale` sidecar below, state persisted in a Kubernetes Secret via
+  # TS_KUBE_SECRET), so it can't be scaled horizontally the way a normal
+  # stateless CoreDNS could be - two pods sharing one identity's state would
+  # fight each other.
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: proxy-coredns
+  template:
+    metadata:
+      labels:
+        app: proxy-coredns
+    spec:
+      serviceAccountName: proxy-coredns
+      volumes:
+        - name: config
+          configMap:
+            name: proxy-coredns-config
+        - name: dev-net-tun
+          hostPath:
+            path: /dev/net/tun
+      containers:
+        - name: coredns
+          image: coredns/coredns # replaced from kustomization.yaml
+          args:
+            - -conf
+            - /etc/coredns/Corefile
+          securityContext:
+            # coredns needs to bind :53 directly - this pod is reached over
+            # the tailnet via the sidecar below, not through the k8s Service,
+            # so there's no Service port-translation to fall back on.
+            capabilities:
+              add:
+                - NET_BIND_SERVICE
+          ports:
+            - { containerPort: 53, name: dns, protocol: UDP }
+            - { containerPort: 53, name: dns-tcp, protocol: TCP }
+            - { containerPort: 8080, name: health, protocol: TCP }
+            - { containerPort: 8181, name: ready, protocol: TCP }
+          volumeMounts:
+            - { name: config, mountPath: /etc/coredns, readOnly: true }
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8181
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi
+        - name: tailscale
+          image: tailscale/tailscale # replaced from kustomization.yaml
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+                - NET_RAW
+          env:
+            - name: TS_AUTHKEY
+              valueFrom:
+                secretKeyRef:
+                  name: tailscale-proxy-infra-preauthkey
+                  key: authkey
+            - name: TS_HOSTNAME
+              value: proxy-coredns
+            # No TS_STATE_DIR/PVC: containerboot falls back to an in-container
+            # /tmp cache and treats the Secret below as the durable copy,
+            # syncing to it - so identity survives pod restarts without any
+            # volume at all.
+            - name: TS_KUBE_SECRET
+              value: proxy-coredns-tailscale-state
+            - name: TS_USERSPACE
+              value: "false"
+            - name: TS_ACCEPT_DNS
+              value: "false"
+            - name: TS_EXTRA_ARGS
+              value: "--login-server=https://headscale.patinanetwork.org"
+          volumeMounts:
+            - { name: dev-net-tun, mountPath: /dev/net/tun }
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi

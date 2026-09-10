@@ -4,5 +4,5 @@ resources:
   - sync.yaml
   - ingress
   - authkey
-  - proxy-coredns
-  - proxy-traefik
+  - vpn-coredns
+  - vpn-traefik

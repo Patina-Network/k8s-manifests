@@ -9,12 +9,11 @@ spec:
     privateKeySecretRef:
       name: letsencrypt-account-key
     solvers:
+      # used for public
       - http01:
           ingress:
             class: traefik
-      # used for proxy.patinanetwork.org (tailnet-only, not reachable over
-      # http01 since it's never exposed to the internet) - see
-      # ../../headscale/proxy-traefik
+      # used for vpn
       - dns01:
           digitalocean:
             tokenSecretRef:
@@ -22,4 +21,4 @@ spec:
               key: digitaloceanDnsPat
         selector:
           dnsZones:
-            - "proxy.patinanetwork.org"
+            - "vpn.patinanetwork.org"

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: proxy-coredns
+  name: vpn-coredns
   namespace: infrastructure
   annotations:
     reloader.stakater.com/auto: "true"
@@ -13,17 +13,17 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      app: proxy-coredns
+      app: vpn-coredns
   template:
     metadata:
       labels:
-        app: proxy-coredns
+        app: vpn-coredns
     spec:
-      serviceAccountName: proxy-coredns
+      serviceAccountName: vpn-coredns
       volumes:
         - name: config
           configMap:
-            name: proxy-coredns-config
+            name: vpn-coredns-config
         - name: dev-net-tun
           hostPath:
             path: /dev/net/tun
@@ -80,12 +80,12 @@ spec:
             - name: TS_AUTHKEY
               valueFrom:
                 secretKeyRef:
-                  name: tailscale-proxy-infra-preauthkey
+                  name: tailscale-vpn-infra-preauthkey
                   key: authkey
             - name: TS_HOSTNAME
-              value: proxy-coredns
+              value: vpn-coredns
             - name: TS_KUBE_SECRET
-              value: proxy-coredns-tailscale-state
+              value: vpn-coredns-tailscale-state
             - name: TS_USERSPACE
               value: "false"
             - name: TS_ACCEPT_DNS

@@ -1,12 +1,12 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: proxy-traefik-tls
+  name: vpn-traefik-tls
   namespace: infrastructure
 spec:
-  secretName: proxy-traefik-tls
+  secretName: vpn-traefik-tls
   dnsNames:
-    - "*.proxy.patinanetwork.org"
+    - "*.vpn.patinanetwork.org"
   issuerRef:
     name: letsencrypt
     kind: ClusterIssuer

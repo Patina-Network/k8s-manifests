@@ -16,7 +16,7 @@ images:
 patches:
   - target:
       kind: HelmRelease
-      name: proxy-traefik
+      name: vpn-traefik
     patch: |-
       - op: replace
         path: /spec/chart/spec/version

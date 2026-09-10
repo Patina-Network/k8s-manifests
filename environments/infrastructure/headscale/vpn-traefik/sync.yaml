@@ -1,12 +1,13 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: headscale-proxy-coredns-infrastructure
+  name: headscale-vpn-traefik-infrastructure
   namespace: flux-system
 spec:
   interval: 10m
-  path: ./base/infrastructure/headscale/proxy-coredns
+  path: ./base/infrastructure/headscale/vpn-traefik
   dependsOn:
+    - name: traefik-infrastructure
     - name: headscale-authkey-infrastructure
   prune: true
   sourceRef:

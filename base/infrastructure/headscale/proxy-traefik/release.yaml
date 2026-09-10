@@ -100,11 +100,20 @@ spec:
       websecure:
         expose:
           default: false
-      web-internal:
+      web-proxy:
         port: 80
         expose:
           default: true
         exposedPort: 80
         protocol: TCP
+      websecure-proxy:
+        port: 443
+        expose:
+          default: true
+        exposedPort: 443
+        protocol: TCP
+        http:
+          tls:
+            enabled: true
     service:
       type: ClusterIP

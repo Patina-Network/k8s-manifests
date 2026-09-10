@@ -83,13 +83,19 @@ spec:
       # public Traefik instance can - two pods sharing one identity's state
       # would fight each other.
       replicas: 1
+      annotations:
+        reloader.stakater.com/auto: "true"
       additionalVolumes:
         - name: dev-net-tun
           hostPath:
             path: /dev/net/tun
       additionalContainers:
         - name: tailscale
-          image: tailscale/tailscale:v1.76.6
+          # v1.76.6 (capver 106) was below headscale v0.29.3's
+          # MinSupportedCapabilityVersion (113, first met at v1.80) - the
+          # sidecar was rejected at the /key handshake with "unsupported
+          # client version" before it ever got to presenting the authkey.
+          image: tailscale/tailscale:v1.98.10
           securityContext:
             # runAsUser: 0 - same cluster-specific bug as ../proxy-coredns
             # and this file's own traefik securityContext above: added

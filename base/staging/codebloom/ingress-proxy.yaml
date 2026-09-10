@@ -29,6 +29,5 @@ spec:
       services:
         - name: codebloom
           port: 80
-  # `*.proxy.patinanetwork.org` automatically gets tls cert from catch all
-  # which is applied by default to proxy-traefik
-  tls: {}
+  tls:
+    secretName: staging-codebloom-proxy-tls

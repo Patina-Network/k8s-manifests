@@ -7,21 +7,9 @@
     log
 }
 
-# Split-DNS zone handed to tailnet clients by headscale (see ../config.yaml).
-# CNAMEs *.proxy.patinanetwork.org straight into proxy-traefik's own MagicDNS
-# name - headscale resolves that itself (it's under dns.base_domain), so we
-# never have to know/track proxy-traefik's actual tailnet IP here. Format is
-# <given-name>.<base_domain> (flat, no per-user segment - verified against
-# headscale's Node.GetFQDN).
 proxy.patinanetwork.org:53 {
     errors
     log
-    # IN A AAAA CNAME - a normal client lookup sends an A (or AAAA) query,
-    # not a CNAME query. Returning a CNAME record as the answer to an A
-    # query is standard DNS (the resolver follows up on the CNAME target
-    # itself) - but the template plugin only fires for query types listed
-    # here, so a block declared for CNAME alone never triggers for a plain
-    # `dig`/browser lookup and silently falls through to NXDOMAIN.
     template IN A AAAA CNAME proxy.patinanetwork.org {
         match "^(?P<sub>.+)\.proxy\.patinanetwork\.org\.$"
         answer "{{ .Name }} 60 IN CNAME proxy-traefik.tailnet.patinanetwork.org."

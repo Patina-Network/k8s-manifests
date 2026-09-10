@@ -28,10 +28,6 @@ dns:
   base_domain: tailnet.patinanetwork.org
   override_local_dns: false
   nameservers:
-    # Split DNS: only queries for proxy.patinanetwork.org get sent to our
-    # own proxy-coredns instance (see ./proxy-coredns) - everything else
-    # keeps using each client's normal local/system DNS, since
-    # override_local_dns is false.
     split:
       proxy.patinanetwork.org:
         # pts to `proxy-coredns`

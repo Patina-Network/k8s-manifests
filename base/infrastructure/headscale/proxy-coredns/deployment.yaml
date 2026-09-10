@@ -40,7 +40,21 @@ spec:
             # coredns needs to bind :53 directly - this pod is reached over
             # the tailnet via the sidecar below, not through the k8s Service,
             # so there's no Service port-translation to fall back on.
+            #
+            # runAsUser: 0 - the coredns/coredns image defaults to a
+            # nonroot:nonroot user on its own, and this cluster's
+            # runtime/kernel doesn't actually honor NET_BIND_SERVICE for
+            # non-root UIDs binding privileged ports (confirmed empirically
+            # via disposable test pods while debugging the identical issue
+            # on ../proxy-traefik - see that release.yaml's comment).
+            # capabilities.drop below means this "root" container still only
+            # genuinely holds NET_BIND_SERVICE, nothing else. The tailscale
+            # sidecar is unaffected and stays non-root.
+            runAsNonRoot: false
+            runAsUser: 0
             capabilities:
+              drop:
+                - ALL
               add:
                 - NET_BIND_SERVICE
           ports:

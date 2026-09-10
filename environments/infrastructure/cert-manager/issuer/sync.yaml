@@ -14,6 +14,8 @@ spec:
     kind: GitRepository
     name: flux-system
   targetNamespace: infrastructure
+  decryption:
+    provider: sops
   wait: true
   healthChecks:
     - apiVersion: cert-manager.io/v1

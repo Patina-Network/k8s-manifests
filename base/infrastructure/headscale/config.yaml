@@ -33,6 +33,10 @@ dns:
         # pts to `vpn-coredns`
         - 100.64.0.5
 
+# managed by `platform-infra`
+policy:
+  mode: database
+
 # TODO: look into turning this on & having DERP go thru our server
 derp:
   server:

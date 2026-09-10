@@ -16,7 +16,13 @@
 proxy.patinanetwork.org:53 {
     errors
     log
-    template IN CNAME proxy.patinanetwork.org {
+    # IN A AAAA CNAME - a normal client lookup sends an A (or AAAA) query,
+    # not a CNAME query. Returning a CNAME record as the answer to an A
+    # query is standard DNS (the resolver follows up on the CNAME target
+    # itself) - but the template plugin only fires for query types listed
+    # here, so a block declared for CNAME alone never triggers for a plain
+    # `dig`/browser lookup and silently falls through to NXDOMAIN.
+    template IN A AAAA CNAME proxy.patinanetwork.org {
         match "^(?P<sub>.+)\.proxy\.patinanetwork\.org\.$"
         answer "{{ .Name }} 60 IN CNAME proxy-traefik.tailnet.patinanetwork.org."
         fallthrough

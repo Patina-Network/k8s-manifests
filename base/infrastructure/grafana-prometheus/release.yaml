@@ -62,7 +62,7 @@ spec:
         folder: K8S
       grafana.ini:
         server:
-          root_url: https://grafana.patinanetwork.org
+          root_url: https://grafana.vpn.patinanetwork.org
         database:
           type: postgres
           host: postgres.infrastructure.svc.cluster.local:5432

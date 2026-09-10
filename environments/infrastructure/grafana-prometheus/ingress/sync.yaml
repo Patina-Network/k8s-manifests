@@ -14,6 +14,7 @@ spec:
     - name: cert-manager-issuer-infrastructure
     - name: grafana-prometheus-infrastructure
     - name: traefik-infrastructure
+    - name: headscale-vpn-traefik-infrastructure
     - name: middleware-infrastructure
   path: ./base/infrastructure/grafana-prometheus/ingress
   prune: true

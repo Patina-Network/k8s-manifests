@@ -7,4 +7,6 @@ kind: Kustomization
 # - grafana needs traefik for IngressRoute
 resources:
   - certificate.yaml
+  - certificate-vpn.yaml
   - ingress.yaml
+  - ingress-vpn.yaml

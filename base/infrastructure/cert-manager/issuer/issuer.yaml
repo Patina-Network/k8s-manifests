@@ -12,3 +12,14 @@ spec:
       - http01:
           ingress:
             class: traefik
+      # used for proxy.patinanetwork.org (tailnet-only, not reachable over
+      # http01 since it's never exposed to the internet) - see
+      # ../../headscale/proxy-traefik
+      - dns01:
+          digitalocean:
+            tokenSecretRef:
+              name: issuer-secrets
+              key: digitaloceanDnsPat
+        selector:
+          dnsZones:
+            - "proxy.patinanetwork.org"

@@ -4,3 +4,5 @@ resources:
   - serviceaccount.yaml
   - state.yaml
   - release.yaml
+  - certificate.yaml
+  - tlsstore.yaml

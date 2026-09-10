@@ -1,8 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - sync.yaml
-  - ingress
-  - authkey
-  - proxy-coredns
-  - proxy-traefik
+  - serviceaccount.yaml
+  - state.yaml
+  - release.yaml

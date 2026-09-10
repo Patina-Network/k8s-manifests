@@ -10,6 +10,7 @@ spec:
     - name: cert-manager-issuer-infrastructure
     - name: traefik-infrastructure
     - name: middleware-staging
+    - name: headscale-proxy-traefik-infrastructure
   prune: true
   sourceRef:
     kind: GitRepository

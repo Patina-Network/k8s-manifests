@@ -1,0 +1,14 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: codebloom-proxy-internal
+  namespace: staging
+spec:
+  entryPoints:
+    - web-internal
+  routes:
+    - match: Host(`stg.codebloom.proxy.patinanetwork.org`) && PathPrefix(`/`)
+      kind: Rule
+      services:
+        - name: codebloom
+          port: 80

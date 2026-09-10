@@ -6,11 +6,11 @@ resources:
   - deployment.yaml
   - service.yaml
 configMapGenerator:
-  - name: proxy-coredns-config
+  - name: vpn-coredns-config
     files:
       - Corefile
 commonLabels:
-  app: proxy-coredns
+  app: vpn-coredns
 
 images:
   - name: coredns/coredns

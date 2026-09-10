@@ -1,12 +1,12 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: staging-codebloom-proxy-tls
+  name: staging-codebloom-vpn-tls
   namespace: staging
 spec:
-  secretName: staging-codebloom-proxy-tls
+  secretName: staging-codebloom-vpn-tls
   dnsNames:
-    - stg.codebloom.proxy.patinanetwork.org
+    - stg.codebloom.vpn.patinanetwork.org
   issuerRef:
     name: letsencrypt
     kind: ClusterIssuer

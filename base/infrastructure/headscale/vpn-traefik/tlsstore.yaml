@@ -5,4 +5,4 @@ metadata:
   namespace: infrastructure
 spec:
   defaultCertificate:
-    secretName: proxy-traefik-tls
+    secretName: vpn-traefik-tls

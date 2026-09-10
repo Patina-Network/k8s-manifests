@@ -1,0 +1,20 @@
+.:53 {
+    errors
+    health :8080
+    ready :8181
+    forward . /etc/resolv.conf
+    cache 30
+    log
+}
+
+vpn.patinanetwork.org:53 {
+    errors
+    log
+    template IN A AAAA CNAME vpn.patinanetwork.org {
+        match "^(?P<sub>.+)\.vpn\.patinanetwork\.org\.$"
+        answer "{{ .Name }} 60 IN CNAME vpn-traefik.tailnet.patinanetwork.org."
+        fallthrough
+    }
+    forward . /etc/resolv.conf
+    cache 30
+}

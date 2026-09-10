@@ -1,7 +1,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: proxy-traefik
+  name: vpn-traefik
   namespace: infrastructure
 spec:
   interval: 30m
@@ -21,7 +21,7 @@ spec:
       interval: 12h
   values:
     serviceAccount:
-      name: proxy-traefik
+      name: vpn-traefik
     persistence:
       enabled: false
     podSecurityContext:
@@ -62,12 +62,12 @@ spec:
             - name: TS_AUTHKEY
               valueFrom:
                 secretKeyRef:
-                  name: tailscale-proxy-infra-preauthkey
+                  name: tailscale-vpn-infra-preauthkey
                   key: authkey
             - name: TS_HOSTNAME
-              value: proxy-traefik
+              value: vpn-traefik
             - name: TS_KUBE_SECRET
-              value: proxy-traefik-tailscale-state
+              value: vpn-traefik-tailscale-state
             - name: TS_USERSPACE
               value: "false"
             - name: TS_ACCEPT_DNS
@@ -100,13 +100,13 @@ spec:
       websecure:
         expose:
           default: false
-      web-proxy:
+      web-vpn:
         port: 80
         expose:
           default: true
         exposedPort: 80
         protocol: TCP
-      websecure-proxy:
+      websecure-vpn:
         port: 443
         expose:
           default: true

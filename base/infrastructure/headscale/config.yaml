@@ -29,8 +29,8 @@ dns:
   override_local_dns: false
   nameservers:
     split:
-      proxy.patinanetwork.org:
-        # pts to `proxy-coredns`
+      vpn.patinanetwork.org:
+        # pts to `vpn-coredns`
         - 100.64.0.2
 
 # TODO: look into turning this on & having DERP go thru our server

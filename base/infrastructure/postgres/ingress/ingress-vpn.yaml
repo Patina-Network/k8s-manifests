@@ -7,12 +7,12 @@ spec:
   entryPoints:
     - postgres
   routes:
-    - match: HostSNI(`db.k8s.patinanetwork.org`)
+    - match: HostSNI(`db.vpn.patinanetwork.org`)
       services:
         - name: postgres
           port: 5432
   tls:
-    secretName: postgres-k8s-tls
+    secretName: postgres-vpn-tls
     options:
       name: postgres-tls-protocol
       namespace: infrastructure

@@ -7,9 +7,9 @@ spec:
   entryPoints:
     - redis
   routes:
-    - match: HostSNI(`redis.k8s.patinanetwork.org`)
+    - match: HostSNI(`redis.vpn.patinanetwork.org`)
       services:
         - name: redis
           port: 6379
   tls:
-    secretName: redis-k8s-tls
+    secretName: redis-vpn-tls

@@ -1,0 +1,20 @@
+.:53 {
+    errors
+    health :8080
+    ready :8181
+    forward . /etc/resolv.conf
+    cache 30
+    log
+}
+
+# Split-DNS zone handed to tailnet clients by headscale (see ../config.yaml).
+# Anything under *.proxy.patinanetwork.org is aliased to the internal-only
+# Traefik instance and resolved to its (cluster-local, stable) ClusterIP via
+# the cluster's own DNS - no hardcoded IPs needed here.
+proxy.patinanetwork.org:53 {
+    errors
+    log
+    rewrite stop name regex ^(.+)\.proxy\.patinanetwork\.org\.$ traefik-internal.infrastructure.svc.cluster.local answer auto
+    forward . /etc/resolv.conf
+    cache 30
+}

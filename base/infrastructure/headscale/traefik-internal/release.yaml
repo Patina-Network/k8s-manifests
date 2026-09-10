@@ -1,0 +1,72 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: traefik-internal
+  namespace: infrastructure
+spec:
+  # A second, tailnet-only Traefik instance - separate from the public-facing
+  # one in ../../traefik. It uses its own ingressClass ("traefik-internal")
+  # and its own entryPoint names ("web-internal" / "websecure-internal") so
+  # that the public Traefik instance (which watches IngressRoutes cluster-wide
+  # too) never has a matching entryPoint to route them on - the routes
+  # attached here are structurally inert on the public instance.
+  #
+  # https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml
+  interval: 30m
+  install:
+    createNamespace: true
+    # CRDs (IngressRoute, Middleware, etc.) are already installed by the
+    # public `traefik` HelmRelease - no need to install them a second time.
+    crds: Skip
+  upgrade:
+    crds: Skip
+  chart:
+    spec:
+      chart: traefik
+      version: "39.0.7"
+      sourceRef:
+        kind: HelmRepository
+        name: traefik
+        namespace: flux-system
+      interval: 12h
+  values:
+    persistence:
+      enabled: false
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 65532
+      runAsGroup: 65532
+      fsGroup: 65532
+      fsGroupChangePolicy: OnRootMismatch
+    deployment:
+      replicas: 1
+    ingressClass:
+      enabled: true
+      isDefaultClass: false
+      name: traefik-internal
+    providers:
+      kubernetesIngress:
+        enabled: true
+      kubernetesCRD:
+        enabled: true
+    ports:
+      # disable the chart's default public-style entrypoints on this
+      # instance - we don't want anything here answering to "web"/"websecure".
+      # Plain HTTP only: traffic never leaves the tailnet, which is already
+      # WireGuard-encrypted, so we skip provisioning TLS certs for this one.
+      web:
+        expose:
+          default: false
+      websecure:
+        expose:
+          default: false
+      web-internal:
+        port: 8000
+        expose:
+          default: true
+        exposedPort: 80
+        protocol: TCP
+    service:
+      # ClusterIP only - not publicly accessible. Reachable from the tailnet
+      # via the route advertised by ../tailscale-router.
+      type: ClusterIP

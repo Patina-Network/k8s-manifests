@@ -27,6 +27,20 @@ database:
 dns:
   base_domain: tailnet.patinanetwork.org
   override_local_dns: false
+  nameservers:
+    # Split DNS: only queries for proxy.patinanetwork.org get sent to our
+    # own coredns-proxy instance (see ./coredns) - everything else keeps
+    # using each client's normal local/system DNS, since override_local_dns
+    # is false.
+    split:
+      proxy.patinanetwork.org:
+        # TODO: replace with the real ClusterIP once coredns-proxy is deployed:
+        #   kubectl get svc coredns-proxy -n infrastructure -o jsonpath='{.spec.clusterIP}'
+        # That IP is only reachable from the tailnet via the route advertised
+        # by ./tailscale-router, which must be approved first:
+        #   headscale routes list
+        #   headscale routes enable -r <id-of-the-tailscale-router-route>
+        - 10.0.0.53
 
 # TODO: look into turning this on & having DERP go thru our server
 derp:

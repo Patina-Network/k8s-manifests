@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: coredns-proxy
+  namespace: infrastructure
+spec:
+  # ClusterIP only - not publicly accessible. Reachable from the tailnet
+  # via the route advertised by ../tailscale-router.
+  type: ClusterIP
+  selector:
+    app: coredns-proxy
+  ports:
+    - { name: dns, port: 53, targetPort: 53, protocol: UDP }
+    - { name: dns-tcp, port: 53, targetPort: 53, protocol: TCP }

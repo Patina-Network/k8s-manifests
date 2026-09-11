@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/github-workflow.json
+name: CI
+run-name: Running continuous integration on ${{ github.actor }}'s commits
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  determineVersionOnlyStagingPR:
+    name: Check if PR is only bumping a staging version & prompt for /merge if it is
+    runs-on: ubuntu-latest
+
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 1
+
+      - name: Setup pipeline
+        uses: ./.github/composite/setup
+        with:
+          INSTALL_JUST: true
+          SECRETS: ${{ toJSON(secrets) }}
+
+      - name: Determine version-only staging PR
+        uses: ./.github/composite/determine-version-only-staging-pr
+        with:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}

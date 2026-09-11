@@ -1,0 +1,86 @@
+import { $ } from "bun";
+import path from "node:path";
+
+export type VersionOnlyStagingPrCheck = {
+  changedFiles: string[];
+  eligible: boolean;
+};
+
+export async function checkVersionOnlyStagingPr(
+  baseSha: string,
+): Promise<VersionOnlyStagingPrCheck> {
+  await fetchCommit(baseSha);
+
+  const changedFiles = await getChangedFiles(baseSha, "HEAD");
+
+  if (
+    changedFiles.length === 0 ||
+    !changedFiles.every(isStagingKustomizationFile)
+  ) {
+    return { changedFiles, eligible: false };
+  }
+
+  const changedLines = await getChangedDiffLines(baseSha, "HEAD", changedFiles);
+  const eligible = changedLines.length > 0 && changedLines.every(isNewTagLine);
+
+  return { changedFiles, eligible };
+}
+
+/** Extracts `<name>` from a `base/<environment>/<name>/kustomization.yaml` path. */
+export function getStagingAppName(file: string): string {
+  const segments = path.normalize(file).split(path.sep);
+  const app = segments[2];
+  if (!app) {
+    throw new Error(`Could not determine app name from staging file: ${file}`);
+  }
+  return app;
+}
+
+async function fetchCommit(sha: string): Promise<void> {
+  await $`git fetch --depth=1 origin ${sha}`.quiet().nothrow();
+}
+
+async function getChangedFiles(base: string, head: string): Promise<string[]> {
+  const { stdout } = await $`git diff --name-only ${base} ${head}`
+    .quiet()
+    .nothrow();
+
+  return stdout
+    .toString()
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
+function isStagingKustomizationFile(file: string): boolean {
+  return (
+    path.basename(file) === "kustomization.yaml" &&
+    path.normalize(file).startsWith(`base${path.sep}staging${path.sep}`)
+  );
+}
+
+async function getChangedDiffLines(
+  base: string,
+  head: string,
+  files: string[],
+): Promise<string[]> {
+  const { stdout } = await $`git diff ${base} ${head} -- ${files}`
+    .quiet()
+    .nothrow();
+
+  return stdout
+    .toString()
+    .split("\n")
+    .filter(
+      (line) =>
+        (line.startsWith("+") || line.startsWith("-")) &&
+        !line.startsWith("+++") &&
+        !line.startsWith("---"),
+    );
+}
+
+const NEW_TAG_LINE = /^[+-]\s*newTag:\s*\S+\s*$/;
+
+function isNewTagLine(line: string): boolean {
+  return NEW_TAG_LINE.test(line);
+}

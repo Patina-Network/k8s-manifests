@@ -1,0 +1,21 @@
+name: "Merge On Command"
+description: "Re-checks a version-only staging PR and merges it if the commenter owns the affected app(s), per .github/OWNERS.yaml."
+
+inputs:
+  PR_NUMBER:
+    description: "Pull request number to merge"
+    required: true
+  BASE_SHA:
+    description: "SHA of the PR's base commit to diff the checked-out head against"
+    required: true
+  COMMENTER:
+    description: "Username of whoever commented /merge"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Re-check & merge if authorized
+      shell: bash
+      working-directory: .github/scripts
+      run: bun run src/merge-pr/index.ts --baseSha=${{ inputs.BASE_SHA }} --prNumber=${{ inputs.PR_NUMBER }} --commenter=${{ inputs.COMMENTER }}

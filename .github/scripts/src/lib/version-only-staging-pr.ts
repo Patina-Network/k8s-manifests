@@ -1,8 +1,7 @@
 import { $ } from "bun";
 import path from "node:path";
 
-export const PR_AUTO_MERGE_STATUS_CHECK_TITLE = "PR auto-merge eligible";
-export const MERGING_PR_STATUS_CHECK_TITLE = "Merging pr...";
+export const MERGE_STATUS_CHECK_NAME = "PR Auto-Merge";
 
 export type VersionOnlyStagingPrCheck = {
   changedFiles: string[];

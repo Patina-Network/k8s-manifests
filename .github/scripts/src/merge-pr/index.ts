@@ -7,8 +7,7 @@ import {
   getChangedFiles,
   getCurrentSha,
   getStagingAppName,
-  MERGING_PR_STATUS_CHECK_TITLE,
-  PR_AUTO_MERGE_STATUS_CHECK_TITLE,
+  MERGE_STATUS_CHECK_NAME,
 } from "@/lib/version-only-staging-pr";
 
 const { baseSha, commenter, prNumber, runUrl } = await yargs(
@@ -52,16 +51,18 @@ export async function main() {
 
   const statusCheck = await ghClient.statusCheck({
     action: "get",
+    name: MERGE_STATUS_CHECK_NAME,
     owner: "Patina-Network",
-    repository: "k8s-manifests",
     ref: sha,
-    name: PR_AUTO_MERGE_STATUS_CHECK_TITLE,
+    repository: "k8s-manifests",
   });
 
-  if (statusCheck?.conclusion !== "success") {
+  if (!statusCheck || statusCheck.conclusion !== "success") {
     console.log("PR is not eligible.");
     return;
   }
+
+  const checkRunId = statusCheck.id;
 
   console.log("PR is eligible.");
 
@@ -72,31 +73,62 @@ export async function main() {
   );
 
   if (missingOwnerApps.length > 0) {
-    await ghClient.sendPrMessage({
-      prId: prNumber,
+    const summary = `No owning team is configured in \`.github/OWNERS.yaml\` for: ${missingOwnerApps
+      .map((appName) => `\`${appName}\``)
+      .join(", ")}.`;
+
+    await ghClient.statusCheck({
+      action: "update",
+      checkRunId,
+      conclusion: "failure",
+      detailsUrl: runUrl,
+      output: { summary, title: "Missing OWNERS.yaml entry" },
       owner: "Patina-Network",
       repository: "k8s-manifests",
-      message: `Could not run \`/merge\`: no owning team is configured in \`.github/OWNERS.yaml\` for: ${missingOwnerApps
-        .map((appName) => `\`${appName}\``)
-        .join(", ")}. Add an entry there and try again.`,
+      status: "completed",
     });
     return;
   }
 
   if (!(await isAuthorizedToMerge({ appNames, commenter, ghClient }))) {
+    const summary = `@${commenter} is not an owner of: ${appNames
+      .map((appName) => `\`${appName}\``)
+      .join(", ")}.`;
+
+    await ghClient.statusCheck({
+      action: "update",
+      checkRunId,
+      conclusion: "failure",
+      detailsUrl: runUrl,
+      output: { summary, title: "Not authorized" },
+      owner: "Patina-Network",
+      repository: "k8s-manifests",
+      status: "completed",
+    });
     return;
   }
 
-  await mergeAndReportStatus({ ghClient, sha });
+  await mergeAndReportStatus({ checkRunId, ghClient });
 }
 
+/** Merges the PR, moving the same check run through in-progress -> success/failure. */
 async function mergeAndReportStatus({
+  checkRunId,
   ghClient,
-  sha,
 }: {
+  checkRunId: number;
   ghClient: GitHubClient;
-  sha: string;
 }): Promise<void> {
+  await ghClient.statusCheck({
+    action: "update",
+    checkRunId,
+    detailsUrl: runUrl,
+    output: { summary: "Merging pr...", title: "Merging" },
+    owner: "Patina-Network",
+    repository: "k8s-manifests",
+    status: "in_progress",
+  });
+
   let succeeded = false;
 
   try {
@@ -109,21 +141,20 @@ async function mergeAndReportStatus({
     succeeded = true;
   } finally {
     await ghClient.statusCheck({
-      action: "create",
-      owner: "Patina-Network",
-      repository: "k8s-manifests",
-      sha,
-      name: MERGING_PR_STATUS_CHECK_TITLE,
-      status: "completed",
+      action: "update",
+      checkRunId,
       conclusion: succeeded ? "success" : "failure",
       detailsUrl: runUrl,
       output:
         succeeded ?
-          { title: "PR merged.", summary: "PR merged." }
+          { summary: "PR merged.", title: "Merged" }
         : {
-            title: "Merge failed.",
-            summary: "Merge failed. See the workflow run for details.",
+            summary: "See the workflow run for details.",
+            title: "Merge failed",
           },
+      owner: "Patina-Network",
+      repository: "k8s-manifests",
+      status: "completed",
     });
   }
 }

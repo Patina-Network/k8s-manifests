@@ -5,7 +5,7 @@ import { hideBin } from "yargs/helpers";
 import {
   checkVersionOnlyStagingPr,
   getCurrentSha,
-  PR_AUTO_MERGE_STATUS_CHECK_TITLE,
+  MERGE_STATUS_CHECK_NAME,
 } from "@/lib/version-only-staging-pr";
 
 const { baseSha, prNumber, runUrl } = await yargs(hideBin(process.argv))
@@ -59,34 +59,32 @@ export async function main() {
 
     await ghClient.statusCheck({
       action: "create",
+      conclusion: "success",
+      detailsUrl: runUrl,
+      name: MERGE_STATUS_CHECK_NAME,
+      output: {
+        summary: "Run /merge to merge.",
+        title: "Eligible for auto-merge",
+      },
       owner: "Patina-Network",
       repository: "k8s-manifests",
       sha,
-      name: PR_AUTO_MERGE_STATUS_CHECK_TITLE,
       status: "completed",
-      conclusion: "success",
-      detailsUrl: runUrl,
-      output: {
-        title: "Run `/merge` to merge.",
-        summary: "Run `/merge` to merge.",
-      },
     });
   } catch (error) {
     await ghClient.statusCheck({
       action: "create",
+      conclusion: "failure",
+      detailsUrl: runUrl,
+      name: MERGE_STATUS_CHECK_NAME,
+      output: {
+        summary: "See the workflow run for details.",
+        title: "Eligibility check crashed",
+      },
       owner: "Patina-Network",
       repository: "k8s-manifests",
       sha,
-      name: PR_AUTO_MERGE_STATUS_CHECK_TITLE,
       status: "completed",
-      conclusion: "failure",
-      detailsUrl: runUrl,
-      output: {
-        summary:
-          "The eligibility check crashed. See the workflow run for details.",
-        title:
-          "The eligibility check crashed. See the workflow run for details.",
-      },
     });
     throw error;
   }

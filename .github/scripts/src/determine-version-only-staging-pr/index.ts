@@ -2,7 +2,11 @@ import { GitHubClient } from "@tahminator/pipeline";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
-import { checkVersionOnlyStagingPr } from "@/lib/version-only-staging-pr";
+import {
+  checkVersionOnlyStagingPr,
+  getCurrentSha,
+  PR_AUTO_MERGE_STATUS_CHECK_TITLE,
+} from "@/lib/version-only-staging-pr";
 
 const { baseSha, prNumber } = await yargs(hideBin(process.argv))
   .option("baseSha", {
@@ -20,14 +24,6 @@ const { baseSha, prNumber } = await yargs(hideBin(process.argv))
   .parse();
 
 export async function main() {
-  const { eligible } = await checkVersionOnlyStagingPr(baseSha);
-  if (!eligible) {
-    console.log("PR is not eligible.");
-    return;
-  }
-
-  console.log("PR is eligible.");
-
   const { githubAppAppId, githubAppInstallationId, githubAppPemContent } =
     parseCiEnv(process.env);
 
@@ -37,13 +33,55 @@ export async function main() {
     privateKey: githubAppPemContent,
   });
 
-  await ghClient.sendPrMessage({
-    prId: prNumber,
-    owner: "Patina-Network",
-    repository: "k8s-manifests",
-    message:
-      "This PR only bumps `newTag` in a staging `kustomization.yaml`. An owner of the affected app can comment exactly `/merge` to have it merged automatically without an approval.",
-  });
+  const sha = await getCurrentSha();
+
+  try {
+    const { eligible } = await checkVersionOnlyStagingPr(baseSha);
+    if (!eligible) {
+      console.log("PR is not eligible.");
+      return;
+    }
+
+    console.log("PR is eligible.");
+
+    await ghClient.sendPrMessage({
+      prId: prNumber,
+      owner: "Patina-Network",
+      repository: "k8s-manifests",
+      message:
+        "This PR only bumps `newTag` in a staging `kustomization.yaml`. An owner of the affected app can comment exactly `/merge` to have it merged automatically without an approval.",
+    });
+
+    await ghClient.statusCheck({
+      action: "create",
+      owner: "Patina-Network",
+      repository: "k8s-manifests",
+      sha,
+      name: PR_AUTO_MERGE_STATUS_CHECK_TITLE,
+      status: "completed",
+      conclusion: "success",
+      output: {
+        title: PR_AUTO_MERGE_STATUS_CHECK_TITLE,
+        summary: "Run `/merge` to merge.",
+      },
+    });
+  } catch (error) {
+    await ghClient.statusCheck({
+      action: "create",
+      owner: "Patina-Network",
+      repository: "k8s-manifests",
+      sha,
+      name: PR_AUTO_MERGE_STATUS_CHECK_TITLE,
+      status: "completed",
+      conclusion: "failure",
+      output: {
+        title: PR_AUTO_MERGE_STATUS_CHECK_TITLE,
+        summary:
+          "The eligibility check crashed. See the workflow run for details.",
+      },
+    });
+    throw error;
+  }
 }
 
 function parseCiEnv(ciEnv: Record<string, string | undefined>) {

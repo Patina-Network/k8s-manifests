@@ -64,7 +64,9 @@ async function getChangedDiffLines(
   head: string,
   files: string[],
 ): Promise<string[]> {
-  const { stdout } = await $`git diff ${base} ${head} -- ${files}`
+  const topLevelFiles = files.map((file) => `:/${file}`);
+
+  const { stdout } = await $`git diff ${base} ${head} -- ${topLevelFiles}`
     .quiet()
     .nothrow();
 

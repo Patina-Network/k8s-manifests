@@ -14,5 +14,4 @@ runs:
   steps:
     - name: Check PR & comment if version-only
       shell: bash
-      working-directory: .github/scripts
-      run: bun run src/determine-version-only-staging-pr/index.ts --baseSha=${{ inputs.BASE_SHA }} --prNumber=${{ inputs.PR_NUMBER }}
+      run: bun run .github/scripts/src/determine-version-only-staging-pr/index.ts --baseSha=${{ inputs.BASE_SHA }} --prNumber=${{ inputs.PR_NUMBER }}

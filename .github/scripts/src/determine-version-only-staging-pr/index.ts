@@ -8,7 +8,7 @@ import {
   PR_AUTO_MERGE_STATUS_CHECK_TITLE,
 } from "@/lib/version-only-staging-pr";
 
-const { baseSha, prNumber } = await yargs(hideBin(process.argv))
+const { baseSha, prNumber, runUrl } = await yargs(hideBin(process.argv))
   .option("baseSha", {
     type: "string",
     describe:
@@ -18,6 +18,11 @@ const { baseSha, prNumber } = await yargs(hideBin(process.argv))
   .option("prNumber", {
     type: "number",
     describe: "Pull request number to check and comment on",
+    demandOption: true,
+  })
+  .option("runUrl", {
+    type: "string",
+    describe: "URL of the workflow run to link from the status check",
     demandOption: true,
   })
   .strict()
@@ -49,7 +54,7 @@ export async function main() {
       owner: "Patina-Network",
       repository: "k8s-manifests",
       message:
-        "This PR only bumps `newTag` in a staging `kustomization.yaml`. An owner of the affected app can comment exactly `/merge` to have it merged automatically without an approval.",
+        "This PR is eligible for auto-merge. An owner of the affected app can comment `/merge` to have it merged automatically without an approval.",
     });
 
     await ghClient.statusCheck({
@@ -60,8 +65,9 @@ export async function main() {
       name: PR_AUTO_MERGE_STATUS_CHECK_TITLE,
       status: "completed",
       conclusion: "success",
+      detailsUrl: runUrl,
       output: {
-        title: PR_AUTO_MERGE_STATUS_CHECK_TITLE,
+        title: "Run `/merge` to merge.",
         summary: "Run `/merge` to merge.",
       },
     });
@@ -74,9 +80,11 @@ export async function main() {
       name: PR_AUTO_MERGE_STATUS_CHECK_TITLE,
       status: "completed",
       conclusion: "failure",
+      detailsUrl: runUrl,
       output: {
-        title: PR_AUTO_MERGE_STATUS_CHECK_TITLE,
         summary:
+          "The eligibility check crashed. See the workflow run for details.",
+        title:
           "The eligibility check crashed. See the workflow run for details.",
       },
     });

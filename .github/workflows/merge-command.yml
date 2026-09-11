@@ -1,0 +1,81 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/github-workflow.json
+name: Merge Version-Only Staging PR
+run-name: Merge Version-Only Staging PR
+
+concurrency:
+  group: merge-command-${{ github.event.client_payload.slash_command.args.named.prId || github.event.inputs.prId }}
+  cancel-in-progress: true
+
+on:
+  repository_dispatch:
+    types: [merge-command]
+  workflow_dispatch:
+    inputs:
+      prId:
+        description: "PR to confirm success to"
+        required: true
+      repository:
+        description: "The repository from which the slash command was dispatched"
+        required: true
+      comment-id:
+        description: "The comment-id of the slash command"
+        required: true
+      author:
+        description: "The author that triggered this actions"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  getPR:
+    name: Get PR head & base SHA
+    runs-on: ubuntu-latest
+
+    outputs:
+      base: ${{ steps.pr.outputs.base }}
+      head: ${{ steps.pr.outputs.head }}
+
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Get PR head & base SHA
+        id: pr
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const payload = context.payload;
+            const prId = payload.inputs ? payload.inputs.prId : payload.client_payload.slash_command.args.named.prId;
+
+            const { data: pr } = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: parseInt(prId, 10)
+            });
+
+            core.setOutput("head", pr.head.sha);
+            core.setOutput("base", pr.base.sha);
+
+  merge:
+    name: Merge PR if eligible
+    runs-on: ubuntu-latest
+    needs: getPR
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.getPR.outputs.head }}
+          fetch-depth: 1
+
+      - name: Setup pipeline
+        uses: ./.github/composite/setup
+        with:
+          SECRETS: ${{ toJSON(secrets) }}
+
+      - name: Merge if elibile
+        uses: ./.github/composite/merge-pr
+        with:
+          PR_NUMBER: ${{ github.event.client_payload.slash_command.args.named.prId || github.event.inputs.prId }}
+          BASE_SHA: ${{ needs.getPR.outputs.base }}
+          COMMENTER: ${{ github.event.client_payload.github.actor || github.event.inputs.author }}

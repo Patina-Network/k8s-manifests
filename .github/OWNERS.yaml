@@ -1,0 +1,8 @@
+# Maps a `base/<name>` app directory to the GitHub teams allowed to run
+# `/merge` on version-only staging PRs touching that app.
+codebloom:
+  - "@Patina-Network/codebloom"
+codebloom-standup-bot:
+  - "@Patina-Network/codebloom"
+patchats:
+  - "@Patina-Network/patchats"

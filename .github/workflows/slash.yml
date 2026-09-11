@@ -1,0 +1,80 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/github-workflow.json
+name: Slash Command Dispatch
+run-name: Slash Command Dispatch
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  slashCommandDispatch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get PR head SHA
+        id: pr-head
+        uses: actions/github-script@v8
+        with:
+          result-encoding: string
+          script: |
+            const prId = ${{ github.event.issue.number }};
+            const { data: pr } = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: parseInt(prId, 10)
+            });
+             return pr.head.sha;
+
+      - name: Get branch
+        id: branch
+        uses: actions/github-script@v8
+        with:
+          result-encoding: string
+          script: |
+            const prId = ${{ github.event.issue.number }};
+            const { data: pr } = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: parseInt(prId, 10)
+            });
+            return pr.head.ref;
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.pr-head.outputs.result }}
+
+      - name: Setup pipeline
+        uses: ./.github/composite/setup
+        with:
+          SECRETS: ${{ toJSON(secrets) }}
+
+      - name: Run script
+        run: bun run .github/scripts/src/load-slash-commands --get-gha-output=true
+        id: cmds
+
+      - name: Create GitHub App Token
+        uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          app-id: ${{ secrets._GITHUB_APP_APP_ID }}
+          private-key: ${{ secrets._GITHUB_APP_PEM_CONTENT }}
+
+      - name: Slash Command Dispatch
+        uses: peter-evans/slash-command-dispatch@v4
+        with:
+          dispatch-type: workflow
+          token: ${{ steps.app-token.outputs.token }}
+          commands: |
+            ${{ steps.cmds.outputs.commands }}
+          static-args: |
+            repository=${{ github.repository }}
+            comment-id=${{ github.event.comment.id }}
+            prId=${{ github.event.issue.number }}
+            author=${{ github.actor }}
+            ref=${{ steps.branch.outputs.result }}

@@ -79,7 +79,7 @@ async function getChangedDiffLines(
     );
 }
 
-const NEW_TAG_LINE = /^[+-]\s*newTag:\s*\S+\s*$/;
+const NEW_TAG_LINE = /^[+-]\s*newTag:\s*\S+\s*(#.*)?$/;
 
 function isNewTagLine(line: string): boolean {
   return NEW_TAG_LINE.test(line);

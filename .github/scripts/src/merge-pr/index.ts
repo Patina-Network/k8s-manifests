@@ -7,10 +7,13 @@ import {
   getChangedFiles,
   getCurrentSha,
   getStagingAppName,
+  MERGING_PR_STATUS_CHECK_TITLE,
   PR_AUTO_MERGE_STATUS_CHECK_TITLE,
 } from "@/lib/version-only-staging-pr";
 
-const { baseSha, commenter, prNumber } = await yargs(hideBin(process.argv))
+const { baseSha, commenter, prNumber, runUrl } = await yargs(
+  hideBin(process.argv),
+)
   .option("baseSha", {
     type: "string",
     describe:
@@ -25,6 +28,11 @@ const { baseSha, commenter, prNumber } = await yargs(hideBin(process.argv))
   .option("commenter", {
     type: "string",
     describe: "Username of whoever commented `/merge`",
+    demandOption: true,
+  })
+  .option("runUrl", {
+    type: "string",
+    describe: "URL of the workflow run to link from the status check",
     demandOption: true,
   })
   .strict()
@@ -79,11 +87,45 @@ export async function main() {
     return;
   }
 
-  await ghClient.mergePr({
-    prId: prNumber,
-    owner: "Patina-Network",
-    repository: "k8s-manifests",
-  });
+  await mergeAndReportStatus({ ghClient, sha });
+}
+
+async function mergeAndReportStatus({
+  ghClient,
+  sha,
+}: {
+  ghClient: GitHubClient;
+  sha: string;
+}): Promise<void> {
+  let succeeded = false;
+
+  try {
+    await ghClient.mergePr({
+      prId: prNumber,
+      owner: "Patina-Network",
+      repository: "k8s-manifests",
+    });
+
+    succeeded = true;
+  } finally {
+    await ghClient.statusCheck({
+      action: "create",
+      owner: "Patina-Network",
+      repository: "k8s-manifests",
+      sha,
+      name: MERGING_PR_STATUS_CHECK_TITLE,
+      status: "completed",
+      conclusion: succeeded ? "success" : "failure",
+      detailsUrl: runUrl,
+      output:
+        succeeded ?
+          { title: "PR merged.", summary: "PR merged." }
+        : {
+            title: "Merge failed.",
+            summary: "Merge failed. See the workflow run for details.",
+          },
+    });
+  }
 }
 
 /** Requires `commenter` to own every app touched by the PR, per `.github/OWNERS.yaml`. */

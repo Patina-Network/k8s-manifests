@@ -17,6 +17,9 @@ jobs:
     name: Check if PR is only bumping a staging version & prompt for /merge if it is
     runs-on: ubuntu-latest
 
+    permissions:
+      pull-requests: write
+
     if: github.event_name == 'pull_request'
 
     steps:

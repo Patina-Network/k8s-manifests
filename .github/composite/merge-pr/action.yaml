@@ -17,5 +17,4 @@ runs:
   steps:
     - name: Re-check & merge if authorized
       shell: bash
-      working-directory: .github/scripts
-      run: bun run src/merge-pr/index.ts --baseSha=${{ inputs.BASE_SHA }} --prNumber=${{ inputs.PR_NUMBER }} --commenter=${{ inputs.COMMENTER }}
+      run: bun run .github/scripts/src/merge-pr/index.ts --baseSha=${{ inputs.BASE_SHA }} --prNumber=${{ inputs.PR_NUMBER }} --commenter=${{ inputs.COMMENTER }}

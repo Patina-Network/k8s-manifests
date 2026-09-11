@@ -4,8 +4,10 @@ import { hideBin } from "yargs/helpers";
 
 import { getOwningTeams, parseTeamReference } from "@/lib/owners";
 import {
-  checkVersionOnlyStagingPr,
+  getChangedFiles,
+  getCurrentSha,
   getStagingAppName,
+  PR_AUTO_MERGE_STATUS_CHECK_TITLE,
 } from "@/lib/version-only-staging-pr";
 
 const { baseSha, commenter, prNumber } = await yargs(hideBin(process.argv))
@@ -29,14 +31,6 @@ const { baseSha, commenter, prNumber } = await yargs(hideBin(process.argv))
   .parse();
 
 export async function main() {
-  const { changedFiles, eligible } = await checkVersionOnlyStagingPr(baseSha);
-  if (!eligible) {
-    console.log("PR is not eligible.");
-    return;
-  }
-
-  console.log("PR is eligible.");
-
   const { githubAppAppId, githubAppInstallationId, githubAppPemContent } =
     parseCiEnv(process.env);
 
@@ -46,6 +40,24 @@ export async function main() {
     privateKey: githubAppPemContent,
   });
 
+  const sha = await getCurrentSha();
+
+  const statusCheck = await ghClient.statusCheck({
+    action: "get",
+    owner: "Patina-Network",
+    repository: "k8s-manifests",
+    ref: sha,
+    name: PR_AUTO_MERGE_STATUS_CHECK_TITLE,
+  });
+
+  if (statusCheck?.conclusion !== "success") {
+    console.log("PR is not eligible.");
+    return;
+  }
+
+  console.log("PR is eligible.");
+
+  const changedFiles = await getChangedFiles(baseSha);
   const appNames = [...new Set(changedFiles.map(getStagingAppName))];
   const missingOwnerApps = appNames.filter(
     (appName) => getOwningTeams(appName).length === 0,

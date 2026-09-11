@@ -51,8 +51,6 @@ jobs:
 
       - name: Setup pipeline
         uses: ./.github/composite/setup
-        with:
-          SECRETS: ${{ toJSON(secrets) }}
 
       - name: Run script
         run: bun run .github/scripts/src/load-slash-commands --get-gha-output=true

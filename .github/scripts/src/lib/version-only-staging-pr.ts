@@ -1,6 +1,8 @@
 import { $ } from "bun";
 import path from "node:path";
 
+export const PR_AUTO_MERGE_STATUS_CHECK_TITLE = "PR auto-merge eligible";
+
 export type VersionOnlyStagingPrCheck = {
   changedFiles: string[];
   eligible: boolean;
@@ -9,9 +11,7 @@ export type VersionOnlyStagingPrCheck = {
 export async function checkVersionOnlyStagingPr(
   baseSha: string,
 ): Promise<VersionOnlyStagingPrCheck> {
-  await fetchCommit(baseSha);
-
-  const changedFiles = await getChangedFiles(baseSha, "HEAD");
+  const changedFiles = await getChangedFiles(baseSha);
 
   if (
     changedFiles.length === 0 ||
@@ -26,6 +26,26 @@ export async function checkVersionOnlyStagingPr(
   return { changedFiles, eligible };
 }
 
+/** Fetches `baseSha` and returns the files changed between it and the checked-out HEAD. */
+export async function getChangedFiles(baseSha: string): Promise<string[]> {
+  await fetchCommit(baseSha);
+
+  const { stdout } = await $`git diff --name-only ${baseSha} HEAD`
+    .quiet()
+    .nothrow();
+
+  return stdout
+    .toString()
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
+export async function getCurrentSha(): Promise<string> {
+  const { stdout } = await $`git rev-parse HEAD`.quiet().nothrow();
+  return stdout.toString().trim();
+}
+
 /** Extracts `<name>` from a `base/<environment>/<name>/kustomization.yaml` path. */
 export function getStagingAppName(file: string): string {
   const segments = path.normalize(file).split(path.sep);
@@ -38,18 +58,6 @@ export function getStagingAppName(file: string): string {
 
 async function fetchCommit(sha: string): Promise<void> {
   await $`git fetch --depth=1 origin ${sha}`.quiet().nothrow();
-}
-
-async function getChangedFiles(base: string, head: string): Promise<string[]> {
-  const { stdout } = await $`git diff --name-only ${base} ${head}`
-    .quiet()
-    .nothrow();
-
-  return stdout
-    .toString()
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean);
 }
 
 function isStagingKustomizationFile(file: string): boolean {

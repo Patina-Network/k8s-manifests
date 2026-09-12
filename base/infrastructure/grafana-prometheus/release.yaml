@@ -63,6 +63,19 @@ spec:
       grafana.ini:
         server:
           root_url: https://grafana.vpn.patinanetwork.org
+        auth.azuread:
+          name: Azure AD
+          enabled: true
+          allow_sign_up: true
+          auto_login: false
+          # oauth app managed by `platform-infra`
+          client_id: $__env{AZUREAD_CLIENT_ID}
+          client_secret: $__env{AZUREAD_CLIENT_SECRET}
+          scopes: openid email profile
+          auth_url: https://login.microsoftonline.com/88e5fbad-e2c7-474e-a963-2fbe9a0bab8f/oauth2/v2.0/authorize
+          token_url: https://login.microsoftonline.com/88e5fbad-e2c7-474e-a963-2fbe9a0bab8f/oauth2/v2.0/token
+          allowed_organizations: 88e5fbad-e2c7-474e-a963-2fbe9a0bab8f
+          allowed_domains: patinanetwork.onmicrosoft.com
         database:
           type: postgres
           host: postgres.infrastructure.svc.cluster.local:5432

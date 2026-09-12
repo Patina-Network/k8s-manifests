@@ -44,6 +44,21 @@ export async function main() {
     const { eligible } = await checkVersionOnlyStagingPr(baseSha);
     if (!eligible) {
       console.log("PR is not eligible.");
+
+      await ghClient.statusCheck({
+        action: "create",
+        conclusion: "neutral",
+        detailsUrl: runUrl,
+        name: MERGE_STATUS_CHECK_NAME,
+        output: {
+          summary: "Not eligible",
+          title: "Not eligible",
+        },
+        owner: "Patina-Network",
+        repository: "k8s-manifests",
+        sha,
+        status: "completed",
+      });
       return;
     }
 

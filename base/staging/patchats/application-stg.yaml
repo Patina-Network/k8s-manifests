@@ -7,7 +7,7 @@ springdoc:
     enabled: true
 
 server:
-  url: https://stg.patchats.patinanetwork.org
+  url: https://stg.vpn.patchats.patinanetwork.org
 
 management:
   endpoint:

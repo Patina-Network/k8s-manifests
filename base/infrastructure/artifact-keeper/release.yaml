@@ -44,6 +44,11 @@ spec:
         AZURE_STORAGE_ACCOUNT: infrastructure4k8s
         AZURE_STORAGE_CONTAINER: artifactkeeper4k8s
         ENVIRONMENT: production
+        OIDC_CLIENT_ID: "359c293d-b585-4be8-afa9-2fc4ae542ff5"
+        OIDC_ISSUER: https://login.microsoftonline.com/88e5fbad-e2c7-474e-a963-2fbe9a0bab8f/v2.0
+        OIDC_NAME: Microsoft Entra ID
+        OIDC_REDIRECT_URI: https://pkg.vpn.patinanetwork.org/api/v1/auth/sso/oidc/callback
+        OIDC_SCOPES: openid profile email
         RUST_LOG: info,artifact_keeper=info
         STORAGE_BACKEND: azure
       environmentSecrets:
@@ -51,6 +56,10 @@ spec:
           secretKeyRef:
             name: artifact-keeper-secrets
             key: ADMIN_PASSWORD
+        - name: OIDC_CLIENT_SECRET
+          secretKeyRef:
+            name: artifact-keeper-secrets
+            key: OIDC_CLIENT_SECRET
       metricsListener:
         enabled: true
       persistence:

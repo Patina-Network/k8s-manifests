@@ -1,0 +1,101 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: artifact-keeper
+  namespace: infrastructure
+spec:
+  interval: 1h
+  releaseName: artifact-keeper
+  chart:
+    spec:
+      chart: artifact-keeper
+      version: "1.9.9"
+      sourceRef:
+        kind: HelmRepository
+        name: artifact-keeper
+        namespace: flux-system
+  postRenderers:
+    - kustomize:
+        # we need this patch in order to get keyless azure blob access via infrastructure-sa
+        patches:
+          - target:
+              kind: Deployment
+              name: artifact-keeper-backend
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: artifact-keeper-backend
+              spec:
+                template:
+                  metadata:
+                    annotations:
+                      azure.workload.identity/inject-proxy-sidecar: "true"
+                    labels:
+                      azure.workload.identity/use: "true"
+  # https://github.com/artifact-keeper/artifact-keeper-iac/blob/main/charts/artifact-keeper/values.yaml
+  values:
+    secrets:
+      existingSecret: artifact-keeper-secrets
+
+    backend:
+      env:
+        ADMIN_PASSWORD: null
+        AZURE_STORAGE_ACCOUNT: infrastructure4k8s
+        AZURE_STORAGE_CONTAINER: artifactkeeper4k8s
+        ENVIRONMENT: production
+        RUST_LOG: info,artifact_keeper=info
+        STORAGE_BACKEND: azure
+      environmentSecrets:
+        - name: ADMIN_PASSWORD
+          secretKeyRef:
+            name: artifact-keeper-secrets
+            key: ADMIN_PASSWORD
+      metricsListener:
+        enabled: true
+      persistence:
+        enabled: false
+      scanWorkspace:
+        enabled: false
+      serviceAccount:
+        create: false
+        name: infrastructure-sa
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+
+    web:
+      env:
+        NEXT_PUBLIC_API_URL: https://pkg.vpn.patinanetwork.org
+        NODE_ENV: production
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+
+    # do not spin up brand new pg, we already have our own
+    postgres:
+      enabled: false
+    externalDatabase:
+      existingSecret: artifact-keeper-secrets
+      existingSecretKey: DATABASE_URL
+
+    # TODO: look into the chart to see if we want to turn these on later
+    opensearch:
+      enabled: false
+    trivy:
+      enabled: false
+    scannerAdapter:
+      enabled: false
+    dependencyTrack:
+      enabled: false
+
+    # chart provides nginx ingress, not useful for our case
+    ingress:
+      enabled: false
+    networkPolicy:
+      enabled: false
+
+    serviceMonitor:
+      enabled: true

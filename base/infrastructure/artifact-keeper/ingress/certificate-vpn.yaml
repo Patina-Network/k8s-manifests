@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: artifact-keeper-vpn-tls
+  namespace: infrastructure
+spec:
+  secretName: artifact-keeper-vpn-tls
+  dnsNames:
+    - pkg.vpn.patinanetwork.org
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer

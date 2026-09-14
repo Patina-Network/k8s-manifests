@@ -41,6 +41,7 @@ spec:
     backend:
       env:
         ADMIN_PASSWORD: null
+        ALLOW_LOCAL_ADMIN_LOGIN: "true"
         AZURE_STORAGE_ACCOUNT: infrastructure4k8s
         AZURE_STORAGE_CONTAINER: artifactkeeper4k8s
         ENVIRONMENT: production

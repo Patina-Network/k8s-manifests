@@ -4,6 +4,7 @@ resources:
   - namespace.yaml
   - cert-manager
   - traefik
+  - artifact-keeper
   - middleware
   - postgres
   - redis

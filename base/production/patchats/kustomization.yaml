@@ -16,7 +16,7 @@ commonLabels:
   environment: production
 images:
   - name: patinanetwork/patchats
-    newTag: f60155d
+    newTag: 1b16aa9
 
 replacements:
   - source:

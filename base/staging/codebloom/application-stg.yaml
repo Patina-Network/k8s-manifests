@@ -7,7 +7,7 @@ springdoc:
     enabled: true
 
 server:
-  url: https://stg.codebloom.patinanetwork.org
+  url: https://stg.vpn.codebloom.patinanetwork.org
 
 management:
   endpoint:

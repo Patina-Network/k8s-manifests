@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - certificate-vpn.yaml
+  - deployment.yaml
+  - ingress-vpn.yaml
+  - service.yaml
+  - servicemonitor.yaml
+commonLabels:
+  app: hello-world-grpc-service
+  environment: production
+images:
+  - name: patinanetwork/hello-world-grpc-service
+    newTag: replaced-by-CICD # update me to change version
+
+replacements:
+  - source:
+      kind: Deployment
+      name: hello-world-grpc-service
+      fieldPath: spec.template.spec.containers.[name=hello-world-grpc-service].image
+      options:
+        delimiter: ":"
+        index: 1
+    targets:
+      - select:
+          kind: Deployment
+          name: hello-world-grpc-service
+        fieldPaths:
+          - spec.template.spec.containers.[name=hello-world-grpc-service].env.[name=VERSION].value
+          - spec.template.metadata.labels.version

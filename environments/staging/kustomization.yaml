@@ -6,3 +6,4 @@ resources:
   - ./middleware
   - ./azure
   - ./patchats
+  - ./hello-world-grpc-service

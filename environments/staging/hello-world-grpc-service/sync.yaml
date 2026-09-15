@@ -1,0 +1,20 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: hello-world-grpc-service-staging
+  namespace: flux-system
+spec:
+  interval: 5m
+  path: ./base/staging/hello-world-grpc-service
+  dependsOn:
+    - name: cert-manager-issuer-infrastructure
+    - name: traefik-infrastructure
+    - name: middleware-staging
+    - name: headscale-vpn-traefik-infrastructure
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  targetNamespace: staging
+  decryption:
+    provider: sops

@@ -11,7 +11,7 @@ commonLabels:
   environment: production
 images:
   - name: patinanetwork/hello-world-grpc-service
-    newTag: replaced-by-CICD # update me to change version
+    newTag: 0.1.2
 
 replacements:
   - source:

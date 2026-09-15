@@ -11,7 +11,7 @@ commonLabels:
   environment: staging
 images:
   - name: patinanetwork/hello-world-grpc-service
-    newTag: staging-545efa19 # update me to change version
+    newTag: staging-bbe016d7 # update me to change version
 
 replacements:
   - source:

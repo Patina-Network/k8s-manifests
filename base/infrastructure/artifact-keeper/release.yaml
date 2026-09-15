@@ -76,6 +76,8 @@ spec:
           memory: 256Mi
 
     web:
+      image:
+        tag: "1.9.0"
       env:
         NEXT_PUBLIC_API_URL: https://pkg.vpn.patinanetwork.org
         NODE_ENV: production

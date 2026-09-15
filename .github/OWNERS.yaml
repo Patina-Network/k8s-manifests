@@ -4,5 +4,7 @@ codebloom:
   - "@Patina-Network/codebloom"
 codebloom-standup-bot:
   - "@Patina-Network/codebloom"
+hello-world-grpc-service:
+  - "@Patina-Network/codebloom"
 patchats:
   - "@Patina-Network/patchats"

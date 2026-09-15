@@ -127,5 +127,11 @@ spec:
           default: true
         exposedPort: 6379
         protocol: TCP
+      vpn-grpc:
+        port: 50051
+        expose:
+          default: true
+        exposedPort: 50051
+        protocol: TCP
     service:
       type: ClusterIP

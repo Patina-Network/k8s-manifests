@@ -11,7 +11,7 @@ commonLabels:
   environment: production
 images:
   - name: patinanetwork/hello-world-grpc-service
-    newTag: 1.0.0
+    newTag: 1.0.1
 
 replacements:
   - source:

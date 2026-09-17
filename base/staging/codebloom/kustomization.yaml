@@ -16,7 +16,7 @@ commonLabels:
   environment: staging
 images:
   - name: patinanetwork/codebloom
-    newTag: staging-8bdae34 # update me to change version
+    newTag: staging-f78f324 # update me to change version
 
 replacements:
   - source:

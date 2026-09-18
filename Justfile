@@ -29,7 +29,7 @@ encrypt file *args:
 # you can choose to set it one time for the scope of the command: `EDITOR="nvim" just edit secrets.yaml`
 # or you can put `export EDITOR=nvim` inside of your `~/.zshrc`, then restart your terminal & run: `just edit secrets.yaml`
 #
-# if you would like to use VSCode, `EDITOR="code --wait"` (You may have to follow this first: https://code.visualstudio.com/docs/setup/mac#_launch-vs-code-from-the-command-line)
+# if you would like to use VSCode, `EDITOR="code --wait  --reuse-window ."` (You may have to follow this first: https://code.visualstudio.com/docs/setup/mac#_launch-vs-code-from-the-command-line)
 edit file *args:
   just install-pre-scripts && sops edit {{ file }} {{ args }}
 

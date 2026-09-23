@@ -4,6 +4,7 @@ server_url: https://headscale.patinanetwork.org
 # default is 127.0.0.1, only binds to local loopback
 # needs to bind to any local addr so it can be exposed & Traefik can call
 listen_addr: 0.0.0.0:8080
+metrics_listen_addr: 0.0.0.0:9090
 
 disable_check_updates: true
 

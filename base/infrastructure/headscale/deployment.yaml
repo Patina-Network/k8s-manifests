@@ -44,6 +44,8 @@ spec:
           ports:
             - containerPort: 8080
               name: http
+            - containerPort: 9090
+              name: metrics
           volumeMounts:
             - { name: config, mountPath: /etc/headscale, readOnly: true }
             - { name: data, mountPath: /var/lib/headscale }

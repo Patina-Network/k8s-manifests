@@ -5,6 +5,7 @@ resources:
   - pvc.yaml
   - secrets.yaml
   - service.yaml
+  - servicemonitor.yaml
 configMapGenerator:
   - name: headscale-config
     files:

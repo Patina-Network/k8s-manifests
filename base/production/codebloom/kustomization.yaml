@@ -16,7 +16,7 @@ commonLabels:
   environment: production
 images:
   - name: patinanetwork/codebloom
-    newTag: 49961fa
+    newTag: 6b7cdf0
 
 replacements:
   - source:

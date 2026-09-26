@@ -10,6 +10,6 @@ resources:
   - redis
   - grafana-prometheus
   - loki
-  - promtail
+  - fluent-bit
   - azure
   - headscale

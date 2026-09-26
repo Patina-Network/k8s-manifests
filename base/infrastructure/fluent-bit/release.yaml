@@ -1,0 +1,80 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: fluent-bit
+  namespace: infrastructure
+spec:
+  interval: 1h
+  releaseName: fluent-bit
+  chart:
+    spec:
+      chart: fluent-bit
+      version: "0.58.2"
+      sourceRef:
+        kind: HelmRepository
+        name: fluent
+        namespace: flux-system
+  values:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 128Mi
+    podSecurityContext:
+      runAsUser: 0
+      runAsGroup: 0
+      seccompProfile:
+        type: RuntimeDefault
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop: [ALL]
+    serviceMonitor:
+      enabled: true
+    daemonSetVolumes:
+      - name: varlog
+        hostPath:
+          path: /var/log
+          type: Directory
+      - name: state
+        hostPath:
+          path: /var/lib/fluent-bit
+          type: DirectoryOrCreate
+    daemonSetVolumeMounts:
+      - name: varlog
+        mountPath: /var/log
+        readOnly: true
+      - name: state
+        mountPath: /var/lib/fluent-bit
+    config:
+      # https://github.com/fluent/fluent-bit-docs/blob/master/pipeline/inputs/tail.md
+      inputs: |
+        [INPUT]
+            Name tail
+            Path /var/log/containers/*.log
+            Tag kube.*
+            multiline.parser cri
+            DB /var/lib/fluent-bit/tail.db
+            Read_From_Head Off
+            Mem_Buf_Limit 5MB
+            Skip_Long_Lines On
+      filters: |
+        [FILTER]
+            Name kubernetes
+            Match kube.*
+            Merge_Log Off
+            Annotations Off
+      outputs: |
+        [OUTPUT]
+            Name loki
+            Match kube.*
+            Host loki.infrastructure.svc.cluster.local
+            Port 3100
+            Labels job=fluent-bit,namespace=$kubernetes['namespace_name'],pod=$kubernetes['pod_name'],container=$kubernetes['container_name'],node_name=$kubernetes['host'],app=$kubernetes['labels']['app']
+            Label_Keys $stream
+            Remove_Keys kubernetes,stream,_p
+            Drop_Single_Key raw
+            Retry_Limit False

@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: production-docs-tls
+  namespace: production
+spec:
+  secretName: production-docs-tls
+  dnsNames:
+    - docs.patinanetwork.org
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer

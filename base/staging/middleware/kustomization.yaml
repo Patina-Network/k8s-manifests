@@ -4,3 +4,4 @@ resources:
   - redirect-to-https.yaml
   - base-rate-limit.yaml
   - basic-auth/
+  - azure-oidc/

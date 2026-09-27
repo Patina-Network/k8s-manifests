@@ -9,8 +9,8 @@ spec:
       # Patina-Network
       providerURL: https://login.microsoftonline.com/88e5fbad-e2c7-474e-a963-2fbe9a0bab8f/v2.0
       clientID: aae6f522-8b5d-4c2c-87ab-14733c44a35f
-      clientSecret: urn:k8s:secret:production:azure-oidc-secret:CLIENT_SECRET
-      sessionEncryptionKey: urn:k8s:secret:production:azure-oidc-secret:SESSION_KEY
+      clientSecret: urn:k8s:secret:azure-oidc-secret:CLIENT_SECRET
+      sessionEncryptionKey: urn:k8s:secret:azure-oidc-secret:SESSION_KEY
       callbackURL: /oauth2/callback
       enablePKCE: true
       strictAudienceValidation: true

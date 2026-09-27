@@ -56,7 +56,7 @@ spec:
             Name tail
             Path /var/log/containers/*.log
             Tag kube.*
-            multiline.parser cri
+            multiline.parser docker, cri
             DB /var/lib/fluent-bit/tail.db
             Read_From_Head Off
             Mem_Buf_Limit 5MB
@@ -65,8 +65,17 @@ spec:
         [FILTER]
             Name kubernetes
             Match kube.*
-            Merge_Log Off
+            Merge_Log On
+            Keep_Log Off
+            K8S-Logging.Parser On
             Annotations Off
+      customParsers: |
+        [PARSER]
+            Name docker_no_time
+            Format json
+            Time_Keep Off
+            Time_Key time
+            Time_Format %Y-%m-%dT%H:%M:%S.%L
       outputs: |
         [OUTPUT]
             Name loki
@@ -76,5 +85,4 @@ spec:
             Labels job=fluent-bit,namespace=$kubernetes['namespace_name'],pod=$kubernetes['pod_name'],container=$kubernetes['container_name'],node_name=$kubernetes['host'],app=$kubernetes['labels']['app']
             Label_Keys $stream
             Remove_Keys kubernetes,stream,_p
-            Drop_Single_Key raw
             Retry_Limit False

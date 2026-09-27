@@ -1,5 +1,7 @@
 # `k8s-manifests`
 
+Documentation can be found at [docs.patinanetwork.org/infra](https://docs.patinanetwork.org/infra/).
+
 ## Pre-requisites
 
 ```bash

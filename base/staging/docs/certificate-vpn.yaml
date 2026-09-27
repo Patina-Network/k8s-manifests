@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: staging-docs-vpn-tls
+  namespace: staging
+spec:
+  secretName: staging-docs-vpn-tls
+  dnsNames:
+    - stg.docs.vpn.patinanetwork.org
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer

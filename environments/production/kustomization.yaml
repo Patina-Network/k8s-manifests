@@ -8,3 +8,4 @@ resources:
   - ./azure
   - ./patchats
   - ./hello-world-grpc-service
+  - ./docs

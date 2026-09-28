@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: production-hello-world-client-go-vpn-tls
+  namespace: production
+spec:
+  secretName: production-hello-world-client-go-vpn-tls
+  dnsNames:
+    - hello-world-client-go.vpn.patinanetwork.org
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer

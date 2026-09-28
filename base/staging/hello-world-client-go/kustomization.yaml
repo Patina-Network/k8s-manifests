@@ -1,0 +1,29 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - certificate-vpn.yaml
+  - deployment.yaml
+  - ingress-vpn.yaml
+  - service.yaml
+commonLabels:
+  app: hello-world-client-go
+  environment: staging
+images:
+  - name: patinanetwork/hello-world-client-go
+    newTag: staging-0000000 # update me to change version
+
+replacements:
+  - source:
+      kind: Deployment
+      name: hello-world-client-go
+      fieldPath: spec.template.spec.containers.[name=hello-world-client-go].image
+      options:
+        delimiter: ":"
+        index: 1
+    targets:
+      - select:
+          kind: Deployment
+          name: hello-world-client-go
+        fieldPaths:
+          - spec.template.spec.containers.[name=hello-world-client-go].env.[name=VERSION].value
+          - spec.template.metadata.labels.version

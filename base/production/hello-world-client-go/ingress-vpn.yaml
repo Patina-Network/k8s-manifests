@@ -1,0 +1,33 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: hello-world-client-go-vpn-web
+  namespace: production
+spec:
+  entryPoints:
+    - web-vpn
+  routes:
+    - match: Host(`hello-world-client-go.vpn.patinanetwork.org`) && PathPrefix(`/`)
+      kind: Rule
+      middlewares:
+        - name: redirect-to-https
+      services:
+        - name: hello-world-client-go
+          port: 80
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: hello-world-client-go-vpn-websecure
+  namespace: production
+spec:
+  entryPoints:
+    - websecure-vpn
+  routes:
+    - match: Host(`hello-world-client-go.vpn.patinanetwork.org`) && PathPrefix(`/`)
+      kind: Rule
+      services:
+        - name: hello-world-client-go
+          port: 80
+  tls:
+    secretName: production-hello-world-client-go-vpn-tls

@@ -9,14 +9,14 @@ spec:
   chart:
     spec:
       chart: loki
-      version: "6.55.0"
+      version: "18.13.7"
       sourceRef:
         kind: HelmRepository
-        name: grafana
+        name: grafana-community
         namespace: flux-system
   values:
-    # https://github.com/grafana/loki/blob/main/production/helm/loki/values.yaml
-    deploymentMode: SingleBinary
+    # https://github.com/grafana-community/helm-charts/blob/main/charts/loki/values.yaml
+    deploymentMode: Monolithic
     loki:
       auth_enabled: false
       commonConfig:

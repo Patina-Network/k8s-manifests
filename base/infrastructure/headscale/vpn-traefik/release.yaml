@@ -20,6 +20,11 @@ spec:
         namespace: flux-system
       interval: 12h
   values:
+    experimental:
+      plugins:
+        traefikoidc:
+          moduleName: github.com/lukaszraczylo/traefikoidc
+          version: v1.0.36
     serviceAccount:
       name: vpn-traefik
     persistence:

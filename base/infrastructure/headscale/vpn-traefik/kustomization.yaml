@@ -20,4 +20,4 @@ patches:
     patch: |-
       - op: replace
         path: /spec/chart/spec/version
-        value: "39.0.7" # update me to change version
+        value: "41.6.0" # update me to change version

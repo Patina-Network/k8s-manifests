@@ -36,6 +36,14 @@ spec:
             - name: spring-config
               mountPath: /config
               readOnly: true
+          startupProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 10
+            failureThreshold: 30
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness

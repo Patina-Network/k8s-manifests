@@ -10,7 +10,7 @@ commonLabels:
   environment: production
 images:
   - name: patinanetwork/docs
-    newTag: 1.0.4
+    newTag: 1.0.5
 
 replacements:
   - source:

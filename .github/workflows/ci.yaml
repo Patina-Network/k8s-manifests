@@ -40,3 +40,24 @@ jobs:
         with:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
+
+  lintManifests:
+    name: Lint & validate Kubernetes manifests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup pipeline
+        uses: tahminator/pipeline/actions/setup@c40c691f495e1773a1fccd9191a14d52fe84ef2e
+        with:
+          INSTALL_JUST: true
+          INSTALL_KUSTOMIZE: true
+          INSTALL_KUBECONFORM: true
+          INSTALL_KUBE_LINTER: true
+          INSTALL_YAMLLINT: true
+          SECRETS: ${{ toJSON(secrets) }}
+
+      - name: Validate manifests
+        run: ./scripts/validate-manifests.sh

@@ -1,0 +1,20 @@
+extends: default
+
+ignore: |
+  .github/scripts/node_modules/
+  environments/flux-system/gotk-components.yaml
+
+rules:
+  line-length:
+    max: 260
+    ignore: |
+      **/secrets.yaml
+  # bare `---` document markers aren't required in kustomize resource files
+  document-start: disable
+  # `on`/`off`/`yes`/`no` as map keys (e.g. Helm values) shouldn't trip truthy checks
+  truthy:
+    check-keys: false
+  braces:
+    max-spaces-inside: 1
+  comments: disable
+  comments-indentation: disable

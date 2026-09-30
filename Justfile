@@ -52,7 +52,6 @@ watch:
 reconcile *args:
   just install-pre-scripts && flux reconcile ks flux-system --with-source {{ args }}
 
-
 # Git hooks are installed on almost every command
 # so that we don't accidentally add unencrypted secrets to the git history.
 install-pre-scripts:

@@ -10,7 +10,7 @@ commonLabels:
   environment: production
 images:
   - name: patinanetwork/hello-world-client-rust
-    newTag: 0000000 # update me to change version
+    newTag: "0000000" # update me to change version
 
 replacements:
   - source:

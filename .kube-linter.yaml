@@ -1,0 +1,11 @@
+checks:
+  exclude:
+    - no-read-only-root-fs
+    - run-as-non-root
+    - no-anti-affinity
+    - dangling-service
+    - drop-net-raw-capability
+    - env-var-secret
+    - unset-cpu-requirements
+    - unset-memory-requirements
+    - non-existent-service-account

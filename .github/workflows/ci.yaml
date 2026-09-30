@@ -30,8 +30,9 @@ jobs:
           fetch-depth: 1
 
       - name: Setup pipeline
-        uses: ./.github/composite/setup
+        uses: tahminator/pipeline/actions/setup@5a902e0276127b6a9ec2d37c2d4ee25eb2e71f6f # 1.0.87
         with:
+          LINT_CI: true
           INSTALL_JUST: true
           SECRETS: ${{ toJSON(secrets) }}
 
@@ -40,3 +41,25 @@ jobs:
         with:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
+
+  lintManifests:
+    name: Lint & validate Kubernetes manifests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup pipeline
+        uses: tahminator/pipeline/actions/setup@5a902e0276127b6a9ec2d37c2d4ee25eb2e71f6f # 1.0.87
+        with:
+          LINT_CI: true
+          INSTALL_JUST: true
+          INSTALL_KUSTOMIZE: true
+          INSTALL_KUBECONFORM: true
+          INSTALL_KUBE_LINTER: true
+          INSTALL_YAMLLINT: true
+          SECRETS: ${{ toJSON(secrets) }}
+
+      - name: Validate manifests
+        run: bun run .github/scripts/src/validate-manifests/index.ts

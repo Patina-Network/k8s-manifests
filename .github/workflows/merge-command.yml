@@ -69,8 +69,9 @@ jobs:
           fetch-depth: 1
 
       - name: Setup pipeline
-        uses: ./.github/composite/setup
+        uses: tahminator/pipeline/actions/setup@5a902e0276127b6a9ec2d37c2d4ee25eb2e71f6f # 1.0.87
         with:
+          LINT_CI: true
           SECRETS: ${{ toJSON(secrets) }}
 
       - name: Merge if elibile

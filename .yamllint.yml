@@ -9,9 +9,7 @@ rules:
     max: 260
     ignore: |
       **/secrets.yaml
-  # bare `---` document markers aren't required in kustomize resource files
   document-start: disable
-  # `on`/`off`/`yes`/`no` as map keys (e.g. Helm values) shouldn't trip truthy checks
   truthy:
     check-keys: false
   braces:

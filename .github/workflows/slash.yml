@@ -50,7 +50,9 @@ jobs:
           ref: ${{ steps.pr-head.outputs.result }}
 
       - name: Setup pipeline
-        uses: ./.github/composite/setup
+        uses: tahminator/pipeline/actions/setup@5a902e0276127b6a9ec2d37c2d4ee25eb2e71f6f # 1.0.87
+        with:
+          LINT_CI: true
 
       - name: Run script
         run: bun run .github/scripts/src/load-slash-commands --get-gha-output=true

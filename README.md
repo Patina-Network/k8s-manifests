@@ -19,17 +19,6 @@ brew install az
 brew install Azure/kubelogin/kubelogin
 ```
 
-## Validating manifests locally
-
-Before pushing, run the same checks CI runs against every path Flux actually reconciles:
-
-```bash
-brew install kustomize kubeconform kube-linter yamllint
-just validate
-```
-
-This runs `yamllint`, `kustomize build` against every `path:` referenced by a Flux `Kustomization` (see `environments/**/sync.yaml`), `kubeconform` (schema validation, including Flux/cert-manager CRDs), and `kube-linter` (policy checks) against the result. See `scripts/validate-manifests.sh` and `.kube-linter.yaml` for details and documented exceptions.
-
 ## Get Started
 
 Run `just auth` in order to authenticate and retrieve credentials for the cluster. Then, simply run `kubectl get pods -A` to verify that you have access.

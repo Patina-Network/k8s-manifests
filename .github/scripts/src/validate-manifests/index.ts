@@ -29,12 +29,19 @@ async function runYamllint(): Promise<void> {
 }
 
 async function discoverFluxTargets(): Promise<string[]> {
-  const targets = new Set<string>();
-
   const glob = new Glob("environments/**/sync.yaml");
+  const files: string[] = [];
   for await (const file of glob.scan(".")) {
-    const contents = await Bun.file(file).text();
-    for (const doc of parseAllDocuments(contents)) {
+    files.push(file);
+  }
+
+  const contents = await Promise.all(
+    files.map((file) => Bun.file(file).text()),
+  );
+
+  const targets = new Set<string>();
+  for (const content of contents) {
+    for (const doc of parseAllDocuments(content)) {
       const resource = doc.toJS();
       const targetPath = resource?.spec?.path;
       if (
@@ -48,21 +55,24 @@ async function discoverFluxTargets(): Promise<string[]> {
     }
   }
 
-  return [...targets].sort();
+  return [...targets].sort((a, b) => a.localeCompare(b));
 }
 
 async function buildFluxTargets(
   targets: string[],
   outdir: string,
 ): Promise<void> {
-  const failures: string[] = [];
-  for (const target of targets) {
-    console.log(`==> kustomize build ${target}`);
-    const built = await buildFluxTarget(target, outdir);
-    if (!built) {
-      failures.push(target);
-    }
-  }
+  const results = await Promise.all(
+    targets.map(async (target) => {
+      console.log(`==> kustomize build ${target}`);
+      const built = await buildFluxTarget(target, outdir);
+      return { built, target };
+    }),
+  );
+
+  const failures = results
+    .filter((result) => !result.built)
+    .map((result) => result.target);
 
   if (failures.length > 0) {
     throw new Error(`kustomize build failed for: ${failures.join(", ")}`);

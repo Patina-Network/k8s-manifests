@@ -9,8 +9,8 @@ commonLabels:
   app: docs
   environment: staging
 images:
-  - name: patinanetwork/docs
-    newTag: "1.0.1" # update me to change version
+  - name: patinanetwork/docs-arm
+    newTag: staging-bdd697b7 # update me to change version
 
 replacements:
   - source:

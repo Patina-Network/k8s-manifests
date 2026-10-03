@@ -21,6 +21,13 @@ spec:
         app: hello-world-client-go
         version: "N/A" # replaced from kustomization.yaml
     spec:
+      nodeSelector:
+        agentpool: stgpoolv1
+      tolerations:
+        - key: kubernetes.azure.com/scalesetpriority
+          operator: Equal
+          value: spot
+          effect: NoSchedule
       containers:
         - name: hello-world-client-go
           image: patinanetwork/hello-world-client-go

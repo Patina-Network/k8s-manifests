@@ -11,7 +11,7 @@ commonLabels:
   environment: production
 images:
   - name: patinanetwork/hello-world-grpc-service-arm
-    newTag: "580f0037"
+    newTag: 1.0.4
 
 replacements:
   - source:

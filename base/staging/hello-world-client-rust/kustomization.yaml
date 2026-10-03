@@ -10,7 +10,7 @@ commonLabels:
   environment: staging
 images:
   - name: patinanetwork/hello-world-client-rust
-    newTag: staging-5963a2d # update me to change version
+    newTag: trest # update me to change version
 
 replacements:
   - source:

@@ -33,7 +33,7 @@ spec:
           image: patinanetwork/docs-arm
           ports:
             - name: http-web
-              containerPort: 80
+              containerPort: 8080
           readinessProbe:
             httpGet:
               path: /

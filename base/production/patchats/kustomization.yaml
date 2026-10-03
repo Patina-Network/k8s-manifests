@@ -15,7 +15,7 @@ commonLabels:
   app: patchats
   environment: production
 images:
-  - name: patinanetwork/patchats
+  - name: patinanetwork/patchats-arm
     newTag: b225f7d
 
 replacements:

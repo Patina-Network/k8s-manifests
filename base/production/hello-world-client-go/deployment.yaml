@@ -21,6 +21,13 @@ spec:
         app: hello-world-client-go
         version: "N/A" # replaced from kustomization.yaml
     spec:
+      nodeSelector:
+        agentpool: prodpoolv1
+      tolerations:
+        - key: workload
+          operator: Equal
+          value: production
+          effect: NoSchedule
       containers:
         - name: hello-world-client-go
           image: patinanetwork/hello-world-client-go

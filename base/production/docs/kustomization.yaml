@@ -9,8 +9,8 @@ commonLabels:
   app: docs
   environment: production
 images:
-  - name: patinanetwork/docs
-    newTag: 1.0.9
+  - name: patinanetwork/docs-arm
+    newTag: "b07ce432"
 
 replacements:
   - source:

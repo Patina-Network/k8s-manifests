@@ -10,7 +10,7 @@ commonLabels:
   environment: staging
 images:
   - name: patinanetwork/docs-arm
-    newTag: staging-bdd697b7 # update me to change version
+    newTag: "staging-48d67f5f" # update me to change version
 
 replacements:
   - source:

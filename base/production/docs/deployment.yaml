@@ -21,9 +21,16 @@ spec:
         app: docs
         version: "N/A" # replaced from kustomization.yaml
     spec:
+      nodeSelector:
+        agentpool: prodpoolv1
+      tolerations:
+        - key: workload
+          operator: Equal
+          value: production
+          effect: NoSchedule
       containers:
         - name: docs
-          image: patinanetwork/docs
+          image: patinanetwork/docs-arm
           ports:
             - name: http-web
               containerPort: 8080

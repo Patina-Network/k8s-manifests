@@ -70,8 +70,8 @@ spec:
         # az network public-ip show --resource-group MC_k8s_k8s-manifests_eastus --name traefik-public-ip --query ipAddress -o tsv
         # this is managed by `platform-infra`
         service.beta.kubernetes.io/azure-pip-name: traefik-public-ip
-      type: LoadBalancer
       spec:
+        type: LoadBalancer
         # https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-type-nodeport
         # > To avoid this, Kubernetes has a feature to preserve the client source IP. If you set service.spec.externalTrafficPolicy to the value Local, kube-proxy only proxies proxy requests to local endpoints, and does not forward traffic to other nodes.
         externalTrafficPolicy: Local

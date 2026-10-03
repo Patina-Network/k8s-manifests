@@ -8,7 +8,7 @@ commonLabels:
   environment: production
 images:
   - name: patinanetwork/codebloom-standup-bot
-    newTag: 290c169
+    newTag: fe86017
 
 replacements:
   - source:

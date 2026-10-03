@@ -139,4 +139,5 @@ spec:
         exposedPort: 50051
         protocol: TCP
     service:
-      type: ClusterIP
+      spec:
+        type: ClusterIP

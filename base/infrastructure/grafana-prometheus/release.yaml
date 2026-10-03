@@ -58,6 +58,20 @@ spec:
             postgresVersion: 1600
           secureJsonData:
             password: $GRAFANA_RO_DB_PASSWORD
+        - name: Azure Monitor
+          uid: azure-monitor
+          type: grafana-azure-monitor-datasource
+          access: proxy
+          isDefault: false
+          jsonData:
+            azureAuthType: clientsecret
+            cloudName: azuremonitor
+            tenantId: 88e5fbad-e2c7-474e-a963-2fbe9a0bab8f
+            subscriptionId: 7779681e-36d2-4f42-9289-8160bd1a407d
+            # "Grafana (Azure Monitor)"
+            clientId: f7938054-5092-4d44-afd9-6514a4688d4b
+          secureJsonData:
+            clientSecret: $AZURE_MONITOR_CLIENT_SECRET
       operator:
         folder: K8S
       grafana.ini:

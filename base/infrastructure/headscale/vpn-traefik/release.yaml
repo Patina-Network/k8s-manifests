@@ -25,6 +25,14 @@ spec:
         traefikoidc:
           moduleName: github.com/lukaszraczylo/traefikoidc
           version: v1.0.36
+    additionalArguments:
+      - --accesslog=true
+      - --accesslog.format=json
+      - --accesslog.fields.names.ClientUsername=drop
+      - --accesslog.fields.headers.defaultmode=keep
+      # basic-auth / bearer creds & session cookies must never land in loki
+      - --accesslog.fields.headers.names.Authorization=drop
+      - --accesslog.fields.headers.names.Cookie=drop
     serviceAccount:
       name: vpn-traefik
     persistence:

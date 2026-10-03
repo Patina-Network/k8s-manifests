@@ -10,8 +10,8 @@ commonLabels:
   app: hello-world-grpc-service
   environment: staging
 images:
-  - name: patinanetwork/hello-world-grpc-service
-    newTag: staging-6d19b2b7 # update me to change version
+  - name: patinanetwork/hello-world-grpc-service-arm
+    newTag: staging-0ef29413 # update me to change version
 
 replacements:
   - source:

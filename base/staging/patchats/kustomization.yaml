@@ -15,7 +15,7 @@ commonLabels:
   app: patchats
   environment: staging
 images:
-  - name: patinanetwork/patchats
+  - name: patinanetwork/patchats-arm
     newTag: staging-e218e91
 
 replacements:

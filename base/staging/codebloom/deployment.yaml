@@ -21,13 +21,20 @@ spec:
         app: codebloom
         version: "N/A" # replaced from kustomization.yaml
     spec:
+      nodeSelector:
+        agentpool: stgpoolv1
+      tolerations:
+        - key: kubernetes.azure.com/scalesetpriority
+          operator: Equal
+          value: spot
+          effect: NoSchedule
       volumes:
         - name: spring-config
           configMap:
             name: codebloom-spring-config
       containers:
         - name: codebloom
-          image: patinanetwork/codebloom
+          image: patinanetwork/codebloom-arm
           args:
             - --spring.config.additional-location=file:/config/
           ports:

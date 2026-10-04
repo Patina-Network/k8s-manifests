@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codebloom-standup-bot
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: codebloom-standup-bot
+  template:
+    metadata:
+      labels:
+        app: codebloom-standup-bot
+        version: "N/A" # replaced by the overlay kustomization.yaml
+    spec:
+      containers:
+        - name: codebloom-standup-bot
+          image: patinanetwork/codebloom-standup-bot-arm
+          resources:
+            requests:
+              memory: "2Mi"
+              cpu: "1m"
+            limits:
+              memory: "4Mi"
+              cpu: "25m"
+          env:
+            - name: VERSION
+              value: "N/A" # replaced by the overlay kustomization.yaml

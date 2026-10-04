@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world-grpc-service
+spec:
+  template:
+    spec:
+      nodeSelector:
+        agentpool: stgpoolv1
+      tolerations:
+        - key: kubernetes.azure.com/scalesetpriority
+          operator: Equal
+          value: spot
+          effect: NoSchedule
+      containers:
+        - name: hello-world-grpc-service
+          env:
+            - name: GRPC_REFLECTION
+              value: "true"

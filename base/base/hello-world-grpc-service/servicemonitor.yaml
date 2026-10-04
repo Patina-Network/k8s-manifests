@@ -1,0 +1,12 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: hello-world-grpc-service
+spec:
+  selector:
+    matchLabels:
+      app: hello-world-grpc-service
+  endpoints:
+    - port: http-web
+      path: /metrics
+      interval: 30s

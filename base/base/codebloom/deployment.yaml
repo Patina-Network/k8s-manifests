@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codebloom
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: codebloom
+  template:
+    metadata:
+      labels:
+        app: codebloom
+        version: "N/A" # replaced by the overlay kustomization.yaml
+    spec:
+      volumes:
+        - name: spring-config
+          configMap:
+            name: codebloom-spring-config
+      containers:
+        - name: codebloom
+          image: patinanetwork/codebloom-arm
+          args:
+            - --spring.config.additional-location=file:/config/
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: spring-config
+              mountPath: /config
+              readOnly: true
+          startupProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 10
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 10
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 5
+          env:
+            - name: VERSION
+              value: "N/A" # replaced by the overlay kustomization.yaml
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "6m"
+            limits:
+              memory: "1024Mi"
+              cpu: "200m"

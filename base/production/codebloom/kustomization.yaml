@@ -1,12 +1,13 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: production
 resources:
+  - ../../base/codebloom
   - certificate.yaml
-  - deployment.yaml
   - ingress.yaml
   - secrets.yaml
-  - service.yaml
-  - servicemonitor.yaml
+patches:
+  - path: deployment-patch.yaml
 configMapGenerator:
   - name: codebloom-spring-config
     files:

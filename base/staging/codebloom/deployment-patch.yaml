@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codebloom
+spec:
+  template:
+    spec:
+      nodeSelector:
+        agentpool: stgpoolv1
+      tolerations:
+        - key: kubernetes.azure.com/scalesetpriority
+          operator: Equal
+          value: spot
+          effect: NoSchedule
+      containers:
+        - name: codebloom
+          env:
+            - name: VITE_STAGING
+              value: "true"
+            # image by default sets SPRING_PROFILES_ACTIVE=prod; override so application-stg.yaml loads
+            - name: SPRING_PROFILES_ACTIVE
+              value: "stg"
+          envFrom:
+            - secretRef:
+                name: codebloom-staging-secrets

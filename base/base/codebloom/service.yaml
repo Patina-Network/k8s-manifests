@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: codebloom
+spec:
+  selector:
+    app: codebloom
+  ports:
+    - name: http-web
+      protocol: TCP
+      port: 80
+      targetPort: 8080

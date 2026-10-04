@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codebloom
+spec:
+  template:
+    spec:
+      nodeSelector:
+        agentpool: prodpoolv1
+      tolerations:
+        - key: workload
+          operator: Equal
+          value: production
+          effect: NoSchedule
+      containers:
+        - name: codebloom
+          envFrom:
+            - secretRef:
+                name: codebloom-production-secrets

@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: patchats
+spec:
+  template:
+    spec:
+      nodeSelector:
+        agentpool: prodpoolv1
+      tolerations:
+        - key: workload
+          operator: Equal
+          value: production
+          effect: NoSchedule
+      containers:
+        - name: patchats
+          envFrom:
+            - secretRef:
+                name: patchats-production-secrets

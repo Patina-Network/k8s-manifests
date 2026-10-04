@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world-client-java
+spec:
+  template:
+    spec:
+      nodeSelector:
+        agentpool: stgpoolv1
+      tolerations:
+        - key: kubernetes.azure.com/scalesetpriority
+          operator: Equal
+          value: spot
+          effect: NoSchedule

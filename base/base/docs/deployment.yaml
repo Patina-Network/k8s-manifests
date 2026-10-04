@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docs
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: docs
+  template:
+    metadata:
+      labels:
+        app: docs
+        version: "N/A" # replaced by the overlay kustomization.yaml
+    spec:
+      containers:
+        - name: docs
+          image: patinanetwork/docs-arm
+          ports:
+            - name: http-web
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http-web
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http-web
+            initialDelaySeconds: 5
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          env:
+            - name: VERSION
+              value: "N/A" # replaced by the overlay kustomization.yaml
+          resources:
+            requests:
+              memory: "8Mi"
+              cpu: "5m"
+            limits:
+              memory: "32Mi"
+              cpu: "50m"

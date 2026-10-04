@@ -1,0 +1,12 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: patchats
+spec:
+  selector:
+    matchLabels:
+      app: patchats
+  endpoints:
+    - port: http-web
+      path: /actuator/prometheus
+      interval: 30s

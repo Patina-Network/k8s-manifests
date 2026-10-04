@@ -1,0 +1,12 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: codebloom
+spec:
+  selector:
+    matchLabels:
+      app: codebloom
+  endpoints:
+    - port: http-web
+      path: /actuator/prometheus
+      interval: 30s

@@ -16,7 +16,7 @@
   "author": "Tahmid Ahmed",
   "license": "MIT",
   "dependencies": {
-    "@tahminator/pipeline": "1.0.90",
+    "@tahminator/pipeline": "1.0.90-beta.g1f4d73ad",
     "lodash": "^4.18.1",
     "yaml": "^2.8.2",
     "yargs": "^18.0.0"

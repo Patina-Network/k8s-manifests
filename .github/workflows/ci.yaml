@@ -1,0 +1,70 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/github-workflow.json
+name: CI
+run-name: Running continuous integration on ${{ github.actor }}'s commits
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  determineVersionOnlyStagingPR:
+    name: Check if PR is only bumping a staging version & prompt for /merge if it is
+    runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write
+
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 1
+
+      - name: Setup pipeline
+        uses: tahminator/pipeline/actions/setup@ff36293f28519b2b90d7e28918a6885d9baf019e # 1.0.90
+        with:
+          LINT_CI: true
+          INSTALL_JUST: true
+          SECRETS: ${{ toJSON(secrets) }}
+
+      - name: Determine version-only staging PR
+        uses: ./.github/composite/determine-version-only-staging-pr
+        with:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+
+  lintManifests:
+    name: Lint & validate Kubernetes manifests
+    runs-on: ubuntu-latest
+
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup pipeline
+        uses: tahminator/pipeline/actions/setup@ff36293f28519b2b90d7e28918a6885d9baf019e # 1.0.90
+        with:
+          LINT_CI: true
+          INSTALL_JUST: true
+          INSTALL_KUSTOMIZE: true
+          INSTALL_KUBECONFORM: true
+          INSTALL_KUBE_LINTER: true
+          INSTALL_YAMLLINT: true
+          SECRETS: ${{ toJSON(secrets) }}
+
+      - name: Validate manifests & comment rendered diff
+        run: |
+          bun run .github/scripts/src/validate-manifests/index.ts \
+                --baseSha="${{ github.event.pull_request.base.sha }}" \
+                --prNumber="${{ github.event.pull_request.number }}"

@@ -1,0 +1,27 @@
+.:53 {
+    errors
+    health :8080
+    ready :8181
+    forward . /etc/resolv.conf
+    cache 30
+    log
+}
+
+vpn.patinanetwork.org:53 {
+    errors
+    log
+    # vpn-traefik hardcoded IP. change if server is reset
+    template IN A vpn.patinanetwork.org {
+        match "^(?P<sub>.+)\.vpn\.patinanetwork\.org\.$"
+        answer "{{ .Name }} 60 IN A 100.64.0.10"
+        fallthrough
+    }
+    # vpn-traefik hardcoded IP. change if server is reset
+    template IN AAAA vpn.patinanetwork.org {
+        match "^(?P<sub>.+)\.vpn\.patinanetwork\.org\.$"
+        answer "{{ .Name }} 60 IN AAAA fd7a:115c:a1e0::a"
+        fallthrough
+    }
+    forward . /etc/resolv.conf
+    cache 30
+}

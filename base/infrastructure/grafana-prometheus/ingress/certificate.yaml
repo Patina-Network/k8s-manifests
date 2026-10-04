@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: grafana-tls
+  namespace: infrastructure
+spec:
+  secretName: grafana-tls
+  dnsNames:
+    - grafana.patinanetwork.org
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer

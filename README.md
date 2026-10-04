@@ -1,0 +1,70 @@
+# `k8s-manifests`
+
+Documentation can be found at [docs.patinanetwork.org/infra](https://docs.patinanetwork.org/infra/).
+
+## Pre-requisites
+
+```bash
+# automatically loads environment variables from the project
+brew install direnv
+# command line runner - interfaces with Justfile
+brew install just
+# kubernetes
+brew install kubectl
+# (optional) adds `kubens` and `kubectx`, very useful
+brew install kubectx
+# azure cli
+brew install az
+# required for kubectl RBAC
+brew install Azure/kubelogin/kubelogin
+```
+
+## Get Started
+
+Run `just auth` in order to authenticate and retrieve credentials for the cluster. Then, simply run `kubectl get pods -A` to verify that you have access.
+
+All users in `@Patina-Network/developers` should automatically have read-only access to the cluster. If you:
+
+- do not have read-only access
+- require a manual write operation to occur (that Flux cannot or is failing to do)
+
+then reach out to a `@Patina-Network/infra` member.
+
+### How to setup Flux on a new cluster
+
+> [!NOTE]
+> **DO THIS FIRST**
+>
+> `kustomize-controller` requires access to secrets, which is tied to a service account + RBAC.
+>
+> Go to `./environments/flux-system/patches/kustomize-controller-service-account.yaml` and follow the instructions in there to get
+> & update the new client ID
+>
+> If the controller gets stuck authenticating, redo the rollout with `kubectl rollout restart deploy/kustomize-controller -n flux-system`.
+
+1. Update `./environments/flux-system/gotk-sync.yaml` to point to your public repository link.
+
+1. Authenticate into your cluster (test with `kubectl get pods -A` to ensure that authentication succeeded)
+
+1. Run `kubectl apply -k ./environments/flux-system` to kick off Flux.
+
+> [!NOTE]
+> Applying `flux-system` will fail. Watch the pods and ensure that the Flux controllers are up and online first, then run the same command again.
+
+> [!NOTE]
+> Flux may get stuck due to the fact that Flux isn't smart enough to install CRDs first (see [here](https://github.com/fluxcd/helm-controller/issues/387)).
+>
+> You should run `kubectl apply -k environments/infrastructure` to install all CRDs. This may also provision some resources but Flux should take over and handle
+> drift after that.
+
+> [!NOTE]
+> You may need to update `./infrastructure/traefik/release.yaml` and point Traefik to the right public IP resource.
+
+### How to output and view Helm templates
+
+```bash
+helm template <name-inside-of-Chart-yaml> ./environments/path/to/folder/where/helm/Chart/yaml/lives
+
+# e.g.
+helm template github-repositories ./environments/infrastructure/crossplane/github/repositories
+```

@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: production-hello-world-grpc-service-vpn-tls
+  namespace: production
+spec:
+  secretName: production-hello-world-grpc-service-vpn-tls
+  dnsNames:
+    - hello-world-grpc-service.vpn.patinanetwork.org
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer

@@ -1,0 +1,42 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: codebloom-vpn-web
+  namespace: staging
+spec:
+  entryPoints:
+    - web-vpn
+  routes:
+    - match: Host(`stg.codebloom.vpn.patinanetwork.org`) && PathPrefix(`/`)
+      kind: Rule
+      middlewares:
+        - name: redirect-to-https
+      services:
+        - name: codebloom
+          port: 80
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: codebloom-vpn-websecure
+  namespace: staging
+spec:
+  entryPoints:
+    - websecure-vpn
+  routes:
+    - match: Host(`stg.codebloom.vpn.patinanetwork.org`) && PathPrefix(`/actuator/env`)
+      kind: Rule
+      priority: 10
+      middlewares:
+        - name: basic-auth
+      services:
+        - name: codebloom
+          port: 80
+    - match: Host(`stg.codebloom.vpn.patinanetwork.org`) && PathPrefix(`/`)
+      kind: Rule
+      priority: 1
+      services:
+        - name: codebloom
+          port: 80
+  tls:
+    secretName: staging-codebloom-vpn-tls

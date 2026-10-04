@@ -1,0 +1,8 @@
+.DS_Store
+
+watch_*
+
+.kube/
+
+# IntelliJ
+.idea

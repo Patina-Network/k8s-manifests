@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: infrastructure-gerrit-tls
+  namespace: infrastructure
+spec:
+  secretName: infrastructure-gerrit-tls
+  dnsNames:
+    - gerrit.patinanetwork.org
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer

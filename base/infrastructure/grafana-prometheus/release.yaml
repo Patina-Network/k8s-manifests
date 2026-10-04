@@ -1,0 +1,266 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+  namespace: infrastructure
+spec:
+  interval: 1h
+  releaseName: kube-prometheus-stack
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      version: "91.8.2"
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+        namespace: flux-system
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+  values:
+    # https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
+    grafana:
+      enabled: true
+      admin:
+        existingSecret: grafana-secrets
+        userKey: ADMIN_USER
+        passwordKey: ADMIN_PASSWORD
+      additionalDataSources:
+        - name: Loki
+          type: loki
+          url: http://loki.infrastructure.svc.cluster.local:3100
+          access: proxy
+          isDefault: false
+          jsonData:
+            maxLines: 1000
+        - name: Postgres (codebloom-prod)
+          type: postgres
+          url: postgres.infrastructure.svc.cluster.local:5432
+          access: proxy
+          isDefault: false
+          user: grafana-all-ro-sa
+          jsonData:
+            database: codebloom-prod
+            sslmode: require
+            postgresVersion: 1600
+          secureJsonData:
+            password: $GRAFANA_RO_DB_PASSWORD
+        - name: Postgres (codebloom-stg)
+          type: postgres
+          url: postgres.infrastructure.svc.cluster.local:5432
+          access: proxy
+          isDefault: false
+          user: grafana-all-ro-sa
+          jsonData:
+            database: codebloom-stg
+            sslmode: require
+            postgresVersion: 1600
+          secureJsonData:
+            password: $GRAFANA_RO_DB_PASSWORD
+        - name: Azure Monitor
+          uid: azure-monitor
+          type: grafana-azure-monitor-datasource
+          access: proxy
+          isDefault: false
+          jsonData:
+            azureAuthType: clientsecret
+            cloudName: azuremonitor
+            tenantId: 88e5fbad-e2c7-474e-a963-2fbe9a0bab8f
+            subscriptionId: 7779681e-36d2-4f42-9289-8160bd1a407d
+            # "Grafana (Azure Monitor)"
+            clientId: f7938054-5092-4d44-afd9-6514a4688d4b
+          secureJsonData:
+            clientSecret: $AZURE_MONITOR_CLIENT_SECRET
+      operator:
+        folder: K8S
+      grafana.ini:
+        server:
+          root_url: https://grafana.vpn.patinanetwork.org
+        users:
+          auto_assign_org_role: Editor
+        auth.azuread:
+          name: Azure AD
+          enabled: true
+          allow_sign_up: true
+          auto_login: false
+          # oauth app managed by `platform-infra`
+          client_id: $__env{AZUREAD_CLIENT_ID}
+          client_secret: $__env{AZUREAD_CLIENT_SECRET}
+          scopes: openid email profile
+          auth_url: https://login.microsoftonline.com/88e5fbad-e2c7-474e-a963-2fbe9a0bab8f/oauth2/v2.0/authorize
+          token_url: https://login.microsoftonline.com/88e5fbad-e2c7-474e-a963-2fbe9a0bab8f/oauth2/v2.0/token
+          allowed_organizations: 88e5fbad-e2c7-474e-a963-2fbe9a0bab8f
+          allowed_domains: patinanetwork.onmicrosoft.com
+        database:
+          type: postgres
+          host: postgres.infrastructure.svc.cluster.local:5432
+          name: grafana
+          user: $__env{DB_USER}
+          password: $__env{DB_PASSWORD}
+        # smtp:
+        #   enabled: true
+        #   host: $__env{SMTP_HOST}
+        #   user: $__env{SMTP_USER}
+        #   password: $__env{SMTP_PASSWORD}
+        #   from_address: $__env{SMTP_USER}
+        #   from_name: Grafana (k8s-personal)
+      envFromSecrets:
+        - name: grafana-secrets
+      sidecar:
+        dashboards:
+          enabled: true
+          label: grafana_dashboard
+          labelValue: "1"
+          searchNamespace: ALL
+          # https://github.com/grafana/helm-charts/issues/527#issuecomment-982319638
+          annotations:
+            grafana_folder: "K8S"
+          folderAnnotation: grafana_folder
+          provider:
+            foldersFromFilesStructure: true
+    prometheus:
+      enabled: true
+      prometheusSpec:
+        retention: 14d
+        serviceMonitorSelectorNilUsesHelmValues: false
+        serviceMonitorNamespaceSelectorNilUsesHelmValues: false
+        podMonitorSelectorNilUsesHelmValues: false
+        podMonitorNamespaceSelectorNilUsesHelmValues: false
+        scrapeConfigSelectorNilUsesHelmValues: false
+        scrapeConfigNamespaceSelectorNilUsesHelmValues: false
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              accessModes:
+                - "ReadWriteOnce"
+              resources:
+                requests:
+                  storage: 10Gi
+    nodeExporter:
+      enabled: true
+    kubeStateMetrics:
+      enabled: true
+    # https://github.com/fluxcd/flux2-monitoring-example
+    # exports gotk_resource_info (Ready state per Flux object) alongside the default collectors
+    kube-state-metrics:
+      rbac:
+        extraRules:
+          - apiGroups:
+              - source.toolkit.fluxcd.io
+              - kustomize.toolkit.fluxcd.io
+              - helm.toolkit.fluxcd.io
+            resources:
+              - gitrepositories
+              - helmrepositories
+              - helmcharts
+              - kustomizations
+              - helmreleases
+            verbs: ["list", "watch"]
+      customResourceState:
+        enabled: true
+        config:
+          spec:
+            resources:
+              - groupVersionKind:
+                  group: kustomize.toolkit.fluxcd.io
+                  version: v1
+                  kind: Kustomization
+                metricNamePrefix: gotk
+                metrics:
+                  - name: resource_info
+                    help: The current state of a Flux Kustomization resource.
+                    each:
+                      type: Info
+                      info:
+                        labelsFromPath:
+                          name: [metadata, name]
+                    labelsFromPath:
+                      exported_namespace: [metadata, namespace]
+                      ready: [status, conditions, "[type=Ready]", status]
+                      reason: [status, conditions, "[type=Ready]", reason]
+                      suspended: [spec, suspend]
+                      revision: [status, lastAppliedRevision]
+                      source_name: [spec, sourceRef, name]
+              - groupVersionKind:
+                  group: helm.toolkit.fluxcd.io
+                  version: v2
+                  kind: HelmRelease
+                metricNamePrefix: gotk
+                metrics:
+                  - name: resource_info
+                    help: The current state of a Flux HelmRelease resource.
+                    each:
+                      type: Info
+                      info:
+                        labelsFromPath:
+                          name: [metadata, name]
+                    labelsFromPath:
+                      exported_namespace: [metadata, namespace]
+                      ready: [status, conditions, "[type=Ready]", status]
+                      reason: [status, conditions, "[type=Ready]", reason]
+                      suspended: [spec, suspend]
+                      revision: [status, history, "0", chartVersion]
+                      chart_name: [status, history, "0", chartName]
+                      chart_app_version: [status, history, "0", appVersion]
+              - groupVersionKind:
+                  group: source.toolkit.fluxcd.io
+                  version: v1
+                  kind: GitRepository
+                metricNamePrefix: gotk
+                metrics:
+                  - name: resource_info
+                    help: The current state of a Flux GitRepository resource.
+                    each:
+                      type: Info
+                      info:
+                        labelsFromPath:
+                          name: [metadata, name]
+                    labelsFromPath:
+                      exported_namespace: [metadata, namespace]
+                      ready: [status, conditions, "[type=Ready]", status]
+                      reason: [status, conditions, "[type=Ready]", reason]
+                      suspended: [spec, suspend]
+                      revision: [status, artifact, revision]
+                      url: [spec, url]
+              - groupVersionKind:
+                  group: source.toolkit.fluxcd.io
+                  version: v1
+                  kind: HelmRepository
+                metricNamePrefix: gotk
+                metrics:
+                  - name: resource_info
+                    help: The current state of a Flux HelmRepository resource.
+                    each:
+                      type: Info
+                      info:
+                        labelsFromPath:
+                          name: [metadata, name]
+                    labelsFromPath:
+                      exported_namespace: [metadata, namespace]
+                      ready: [status, conditions, "[type=Ready]", status]
+                      reason: [status, conditions, "[type=Ready]", reason]
+                      suspended: [spec, suspend]
+                      revision: [status, artifact, revision]
+                      url: [spec, url]
+              - groupVersionKind:
+                  group: source.toolkit.fluxcd.io
+                  version: v1
+                  kind: HelmChart
+                metricNamePrefix: gotk
+                metrics:
+                  - name: resource_info
+                    help: The current state of a Flux HelmChart resource.
+                    each:
+                      type: Info
+                      info:
+                        labelsFromPath:
+                          name: [metadata, name]
+                    labelsFromPath:
+                      exported_namespace: [metadata, namespace]
+                      ready: [status, conditions, "[type=Ready]", status]
+                      reason: [status, conditions, "[type=Ready]", reason]
+                      suspended: [spec, suspend]
+                      revision: [status, artifact, revision]
+                      chart_name: [spec, chart]
+                      chart_version: [spec, version]

@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codebloom-standup-bot
+  namespace: production
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: codebloom-standup-bot
+  template:
+    metadata:
+      labels:
+        app: codebloom-standup-bot
+        version: "N/A" # replaced from kustomization.yaml
+    spec:
+      nodeSelector:
+        agentpool: prodpoolv1
+      tolerations:
+        - key: workload
+          operator: Equal
+          value: production
+          effect: NoSchedule
+      containers:
+        - name: codebloom-standup-bot
+          image: patinanetwork/codebloom-standup-bot-arm
+          envFrom:
+            - secretRef:
+                name: codebloom-standup-bot-production-secrets
+          resources:
+            requests:
+              memory: "2Mi"
+              cpu: "1m"
+            limits:
+              memory: "4Mi"
+              cpu: "25m"
+          env:
+            - name: VERSION
+              value: "N/A" # replaced from kustomization.yaml
+            - name: ENVIRONMENT
+              value: production

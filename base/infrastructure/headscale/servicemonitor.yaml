@@ -1,0 +1,13 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: headscale
+  namespace: infrastructure
+spec:
+  selector:
+    matchLabels:
+      app: headscale
+  endpoints:
+    - port: metrics
+      interval: 30s
+      path: /metrics

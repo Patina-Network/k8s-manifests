@@ -1,0 +1,57 @@
+# https://github.com/juanfont/headscale/blob/main/config-example.yaml
+
+server_url: https://headscale.patinanetwork.org
+# default is 127.0.0.1, only binds to local loopback
+# needs to bind to any local addr so it can be exposed & Traefik can call
+listen_addr: 0.0.0.0:8080
+metrics_listen_addr: 0.0.0.0:9090
+
+disable_check_updates: true
+
+noise:
+  private_key_path: /var/lib/headscale/noise_private.key
+
+prefixes:
+  v4: 100.64.0.0/10
+  v6: fd7a:115c:a1e0::/48
+
+database:
+  type: postgres
+  postgres:
+    host: postgres.infrastructure.svc.cluster.local
+    port: 5432
+    name: headscale
+    user: headscale-sa
+    # from env
+    pass: ""
+
+dns:
+  base_domain: tailnet.patinanetwork.org
+  override_local_dns: false
+  nameservers:
+    split:
+      vpn.patinanetwork.org:
+        # pts to `vpn-coredns`
+        - 100.64.0.11
+
+# managed by `platform-infra`
+policy:
+  mode: database
+
+# TODO: look into turning this on & having DERP go thru our server
+derp:
+  server:
+    enabled: false
+  urls:
+    - https://controlplane.tailscale.com/derpmap/default
+  auto_update_enabled: true
+  update_frequency: 24h
+
+oidc:
+  issuer: "https://login.microsoftonline.com/88e5fbad-e2c7-474e-a963-2fbe9a0bab8f/v2.0"
+  # oauth app is managed by platform-infra
+  client_id: "7e0d5f2b-1bad-4880-bebd-f78293c6307f"
+  scope: ["openid", "profile", "email"]
+  email_verified_required: false
+  allowed_domains:
+    - patinanetwork.onmicrosoft.com

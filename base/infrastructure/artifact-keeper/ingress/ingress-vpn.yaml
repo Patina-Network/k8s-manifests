@@ -1,0 +1,52 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: artifact-keeper-vpn-web
+  namespace: infrastructure
+spec:
+  entryPoints:
+    - web-vpn
+  routes:
+    - match: Host(`pkg.vpn.patinanetwork.org`) && PathPrefix(`/`)
+      kind: Rule
+      middlewares:
+        - name: redirect-to-https
+      services:
+        - name: artifact-keeper-web
+          port: 3000
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: artifact-keeper-vpn-websecure
+  namespace: infrastructure
+spec:
+  entryPoints:
+    - websecure-vpn
+  routes:
+    # https://github.com/artifact-keeper/artifact-keeper-iac/blob/main/charts/artifact-keeper/templates/ingress.yaml#L92
+    - match: >-
+        Host(`pkg.vpn.patinanetwork.org`) && (
+          PathPrefix(`/api`) || PathPrefix(`/health`) || PathPrefix(`/ready`) || PathPrefix(`/v2`) ||
+          PathPrefix(`/maven`) || PathPrefix(`/npm`) || PathPrefix(`/pypi`) || PathPrefix(`/nuget`) ||
+          PathPrefix(`/cargo`) || PathPrefix(`/gems`) || PathPrefix(`/go`) || PathPrefix(`/helm`) ||
+          PathPrefix(`/debian`) || PathPrefix(`/rpm`) || PathPrefix(`/alpine`) || PathPrefix(`/composer`) ||
+          PathPrefix(`/conan`) || PathPrefix(`/conda`) || PathPrefix(`/swift`) || PathPrefix(`/terraform`) ||
+          PathPrefix(`/cocoapods`) || PathPrefix(`/hex`) || PathPrefix(`/pub`) || PathPrefix(`/lfs`) ||
+          PathPrefix(`/ivy`) || PathPrefix(`/chef`) || PathPrefix(`/puppet`) || PathPrefix(`/ansible`) ||
+          PathPrefix(`/cran`) || PathPrefix(`/huggingface`) || PathPrefix(`/jetbrains`) || PathPrefix(`/vscode`) ||
+          PathPrefix(`/proto`) || PathPrefix(`/incus`) || PathPrefix(`/ext`)
+        )
+      kind: Rule
+      priority: 100
+      services:
+        - name: artifact-keeper-backend
+          port: 8080
+    - match: Host(`pkg.vpn.patinanetwork.org`) && PathPrefix(`/`)
+      kind: Rule
+      priority: 1
+      services:
+        - name: artifact-keeper-web
+          port: 3000
+  tls:
+    secretName: artifact-keeper-vpn-tls

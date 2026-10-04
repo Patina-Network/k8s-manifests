@@ -1,0 +1,8 @@
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: postgres-tls-protocol
+  namespace: infrastructure
+spec:
+  alpnProtocols:
+    - postgresql

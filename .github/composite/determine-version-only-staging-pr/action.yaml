@@ -1,0 +1,17 @@
+name: "Determine Version-Only Staging PR"
+description: "Checks if the PR only bumps `newTag` in a staging kustomization.yaml, and if so, comments asking an app owner to run /merge."
+
+inputs:
+  PR_NUMBER:
+    description: "Pull request number to check and comment on"
+    required: true
+  BASE_SHA:
+    description: "SHA of the PR's base commit to diff the checked-out head against"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check PR & comment if version-only
+      shell: bash
+      run: bun run .github/scripts/src/determine-version-only-staging-pr/index.ts --baseSha=${{ inputs.BASE_SHA }} --prNumber=${{ inputs.PR_NUMBER }} --runUrl=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

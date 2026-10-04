@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/yamllint.json
+extends: default
+
+ignore: |
+  .github/scripts/node_modules/
+  environments/flux-system/gotk-components.yaml
+
+rules:
+  line-length:
+    max: 260
+    ignore: |
+      **/secrets.yaml
+  document-start: disable
+  truthy:
+    check-keys: false
+  braces:
+    max-spaces-inside: 1
+  comments: disable
+  comments-indentation: disable

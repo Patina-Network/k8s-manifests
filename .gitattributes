@@ -1,0 +1,4 @@
+*.yaml diff=sopsdiffer
+
+*.yaml linguist-detectable
+*.yml linguist-detectable

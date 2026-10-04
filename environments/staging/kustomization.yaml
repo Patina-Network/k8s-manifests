@@ -8,6 +8,6 @@ resources:
   - ./patchats
   - ./hello-world-grpc-service
   - ./docs
-  # - ./hello-world-client-go
-  # - ./hello-world-client-rust
-  # - ./hello-world-client-java
+  - ./hello-world-client-go
+  - ./hello-world-client-rust
+  - ./hello-world-client-java

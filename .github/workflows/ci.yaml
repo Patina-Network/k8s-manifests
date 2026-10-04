@@ -46,6 +46,8 @@ jobs:
     name: Lint & validate Kubernetes manifests
     runs-on: ubuntu-latest
 
+    if: github.event_name == 'pull_request'
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -61,5 +63,8 @@ jobs:
           INSTALL_YAMLLINT: true
           SECRETS: ${{ toJSON(secrets) }}
 
-      - name: Validate manifests
-        run: bun run .github/scripts/src/validate-manifests/index.ts
+      - name: Validate manifests & comment rendered diff
+        run: |
+          bun run .github/scripts/src/validate-manifests/index.ts \
+                --baseSha="${{ github.event.pull_request.base.sha }}" \
+                --prNumber="${{ github.event.pull_request.number }}"

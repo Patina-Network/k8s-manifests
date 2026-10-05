@@ -1,10 +1,4 @@
-# override any Spring app properties here
-
-springdoc:
-  swagger-ui:
-    enabled: true
-  api-docs:
-    enabled: true
+# shared defaults live in base/base/codebloom/application.yaml
 
 server:
   url: https://stg.vpn.codebloom.patinanetwork.org
@@ -14,24 +8,6 @@ management:
     env:
       # /actuator/* is pwd protected so this is ok
       show-values: "always"
-  endpoints:
-    web:
-      exposure:
-        # add beans and env
-        include: prometheus, health, beans, env
-
-logging:
-  structured:
-    format:
-      console: ecs
-    json:
-      add:
-        sha: "${app.commit.sha}"
-      stacktrace:
-        root: first
-        max-length: 12288
-        include-common-frames: true
-        include-hashes: true
 
 ff:
   # duels: true

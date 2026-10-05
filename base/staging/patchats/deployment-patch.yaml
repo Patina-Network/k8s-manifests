@@ -17,6 +17,9 @@ spec:
           env:
             - name: VITE_STAGING
               value: "true"
+            # image by default sets SPRING_PROFILES_ACTIVE=prod; override so application-stg.yaml loads
+            - name: SPRING_PROFILES_ACTIVE
+              value: "stg"
           envFrom:
             - secretRef:
                 name: patchats-staging-secrets

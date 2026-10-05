@@ -1,10 +1,4 @@
-# override any Spring app properties here
-
-springdoc:
-  swagger-ui:
-    enabled: true
-  api-docs:
-    enabled: true
+# shared defaults live in base/base/patchats/application.yaml
 
 server:
   url: https://stg.vpn.patchats.patinanetwork.org
@@ -12,10 +6,5 @@ server:
 management:
   endpoint:
     env:
-      # /actuator/* is pwd protected so this is ok
+      # /actuator/env is behind basic-auth (ingress-vpn.yaml) so this is ok
       show-values: "always"
-  endpoints:
-    web:
-      exposure:
-        # add beans and env
-        include: prometheus, health, beans, env

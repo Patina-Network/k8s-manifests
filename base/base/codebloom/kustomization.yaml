@@ -4,3 +4,7 @@ resources:
   - deployment.yaml
   - service.yaml
   - servicemonitor.yaml
+configMapGenerator:
+  - name: codebloom-spring-config
+    files:
+      - application.yaml

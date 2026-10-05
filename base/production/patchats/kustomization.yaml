@@ -10,6 +10,7 @@ patches:
   - path: deployment-patch.yaml
 configMapGenerator:
   - name: patchats-spring-config
+    behavior: merge
     files:
       - application-prod.yaml
 commonLabels:

@@ -24,8 +24,17 @@ spec:
   entryPoints:
     - websecure-vpn
   routes:
+    - match: Host(`stg.patchats.vpn.patinanetwork.org`) && PathPrefix(`/actuator/env`)
+      kind: Rule
+      priority: 10
+      middlewares:
+        - name: basic-auth
+      services:
+        - name: patchats
+          port: 80
     - match: Host(`stg.patchats.vpn.patinanetwork.org`) && PathPrefix(`/`)
       kind: Rule
+      priority: 1
       services:
         - name: patchats
           port: 80

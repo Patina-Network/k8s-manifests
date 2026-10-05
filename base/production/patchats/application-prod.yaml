@@ -1,21 +1,9 @@
-# override any Spring app properties here
-
-springdoc:
-  swagger-ui:
-    enabled: true
-  api-docs:
-    enabled: true
+# shared defaults live in base/base/patchats/application.yaml
 
 server:
   url: https://patchats.patinanetwork.org
-
-management:
-  endpoint:
-    env:
-      # /actuator/* is pwd protected so this is ok
-      # show-values: "always"
-  endpoints:
-    web:
-      exposure:
-        # add beans and env
-        include: prometheus, health, beans, env
+# management:
+#   endpoint:
+#     env:
+#       # /actuator/* is pwd protected so this is ok
+#       show-values: "always"

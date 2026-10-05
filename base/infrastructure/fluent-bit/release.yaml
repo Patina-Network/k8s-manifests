@@ -15,6 +15,8 @@ spec:
         name: fluent
         namespace: flux-system
   values:
+    tolerations:
+      - operator: Exists
     resources:
       requests:
         cpu: 50m

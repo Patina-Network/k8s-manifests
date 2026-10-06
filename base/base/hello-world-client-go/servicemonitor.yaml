@@ -1,0 +1,12 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: hello-world-client-go
+spec:
+  selector:
+    matchLabels:
+      app: hello-world-client-go
+  endpoints:
+    - port: http-web
+      path: /metrics
+      interval: 30s

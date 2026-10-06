@@ -12,3 +12,10 @@ spec:
           operator: Equal
           value: spot
           effect: NoSchedule
+      containers:
+        - name: hello-world-client-java
+          env:
+            - name: ENVIRONMENT
+              value: staging
+            - name: HELLO_WORLD_CLIENT_URLS
+              value: https://stg.hello-world-client-go.vpn.patinanetwork.org,https://stg.hello-world-client-rust.vpn.patinanetwork.org

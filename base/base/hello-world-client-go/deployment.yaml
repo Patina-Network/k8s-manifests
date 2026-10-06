@@ -26,28 +26,33 @@ spec:
           ports:
             - name: http-web
               containerPort: 8080
+          startupProbe:
+            httpGet:
+              path: /livez
+              port: http-web
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 24
           readinessProbe:
             httpGet:
-              path: /healthz
+              path: /readyz
               port: http-web
-            initialDelaySeconds: 5
             periodSeconds: 15
             timeoutSeconds: 5
             failureThreshold: 5
           livenessProbe:
             httpGet:
-              path: /healthz
+              path: /livez
               port: http-web
-            initialDelaySeconds: 5
             periodSeconds: 30
             timeoutSeconds: 5
             failureThreshold: 3
           env:
             - name: VERSION
               value: "N/A" # replaced by the overlay kustomization.yaml
-            - name: GRPC_TARGET
+            - name: HELLO_WORLD_SERVICE_GRPC_HOST
               value: hello-world-grpc-service:50051
-            - name: GRPC_TLS
+            - name: HELLO_WORLD_SERVICE_GRPC_TLS
               value: "false"
           resources:
             requests:

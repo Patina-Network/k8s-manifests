@@ -11,7 +11,7 @@ commonLabels:
   app: hello-world-client-java
   environment: staging
 images:
-  - name: patinanetwork/hello-world-client-java
+  - name: patinanetwork/hello-world-client-java-arm
     newTag: staging-cc894be
 
 replacements:

@@ -18,4 +18,4 @@ spec:
             - name: ENVIRONMENT
               value: staging
             - name: HELLO_WORLD_CLIENT_URLS
-              value: https://stg.hello-world-client-go.vpn.patinanetwork.org,https://stg.hello-world-client-rust.vpn.patinanetwork.org
+              value: https://stg.hello-world-grpc-client-go.vpn.patinanetwork.org,https://stg.hello-world-grpc-client-rust.vpn.patinanetwork.org

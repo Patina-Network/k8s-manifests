@@ -7,7 +7,7 @@ spec:
   entryPoints:
     - web-vpn
   routes:
-    - match: Host(`stg.hello-world-client-java.vpn.patinanetwork.org`) && PathPrefix(`/`)
+    - match: Host(`stg.hello-world-grpc-client-java.vpn.patinanetwork.org`) && PathPrefix(`/`)
       kind: Rule
       middlewares:
         - name: redirect-to-https
@@ -24,7 +24,7 @@ spec:
   entryPoints:
     - websecure-vpn
   routes:
-    - match: Host(`stg.hello-world-client-java.vpn.patinanetwork.org`) && PathPrefix(`/`)
+    - match: Host(`stg.hello-world-grpc-client-java.vpn.patinanetwork.org`) && PathPrefix(`/`)
       kind: Rule
       services:
         - name: hello-world-client-java

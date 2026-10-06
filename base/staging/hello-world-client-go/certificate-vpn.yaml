@@ -6,7 +6,7 @@ metadata:
 spec:
   secretName: staging-hello-world-client-go-vpn-tls
   dnsNames:
-    - stg.hello-world-client-go.vpn.patinanetwork.org
+    - stg.hello-world-grpc-client-go.vpn.patinanetwork.org
   issuerRef:
     name: letsencrypt
     kind: ClusterIssuer

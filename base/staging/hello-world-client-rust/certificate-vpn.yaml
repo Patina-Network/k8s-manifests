@@ -6,7 +6,7 @@ metadata:
 spec:
   secretName: staging-hello-world-client-rust-vpn-tls
   dnsNames:
-    - stg.hello-world-client-rust.vpn.patinanetwork.org
+    - stg.hello-world-grpc-client-rust.vpn.patinanetwork.org
   issuerRef:
     name: letsencrypt
     kind: ClusterIssuer

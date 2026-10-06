@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: hello-world-client-rust
-          image: patinanetwork/hello-world-client-rust
+          image: patinanetwork/hello-world-client-rust-arm
           ports:
             - name: http-web
               containerPort: 8080

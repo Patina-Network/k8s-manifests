@@ -6,7 +6,7 @@ metadata:
 spec:
   secretName: production-hello-world-client-java-vpn-tls
   dnsNames:
-    - hello-world-client-java.vpn.patinanetwork.org
+    - hello-world-grpc-client-java.vpn.patinanetwork.org
   issuerRef:
     name: letsencrypt
     kind: ClusterIssuer

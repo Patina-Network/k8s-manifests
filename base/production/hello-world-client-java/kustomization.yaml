@@ -11,7 +11,7 @@ commonLabels:
   app: hello-world-client-java
   environment: production
 images:
-  - name: patinanetwork/hello-world-client-java
+  - name: patinanetwork/hello-world-client-java-arm
     newTag: "0000000" # update me to change version
 
 replacements:

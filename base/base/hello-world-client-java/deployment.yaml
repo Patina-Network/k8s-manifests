@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: hello-world-client-java
-          image: patinanetwork/hello-world-client-java
+          image: patinanetwork/hello-world-client-java-arm
           ports:
             - name: http-web
               containerPort: 8080

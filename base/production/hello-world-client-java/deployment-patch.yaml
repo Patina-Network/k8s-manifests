@@ -18,4 +18,4 @@ spec:
             - name: ENVIRONMENT
               value: production
             - name: HELLO_WORLD_CLIENT_URLS
-              value: https://hello-world-client-go.vpn.patinanetwork.org,https://hello-world-client-rust.vpn.patinanetwork.org
+              value: https://hello-world-grpc-client-go.vpn.patinanetwork.org,https://hello-world-grpc-client-rust.vpn.patinanetwork.org

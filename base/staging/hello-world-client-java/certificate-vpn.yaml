@@ -6,7 +6,7 @@ metadata:
 spec:
   secretName: staging-hello-world-client-java-vpn-tls
   dnsNames:
-    - stg.hello-world-client-java.vpn.patinanetwork.org
+    - stg.hello-world-grpc-client-java.vpn.patinanetwork.org
   issuerRef:
     name: letsencrypt
     kind: ClusterIssuer

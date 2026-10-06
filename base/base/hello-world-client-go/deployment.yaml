@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: hello-world-client-go
-          image: patinanetwork/hello-world-client-go
+          image: patinanetwork/hello-world-client-go-arm
           ports:
             - name: http-web
               containerPort: 8080

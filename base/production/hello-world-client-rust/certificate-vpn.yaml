@@ -6,7 +6,7 @@ metadata:
 spec:
   secretName: production-hello-world-client-rust-vpn-tls
   dnsNames:
-    - hello-world-client-rust.vpn.patinanetwork.org
+    - hello-world-grpc-client-rust.vpn.patinanetwork.org
   issuerRef:
     name: letsencrypt
     kind: ClusterIssuer

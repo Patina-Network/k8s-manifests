@@ -1,0 +1,12 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: hello-world-client-rust
+spec:
+  selector:
+    matchLabels:
+      app: hello-world-client-rust
+  endpoints:
+    - port: http-web
+      path: /metrics
+      interval: 30s

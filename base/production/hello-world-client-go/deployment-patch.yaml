@@ -12,3 +12,10 @@ spec:
           operator: Equal
           value: production
           effect: NoSchedule
+      containers:
+        - name: hello-world-client-go
+          env:
+            - name: ENVIRONMENT
+              value: production
+            - name: HELLO_WORLD_CLIENT_URLS
+              value: https://hello-world-client-java.vpn.patinanetwork.org,https://hello-world-client-rust.vpn.patinanetwork.org

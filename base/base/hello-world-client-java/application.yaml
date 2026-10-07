@@ -1,0 +1,6 @@
+# override per env in application-<profile>.yaml
+
+grpc:
+  hello-world-client-service:
+    host: hello-world-grpc-service:50051
+    tls: false

@@ -20,9 +20,19 @@ spec:
         app: hello-world-client-java
         version: "N/A" # replaced by the overlay kustomization.yaml
     spec:
+      volumes:
+        - name: spring-config
+          configMap:
+            name: hello-world-client-java-spring-config
       containers:
         - name: hello-world-client-java
           image: patinanetwork/hello-world-client-java-arm
+          args:
+            - --spring.config.additional-location=file:/config/
+          volumeMounts:
+            - name: spring-config
+              mountPath: /config
+              readOnly: true
           ports:
             - name: http-web
               containerPort: 8080
@@ -50,10 +60,6 @@ spec:
           env:
             - name: VERSION
               value: "N/A" # replaced by the overlay kustomization.yaml
-            - name: HELLO_WORLD_SERVICE_GRPC_HOST
-              value: hello-world-grpc-service:50051
-            - name: HELLO_WORLD_SERVICE_GRPC_TLS
-              value: "false"
           resources:
             requests:
               memory: "64Mi"

@@ -17,6 +17,8 @@ spec:
           env:
             - name: ENVIRONMENT
               value: production
+            - name: DISCORD_ROLE_ID
+              value: "1554880229640638474"
           envFrom:
             - secretRef:
                 name: codebloom-standup-bot-production-secrets

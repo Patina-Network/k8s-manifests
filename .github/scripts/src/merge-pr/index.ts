@@ -10,13 +10,10 @@ import {
   MERGE_STATUS_CHECK_NAME,
 } from "@/lib/version-only-staging-pr";
 
-const { baseSha, commenter, prNumber, runUrl } = await yargs(
-  hideBin(process.argv),
-)
+const { baseSha, commenter, prNumber, runUrl } = await yargs(hideBin(process.argv))
   .option("baseSha", {
     type: "string",
-    describe:
-      "SHA of the PR's base commit to diff the checked-out head against",
+    describe: "SHA of the PR's base commit to diff the checked-out head against",
     demandOption: true,
   })
   .option("prNumber", {
@@ -38,8 +35,7 @@ const { baseSha, commenter, prNumber, runUrl } = await yargs(
   .parse();
 
 export async function main() {
-  const { githubAppAppId, githubAppInstallationId, githubAppPemContent } =
-    parseCiEnv(process.env);
+  const { githubAppAppId, githubAppInstallationId, githubAppPemContent } = parseCiEnv(process.env);
 
   const ghClient = await GitHubClient.createWithGithubAppToken({
     appId: githubAppAppId,
@@ -68,9 +64,7 @@ export async function main() {
 
   const changedFiles = await getChangedFiles(baseSha);
   const appNames = [...new Set(changedFiles.map(getStagingAppName))];
-  const missingOwnerApps = appNames.filter(
-    (appName) => getOwningTeams(appName).length === 0,
-  );
+  const missingOwnerApps = appNames.filter((appName) => getOwningTeams(appName).length === 0);
 
   if (missingOwnerApps.length > 0) {
     const summary = `No owning team is configured in \`.github/OWNERS.yaml\` for: ${missingOwnerApps
@@ -145,9 +139,8 @@ async function mergeAndReportStatus({
       checkRunId,
       conclusion: succeeded ? "success" : "failure",
       detailsUrl: runUrl,
-      output:
-        succeeded ?
-          { summary: "PR merged.", title: "Merged" }
+      output: succeeded
+        ? { summary: "PR merged.", title: "Merged" }
         : {
             summary: "See the workflow run for details.",
             title: "Merge failed",

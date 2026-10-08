@@ -30,7 +30,7 @@ jobs:
           fetch-depth: 1
 
       - name: Setup pipeline
-        uses: tahminator/pipeline/actions/setup@ff36293f28519b2b90d7e28918a6885d9baf019e # 1.0.90
+        uses: tahminator/pipeline/actions/setup@52eb2a0451daba94989db6a6fa232e689144aa50 # 1.0.96
         with:
           LINT_CI: true
           INSTALL_JUST: true
@@ -53,7 +53,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup pipeline
-        uses: tahminator/pipeline/actions/setup@ff36293f28519b2b90d7e28918a6885d9baf019e # 1.0.90
+        uses: tahminator/pipeline/actions/setup@52eb2a0451daba94989db6a6fa232e689144aa50 # 1.0.96
         with:
           LINT_CI: true
           INSTALL_JUST: true

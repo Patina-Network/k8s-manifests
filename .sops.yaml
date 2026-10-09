@@ -2,6 +2,9 @@ stores:
   yaml:
     indent: 2
 creation_rules:
+  - path_regex: ^base/infrastructure/(.*/)?secrets\.yaml$
+    encrypted_regex: "^(data|stringData)$"
+    azure_keyvault: "https://sops-administrators.vault.azure.net/keys/sops-administrators-key/"
   - path_regex: .*\.yaml
     encrypted_regex: "^(data|stringData)$"
     azure_keyvault: "https://sops-master.vault.azure.net/keys/sops-key/"

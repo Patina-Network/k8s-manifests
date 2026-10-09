@@ -18,7 +18,7 @@ commonLabels:
   environment: staging
 images:
   - name: patinanetwork/patchats-arm
-    newTag: staging-597325b
+    newTag: staging-01cc71e
 
 replacements:
   - source:

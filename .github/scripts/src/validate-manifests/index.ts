@@ -26,8 +26,7 @@ const { baseSha, prNumber } = await yargs(hideBin(process.argv))
   .parse();
 
 export async function main() {
-  const { githubAppAppId, githubAppInstallationId, githubAppPemContent } =
-    parseCiEnv(process.env);
+  const { githubAppAppId, githubAppInstallationId, githubAppPemContent } = parseCiEnv(process.env);
 
   const ghClient = await GitHubClient.createWithGithubAppToken({
     appId: githubAppAppId,
@@ -51,11 +50,7 @@ export async function main() {
   }
 
   const targets = [
-    ...new Set(
-      (await fluxClient.findKustomizations()).map(
-        (kustomization) => kustomization.path,
-      ),
-    ),
+    ...new Set((await fluxClient.findKustomizations()).map((kustomization) => kustomization.path)),
   ].sort((a, b) => a.localeCompare(b));
   console.log(`found ${targets.length} targets`);
 
@@ -83,9 +78,7 @@ async function checkSecretTypes(): Promise<void> {
     files.push(file);
   }
 
-  const contents = await Promise.all(
-    files.map((file) => Bun.file(file).text()),
-  );
+  const contents = await Promise.all(files.map((file) => Bun.file(file).text()));
 
   const violations: string[] = [];
   contents.forEach((content, i) => {
@@ -103,10 +96,7 @@ async function checkSecretTypes(): Promise<void> {
   }
 }
 
-async function buildFluxTargets(
-  targets: string[],
-  outdir: string,
-): Promise<void> {
+async function buildFluxTargets(targets: string[], outdir: string): Promise<void> {
   const results = await Promise.all(
     targets.map(async (target) => {
       console.log(`==> kustomize build ${target}`);
@@ -115,19 +105,14 @@ async function buildFluxTargets(
     }),
   );
 
-  const failures = results
-    .filter((result) => !result.built)
-    .map((result) => result.target);
+  const failures = results.filter((result) => !result.built).map((result) => result.target);
 
   if (failures.length > 0) {
     throw new Error(`kustomize build failed for: ${failures.join(", ")}`);
   }
 }
 
-async function buildFluxTarget(
-  target: string,
-  outdir: string,
-): Promise<boolean> {
+async function buildFluxTarget(target: string, outdir: string): Promise<boolean> {
   const result = await $`kustomize build ${target}`.quiet().nothrow();
   if (result.exitCode !== 0) {
     console.error(`FAIL: kustomize build ${target}`);

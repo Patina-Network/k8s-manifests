@@ -11,8 +11,7 @@ import {
 const { baseSha, prNumber, runUrl } = await yargs(hideBin(process.argv))
   .option("baseSha", {
     type: "string",
-    describe:
-      "SHA of the PR's base commit to diff the checked-out head against",
+    describe: "SHA of the PR's base commit to diff the checked-out head against",
     demandOption: true,
   })
   .option("prNumber", {
@@ -29,8 +28,7 @@ const { baseSha, prNumber, runUrl } = await yargs(hideBin(process.argv))
   .parse();
 
 export async function main() {
-  const { githubAppAppId, githubAppInstallationId, githubAppPemContent } =
-    parseCiEnv(process.env);
+  const { githubAppAppId, githubAppInstallationId, githubAppPemContent } = parseCiEnv(process.env);
 
   const ghClient = await GitHubClient.createWithGithubAppToken({
     appId: githubAppAppId,

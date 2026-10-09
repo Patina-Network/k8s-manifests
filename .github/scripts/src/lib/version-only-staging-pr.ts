@@ -13,10 +13,7 @@ export async function checkVersionOnlyStagingPr(
 ): Promise<VersionOnlyStagingPrCheck> {
   const changedFiles = await getChangedFiles(baseSha);
 
-  if (
-    changedFiles.length === 0 ||
-    !changedFiles.every(isStagingKustomizationFile)
-  ) {
+  if (changedFiles.length === 0 || !changedFiles.every(isStagingKustomizationFile)) {
     return { changedFiles, eligible: false };
   }
 
@@ -30,9 +27,7 @@ export async function checkVersionOnlyStagingPr(
 export async function getChangedFiles(baseSha: string): Promise<string[]> {
   await fetchCommit(baseSha);
 
-  const { stdout } = await $`git diff --name-only ${baseSha} HEAD`
-    .quiet()
-    .nothrow();
+  const { stdout } = await $`git diff --name-only ${baseSha} HEAD`.quiet().nothrow();
 
   return stdout
     .toString()
@@ -67,16 +62,10 @@ function isStagingKustomizationFile(file: string): boolean {
   );
 }
 
-async function getChangedDiffLines(
-  base: string,
-  head: string,
-  files: string[],
-): Promise<string[]> {
+async function getChangedDiffLines(base: string, head: string, files: string[]): Promise<string[]> {
   const topLevelFiles = files.map((file) => `:/${file}`);
 
-  const { stdout } = await $`git diff ${base} ${head} -- ${topLevelFiles}`
-    .quiet()
-    .nothrow();
+  const { stdout } = await $`git diff ${base} ${head} -- ${topLevelFiles}`.quiet().nothrow();
 
   return stdout
     .toString()

@@ -18,7 +18,7 @@ commonLabels:
   environment: production
 images:
   - name: patinanetwork/codebloom-arm
-    newTag: 24f13ce
+    newTag: a32a37f
 
 replacements:
   - source:

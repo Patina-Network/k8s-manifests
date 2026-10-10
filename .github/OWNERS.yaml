@@ -1,16 +1,16 @@
 # Maps a `base/<name>` app directory to the GitHub teams allowed to run
 # `/merge` on version-only staging PRs touching that app.
 codebloom:
-  - "@Patina-Network/codebloom"
+  - "@Patina-Network/dino"
 codebloom-standup-bot:
-  - "@Patina-Network/codebloom"
+  - "@Patina-Network/dino"
 hello-world-grpc-service:
-  - "@Patina-Network/codebloom"
+  - "@Patina-Network/dino"
 patchats:
   - "@Patina-Network/patchats"
 hello-world-client-go:
-  - "@Patina-Network/codebloom"
+  - "@Patina-Network/dino"
 hello-world-client-rust:
-  - "@Patina-Network/codebloom"
+  - "@Patina-Network/dino"
 hello-world-client-java:
-  - "@Patina-Network/codebloom"
+  - "@Patina-Network/dino"

@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - ./codebloom
+  - ./codebloom-leetcode-auth-stealer-service
   - ./middleware
   - ./azure
   - ./patchats

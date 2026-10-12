@@ -1,0 +1,31 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: production
+resources:
+  - ../../base/codebloom-leetcode-auth-stealer-service
+  - certificate-vpn.yaml
+  - ingress-vpn.yaml
+patches:
+  - path: deployment-patch.yaml
+commonLabels:
+  app: codebloom-leetcode-auth-stealer-service
+  environment: production
+images:
+  - name: patinanetwork/codebloom-leetcode-auth-stealer-service-arm
+    newTag: staging-c10e4e2
+
+replacements:
+  - source:
+      kind: Deployment
+      name: codebloom-leetcode-auth-stealer-service
+      fieldPath: spec.template.spec.containers.[name=codebloom-leetcode-auth-stealer-service].image
+      options:
+        delimiter: ":"
+        index: 1
+    targets:
+      - select:
+          kind: Deployment
+          name: codebloom-leetcode-auth-stealer-service
+        fieldPaths:
+          - spec.template.spec.containers.[name=codebloom-leetcode-auth-stealer-service].env.[name=VERSION].value
+          - spec.template.metadata.labels.version

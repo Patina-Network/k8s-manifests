@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: production-codebloom-leetcode-auth-stealer-service-vpn-tls
+  namespace: production
+spec:
+  secretName: production-codebloom-leetcode-auth-stealer-service-vpn-tls
+  dnsNames:
+    - codebloom-leetcode-auth-stealer-service.vpn.patinanetwork.org
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer

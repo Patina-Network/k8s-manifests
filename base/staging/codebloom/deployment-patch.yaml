@@ -15,8 +15,6 @@ spec:
       containers:
         - name: codebloom
           env:
-            - name: LEETCODE_AUTH_STEALER_SERVICE_TARGET
-              value: codebloom-leetcode-auth-stealer-service:50051
             - name: VITE_STAGING
               value: "true"
             # image by default sets SPRING_PROFILES_ACTIVE=prod; override so application-stg.yaml loads

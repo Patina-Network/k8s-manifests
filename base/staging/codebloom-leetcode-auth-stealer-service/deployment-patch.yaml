@@ -17,5 +17,11 @@ spec:
           env:
             - name: GRPC_REFLECTION
               value: "true"
+            - name: AUTH_TIMEOUT_SECONDS
+              value: "180"
+            - name: AUTH_WAIT_FOR_FORM_TIMEOUT_SECONDS
+              value: "60"
+            - name: AUTH_COMPLETE_CHALLENGE_TIMEOUT_SECONDS
+              value: "60"
             - name: ENVIRONMENT
               value: staging

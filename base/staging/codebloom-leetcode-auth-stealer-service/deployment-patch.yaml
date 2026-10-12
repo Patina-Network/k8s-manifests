@@ -23,5 +23,9 @@ spec:
               value: "60"
             - name: AUTH_COMPLETE_CHALLENGE_TIMEOUT_SECONDS
               value: "60"
+            # uncomment if you want to be able to port-forward 5900
+            # and attach a display to browser
+            - name: DISABLE_VIRTUAL
+              value: "true"
             - name: ENVIRONMENT
               value: staging

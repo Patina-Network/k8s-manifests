@@ -43,7 +43,7 @@ spec:
                 - /bin/sh
                 - -c
                 - |
-                  set -e
+                  set -eo pipefail
                   DATE=$(date +%Y-%m-%d_%H-%M-%S)
                   echo "--- Starting Backup Session: $DATE ---"
 

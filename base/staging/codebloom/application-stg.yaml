@@ -15,7 +15,7 @@ leetcode:
 
 grpc:
   leetcode-auth-stealer-service:
-    host: leetcode-auth-stealer-service:50051
+    host: codebloom-leetcode-auth-stealer-service:50051
     tls: false
     timeout: 1m
 

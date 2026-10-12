@@ -28,7 +28,7 @@ spec:
             - name: grpc
               containerPort: 50051
             - name: http
-              containerPort: 8080
+              containerPort: 8081
           startupProbe:
             httpGet:
               path: /livez

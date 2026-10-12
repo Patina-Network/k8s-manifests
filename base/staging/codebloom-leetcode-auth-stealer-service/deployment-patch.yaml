@@ -15,5 +15,7 @@ spec:
       containers:
         - name: codebloom-leetcode-auth-stealer-service
           env:
+            - name: GRPC_REFLECTION
+              value: "true"
             - name: ENVIRONMENT
               value: staging

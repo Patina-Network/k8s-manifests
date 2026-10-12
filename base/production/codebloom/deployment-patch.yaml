@@ -14,6 +14,9 @@ spec:
           effect: NoSchedule
       containers:
         - name: codebloom
+          env:
+            - name: LEETCODE_AUTH_STEALER_SERVICE_TARGET
+              value: codebloom-leetcode-auth-stealer-service:50051
           envFrom:
             - secretRef:
                 name: codebloom-production-secrets

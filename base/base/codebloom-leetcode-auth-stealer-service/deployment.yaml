@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codebloom-leetcode-auth-stealer-service
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: codebloom-leetcode-auth-stealer-service
+  template:
+    metadata:
+      labels:
+        app: codebloom-leetcode-auth-stealer-service
+        version: "N/A"
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+      containers:
+        - name: codebloom-leetcode-auth-stealer-service
+          image: patinanetwork/codebloom-leetcode-auth-stealer-service-arm
+          ports:
+            - name: grpc
+              containerPort: 50051
+            - name: http
+              containerPort: 8080
+          startupProbe:
+            httpGet:
+              path: /livez
+              port: http
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 60
+          livenessProbe:
+            httpGet:
+              path: /livez
+              port: http
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+          env:
+            - name: VERSION
+              value: "N/A"
+            - name: AUTH_TIMEOUT_SECONDS
+              value: "60"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "1"

@@ -9,6 +9,16 @@ management:
       # /actuator/* is pwd protected so this is ok
       show-values: "always"
 
+leetcode:
+  auth:
+    strategy: direct # can be "direct" or "github"
+
+grpc:
+  leetcode-auth-stealer-service:
+    host: leetcode-auth-stealer-service:50051
+    tls: false
+    timeout: 1m
+
 ff:
   # duels: true
   user-metrics: true

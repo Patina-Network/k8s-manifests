@@ -54,7 +54,7 @@ spec:
             - name: VERSION
               value: "N/A"
             - name: AUTH_TIMEOUT_SECONDS
-              value: "60"
+              value: "120"
           resources:
             requests:
               memory: "256Mi"

@@ -17,7 +17,7 @@ grpc:
   leetcode-auth-stealer-service:
     host: codebloom-leetcode-auth-stealer-service:50051
     tls: false
-    timeout: 1m
+    timeout: 2m
 
 ff:
   # duels: true

@@ -1,5 +1,15 @@
 # shared defaults live in base/base/codebloom/application.yaml
 
+leetcode:
+  auth:
+    strategy: direct # can be "direct" or "github"
+
+grpc:
+  leetcode-auth-stealer-service:
+    host: codebloom-leetcode-auth-stealer-service:50051
+    tls: false
+    timeout: 2m
+
 server:
   url: https://codebloom.patinanetwork.org
 # management:

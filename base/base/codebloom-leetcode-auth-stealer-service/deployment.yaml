@@ -19,17 +19,16 @@ spec:
       securityContext:
         runAsNonRoot: true
         runAsUser: 10001
-      # All containers use Gluetun's DNS, not cluster DNS outside the tunnel.
-      dnsPolicy: None
-      dnsConfig:
-        nameservers:
-          - 127.0.0.1
-      volumes:
-        - name: dev-net-tun
-          hostPath:
-            path: /dev/net/tun
-            type: CharDevice
       # gluetun/vpn can be enabled by uncommenting this section out if necessary
+      # dnsPolicy: None
+      # dnsConfig:
+      #   nameservers:
+      #     - 127.0.0.1
+      # volumes:
+      #   - name: dev-net-tun
+      #     hostPath:
+      #       path: /dev/net/tun
+      #       type: CharDevice
       # initContainers:
       #   - name: gluetun
       #     image: qmcgaw/gluetun:v3.41.3

@@ -3,9 +3,9 @@ kind: Deployment
 metadata:
   name: codebloom-leetcode-auth-stealer-service
 spec:
+  # can't use more than 1 with gluetun
   replicas: 1
   strategy:
-    # One WireGuard identity cannot be shared by overlapping pods.
     type: Recreate
   selector:
     matchLabels:
@@ -46,6 +46,7 @@ spec:
             - name: WIREGUARD_PRIVATE_KEY
               valueFrom:
                 secretKeyRef:
+                  # each env should supply this
                   name: codebloom-leetcode-auth-stealer-service-vpn
                   key: WIREGUARD_PRIVATE_KEY
             - name: WIREGUARD_ADDRESSES
@@ -53,17 +54,20 @@ spec:
                 secretKeyRef:
                   name: codebloom-leetcode-auth-stealer-service-vpn
                   key: WIREGUARD_ADDRESSES
+            - name: SERVER_COUNTRIES
+              value: USA
+            # east coast only to minimize possible latency issues
+            - name: SERVER_CITIES
+              value: Ashburn VA,Washington DC,New York NY,Secaucus NJ,Boston MA,Raleigh NC
             - name: FIREWALL
               value: "on"
-            # Preserve inbound gRPC, probes, HTTP, and Prometheus scraping.
+            # exposes container ports back out
             - name: FIREWALL_INPUT_PORTS
               value: "50051,8081"
             # AKS pod/node CIDRs: keep cross-node replies and probes local.
             # These destinations bypass the VPN; never use all of 10.0.0.0/8.
             - name: FIREWALL_OUTBOUND_SUBNETS
               value: "10.244.0.0/16,10.224.0.0/16"
-            - name: SERVER_COUNTRIES
-              value: Canada
           volumeMounts:
             - name: dev-net-tun
               mountPath: /dev/net/tun

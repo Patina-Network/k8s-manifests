@@ -5,6 +5,7 @@ resources:
   - ../../base/codebloom-leetcode-auth-stealer-service
   - certificate-vpn.yaml
   - ingress-vpn.yaml
+  - secrets.yaml
 patches:
   - path: deployment-patch.yaml
 commonLabels:

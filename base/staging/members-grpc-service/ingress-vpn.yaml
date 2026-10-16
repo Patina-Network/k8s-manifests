@@ -1,0 +1,49 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: members-grpc-service-vpn-web
+  namespace: staging
+spec:
+  entryPoints:
+    - web-vpn
+  routes:
+    - match: Host(`stg.members-grpc-service.vpn.patinanetwork.org`) && PathPrefix(`/`)
+      kind: Rule
+      middlewares:
+        - name: redirect-to-https
+      services:
+        - name: members-grpc-service
+          port: 80
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: members-grpc-service-vpn-websecure
+  namespace: staging
+spec:
+  entryPoints:
+    - websecure-vpn
+  routes:
+    - match: Host(`stg.members-grpc-service.vpn.patinanetwork.org`) && PathPrefix(`/`)
+      kind: Rule
+      services:
+        - name: members-grpc-service
+          port: 80
+  tls:
+    secretName: staging-members-grpc-service-vpn-tls
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: members-grpc-service-vpn-grpc
+  namespace: staging
+spec:
+  entryPoints:
+    - vpn-grpc
+  routes:
+    - match: HostSNI(`stg.members-grpc-service.vpn.patinanetwork.org`)
+      services:
+        - name: members-grpc-service
+          port: 50051
+  tls:
+    secretName: staging-members-grpc-service-vpn-tls

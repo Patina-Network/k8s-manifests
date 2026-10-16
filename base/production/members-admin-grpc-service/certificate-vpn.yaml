@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: production-members-admin-grpc-service-vpn-tls
+  namespace: production
+spec:
+  secretName: production-members-admin-grpc-service-vpn-tls
+  dnsNames:
+    - members-admin-grpc-service.vpn.patinanetwork.org
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer

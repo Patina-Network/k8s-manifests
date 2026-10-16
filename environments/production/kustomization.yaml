@@ -10,6 +10,7 @@ resources:
   - ./patchats
   - ./hello-world-grpc-service
   - ./members-grpc-service
+  - ./members-admin-grpc-service
   - ./docs
   - ./hello-world-client-go
   - ./hello-world-client-rust

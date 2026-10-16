@@ -1,0 +1,31 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: staging
+resources:
+  - ../../base/members-admin-grpc-service
+  - certificate-vpn.yaml
+  - ingress-vpn.yaml
+patches:
+  - path: deployment-patch.yaml
+commonLabels:
+  app: members-admin-grpc-service
+  environment: staging
+images:
+  - name: patinanetwork/members-admin-grpc-service-arm
+    newTag: 1.0.0
+
+replacements:
+  - source:
+      kind: Deployment
+      name: members-admin-grpc-service
+      fieldPath: spec.template.spec.containers.[name=members-admin-grpc-service].image
+      options:
+        delimiter: ":"
+        index: 1
+    targets:
+      - select:
+          kind: Deployment
+          name: members-admin-grpc-service
+        fieldPaths:
+          - spec.template.spec.containers.[name=members-admin-grpc-service].env.[name=VERSION].value
+          - spec.template.metadata.labels.version

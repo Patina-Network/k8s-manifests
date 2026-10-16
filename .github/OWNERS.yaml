@@ -8,6 +8,8 @@ hello-world-grpc-service:
   - "@Patina-Network/dino"
 members-grpc-service:
   - "@Patina-Network/dino"
+members-admin-grpc-service:
+  - "@Patina-Network/dino"
 patchats:
   - "@Patina-Network/patchats"
 hello-world-client-go:

@@ -1,0 +1,12 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: members-grpc-service
+spec:
+  selector:
+    matchLabels:
+      app: members-grpc-service
+  endpoints:
+    - port: http-web
+      path: /metrics
+      interval: 30s

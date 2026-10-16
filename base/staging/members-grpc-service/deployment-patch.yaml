@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: members-grpc-service
+spec:
+  template:
+    spec:
+      nodeSelector:
+        agentpool: stgpoolv1
+      tolerations:
+        - key: kubernetes.azure.com/scalesetpriority
+          operator: Equal
+          value: spot
+          effect: NoSchedule
+      containers:
+        - name: members-grpc-service
+          env:
+            - name: GRPC_REFLECTION
+              value: "true"
+          envFrom:
+            - secretRef:
+                name: members-grpc-service-staging-secrets

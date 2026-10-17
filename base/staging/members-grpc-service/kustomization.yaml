@@ -13,7 +13,7 @@ commonLabels:
   environment: staging
 images:
   - name: patinanetwork/members-grpc-service-arm
-    newTag: 1.0.0
+    newTag: staging-e22c7a64
 
 replacements:
   - source:

@@ -1,0 +1,15 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directories:
+      - /
+      - "/.github/composite/**"
+    schedule: { interval: weekly }
+  - package-ecosystem: bun
+    directory: /.github/scripts
+    schedule: { interval: weekly }
+  - package-ecosystem: docker
+    directories:
+      - /base/base/codebloom-leetcode-auth-stealer-service
+      - /base/infrastructure/postgres/backup
+    schedule: { interval: weekly }

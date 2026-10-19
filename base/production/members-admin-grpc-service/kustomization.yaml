@@ -11,7 +11,7 @@ commonLabels:
   app: members-admin-grpc-service
   environment: production
 images:
-  - name: patinanetwork/members-admin-grpc-service-arm
+  - name: patinanetwork/members-grpc-service-arm
     newTag: 1.0.0
 
 replacements:

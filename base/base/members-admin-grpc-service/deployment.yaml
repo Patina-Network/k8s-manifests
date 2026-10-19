@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: members-admin-grpc-service
-          image: patinanetwork/members-admin-grpc-service-arm
+          image: patinanetwork/members-grpc-service-arm
           ports:
             - name: http-web
               containerPort: 3000
@@ -47,6 +47,8 @@ spec:
           env:
             - name: VERSION
               value: "N/A" # replaced by the overlay kustomization.yaml
+            - name: PROFILES
+              value: default,admin
           resources:
             requests:
               memory: "16Mi"

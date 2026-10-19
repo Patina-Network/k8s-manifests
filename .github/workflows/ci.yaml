@@ -15,7 +15,7 @@ concurrency:
 jobs:
   determineVersionOnlyStagingPR:
     name: Check if PR is only bumping a staging version & prompt for /merge if it is
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
 
     permissions:
       pull-requests: write
@@ -44,7 +44,7 @@ jobs:
 
   lintManifests:
     name: Lint & validate Kubernetes manifests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
 
     if: github.event_name == 'pull_request'
 

@@ -12,7 +12,7 @@ commonLabels:
   environment: staging
 images:
   - name: patinanetwork/hello-world-client-java-arm
-    newTag: staging-61b2dd1
+    newTag: staging-08a5379
 
 replacements:
   - source:

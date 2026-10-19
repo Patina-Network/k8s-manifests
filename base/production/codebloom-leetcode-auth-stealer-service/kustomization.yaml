@@ -13,7 +13,7 @@ commonLabels:
   environment: production
 images:
   - name: patinanetwork/codebloom-leetcode-auth-stealer-service-arm
-    newTag: 58a3b78
+    newTag: 073d8d9
 
 replacements:
   - source:

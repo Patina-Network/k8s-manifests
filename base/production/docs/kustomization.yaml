@@ -12,7 +12,7 @@ commonLabels:
   environment: production
 images:
   - name: patinanetwork/docs-arm
-    newTag: 1.0.18
+    newTag: 1.0.19
 
 replacements:
   - source:

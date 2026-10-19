@@ -19,7 +19,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: backup
-              image: patinanetwork/pg-az:1.0.0
+              image: patinanetwork/pg-az:1.0.7
               env:
                 - name: PGHOST
                   value: postgres.infrastructure.svc.cluster.local

@@ -30,7 +30,7 @@ jobs:
           LINT_CI: true
 
       - name: Slash Command Dispatch
-        uses: tahminator/pipeline/actions/commands@ff36293f28519b2b90d7e28918a6885d9baf019e # 1.0.90
+        uses: tahminator/pipeline/actions/commands@0d54deb9e9abab9530e4aa889a6c79c88a0ff5c7 # 1.0.99
         with:
           APP_ID: ${{ secrets._GITHUB_APP_APP_ID }}
           PRIVATE_KEY: ${{ secrets._GITHUB_APP_PEM_CONTENT }}

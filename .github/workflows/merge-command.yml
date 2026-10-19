@@ -30,7 +30,7 @@ permissions:
 jobs:
   getPR:
     name: Get PR head & base SHA
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
 
     outputs:
       base: ${{ steps.pr.outputs.base }}
@@ -59,7 +59,7 @@ jobs:
 
   merge:
     name: Merge PR if eligible
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: getPR
     steps:
       - name: Checkout Repository

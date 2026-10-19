@@ -12,7 +12,7 @@ commonLabels:
   environment: staging
 images:
   - name: patinanetwork/hello-world-client-go-arm
-    newTag: staging-270f8a5
+    newTag: staging-bcdb480
 
 replacements:
   - source:

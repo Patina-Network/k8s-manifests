@@ -63,7 +63,7 @@ jobs:
     needs: getPR
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ needs.getPR.outputs.head }}
           fetch-depth: 1

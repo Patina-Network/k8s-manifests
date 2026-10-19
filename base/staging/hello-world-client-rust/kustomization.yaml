@@ -12,7 +12,7 @@ commonLabels:
   environment: staging
 images:
   - name: patinanetwork/hello-world-client-rust-arm
-    newTag: staging-58c4888
+    newTag: staging-4e2e184
 
 replacements:
   - source:

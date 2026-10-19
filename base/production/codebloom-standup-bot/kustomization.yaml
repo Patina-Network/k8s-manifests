@@ -11,7 +11,7 @@ commonLabels:
   environment: production
 images:
   - name: patinanetwork/codebloom-standup-bot-arm
-    newTag: 073d8d9
+    newTag: 74b745a
 
 replacements:
   - source:

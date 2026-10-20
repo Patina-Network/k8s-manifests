@@ -10,6 +10,8 @@ members-grpc-service:
   - "@Patina-Network/dino"
 members-admin-grpc-service:
   - "@Patina-Network/dino"
+members-admin-dashboard:
+  - "@Patina-Network/dino"
 patchats:
   - "@Patina-Network/patchats"
 hello-world-client-go:

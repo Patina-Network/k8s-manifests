@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: members-admin-dashboard
+spec:
+  template:
+    spec:
+      nodeSelector:
+        agentpool: prodpoolv1
+      tolerations:
+        - key: workload
+          operator: Equal
+          value: production
+          effect: NoSchedule
+      containers:
+        - name: members-admin-dashboard
+          env:
+            - name: ENVIRONMENT
+              value: production

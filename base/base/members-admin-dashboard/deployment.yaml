@@ -50,9 +50,9 @@ spec:
           env:
             - name: VERSION
               value: "N/A" # replaced by the overlay kustomization.yaml
-            - name: HELLO_WORLD_SERVICE_GRPC_HOST
+            - name: MEMBERS_ADMIN_SERVICE_GRPC_HOST
               value: members-admin-grpc-service:50051
-            - name: HELLO_WORLD_SERVICE_GRPC_TLS
+            - name: MEMBERS_ADMIN_SERVICE_GRPC_TLS
               value: "false"
           resources:
             requests:

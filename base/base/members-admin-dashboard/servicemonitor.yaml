@@ -1,0 +1,12 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: members-admin-dashboard
+spec:
+  selector:
+    matchLabels:
+      app: members-admin-dashboard
+  endpoints:
+    - port: http-web
+      path: /metrics
+      interval: 30s

@@ -1,0 +1,33 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: members-admin-dashboard-vpn-web
+  namespace: production
+spec:
+  entryPoints:
+    - web-vpn
+  routes:
+    - match: Host(`members-admin-dashboard.vpn.patinanetwork.org`) && PathPrefix(`/`)
+      kind: Rule
+      middlewares:
+        - name: redirect-to-https
+      services:
+        - name: members-admin-dashboard
+          port: 80
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: members-admin-dashboard-vpn-websecure
+  namespace: production
+spec:
+  entryPoints:
+    - websecure-vpn
+  routes:
+    - match: Host(`members-admin-dashboard.vpn.patinanetwork.org`) && PathPrefix(`/`)
+      kind: Rule
+      services:
+        - name: members-admin-dashboard
+          port: 80
+  tls:
+    secretName: production-members-admin-dashboard-vpn-tls

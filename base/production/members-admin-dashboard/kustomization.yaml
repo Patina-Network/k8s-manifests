@@ -1,0 +1,31 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: production
+resources:
+  - ../../base/members-admin-dashboard
+  - certificate-vpn.yaml
+  - ingress-vpn.yaml
+patches:
+  - path: deployment-patch.yaml
+commonLabels:
+  app: members-admin-dashboard
+  environment: production
+images:
+  - name: patinanetwork/members-admin-dashboard-arm
+    newTag: 1.0.0
+
+replacements:
+  - source:
+      kind: Deployment
+      name: members-admin-dashboard
+      fieldPath: spec.template.spec.containers.[name=members-admin-dashboard].image
+      options:
+        delimiter: ":"
+        index: 1
+    targets:
+      - select:
+          kind: Deployment
+          name: members-admin-dashboard
+        fieldPaths:
+          - spec.template.spec.containers.[name=members-admin-dashboard].env.[name=VERSION].value
+          - spec.template.metadata.labels.version

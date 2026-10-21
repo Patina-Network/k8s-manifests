@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: production-members-admin-dashboard-vpn-tls
+  namespace: production
+spec:
+  secretName: production-members-admin-dashboard-vpn-tls
+  dnsNames:
+    - members-admin-dashboard.vpn.patinanetwork.org
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer

@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: codebloom-leetcode-auth-stealer-service
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   # can't use more than 1 with gluetun
   replicas: 1

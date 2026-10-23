@@ -18,7 +18,7 @@ commonLabels:
   environment: production
 images:
   - name: patinanetwork/patchats-arm
-    newTag: 5ee5f41
+    newTag: 34de6e6
 
 replacements:
   - source:

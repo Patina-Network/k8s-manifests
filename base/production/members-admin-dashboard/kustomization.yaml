@@ -5,6 +5,7 @@ resources:
   - ../../base/members-admin-dashboard
   - certificate-vpn.yaml
   - ingress-vpn.yaml
+  - secrets.yaml
 patches:
   - path: deployment-patch.yaml
 commonLabels:

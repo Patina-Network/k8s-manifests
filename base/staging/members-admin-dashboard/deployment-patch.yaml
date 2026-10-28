@@ -17,3 +17,6 @@ spec:
           env:
             - name: ENVIRONMENT
               value: staging
+          envFrom:
+            - secretRef:
+                name: members-admin-dashboard-staging-secrets

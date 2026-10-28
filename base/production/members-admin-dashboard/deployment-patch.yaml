@@ -17,3 +17,6 @@ spec:
           env:
             - name: ENVIRONMENT
               value: production
+          envFrom:
+            - secretRef:
+                name: members-admin-dashboard-production-secrets

@@ -13,7 +13,7 @@ commonLabels:
   environment: production
 images:
   - name: patinanetwork/members-admin-dashboard-arm
-    newTag: 1.0.3
+    newTag: 1.0.4
 
 replacements:
   - source:

@@ -17,6 +17,3 @@ spec:
           env:
             - name: GRPC_REFLECTION
               value: "true"
-          envFrom:
-            - secretRef:
-                name: members-grpc-service-staging-secrets

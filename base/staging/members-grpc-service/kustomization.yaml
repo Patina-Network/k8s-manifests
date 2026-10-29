@@ -5,7 +5,7 @@ resources:
   - ../../base/members-grpc-service
   - certificate-vpn.yaml
   - ingress-vpn.yaml
-  - secrets.yaml
+  - ../../base/members-grpc-service/staging
 patches:
   - path: deployment-patch.yaml
 commonLabels:

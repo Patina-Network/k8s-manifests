@@ -49,6 +49,9 @@ spec:
               value: "N/A" # replaced by the overlay kustomization.yaml
             - name: ENABLE_CORE_ADMIN_SERVICE
               value: "true"
+          envFrom:
+            - secretRef:
+                name: members-grpc-service-secrets
           resources:
             requests:
               memory: "16Mi"

@@ -12,8 +12,3 @@ spec:
           operator: Equal
           value: production
           effect: NoSchedule
-      containers:
-        - name: members-grpc-service
-          envFrom:
-            - secretRef:
-                name: members-grpc-service-production-secrets

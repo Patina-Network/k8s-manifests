@@ -1,4 +1,5 @@
-*.yaml diff=sopsdiffer
+secrets.yaml diff=sopsdiffer merge=sops
+secret.yaml diff=sopsdiffer merge=sops
 
 *.yaml linguist-detectable
 *.yml linguist-detectable

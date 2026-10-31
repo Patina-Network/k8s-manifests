@@ -17,6 +17,10 @@ spec:
           env:
             - name: ENVIRONMENT
               value: production
+            - name: AZURE_ADMIN_EMAILS
+              value: tahmid@patinanetwork.onmicrosoft.com
+            - name: APP_ORIGIN
+              value: https://members-admin-dashboard.vpn.patinanetwork.org
           envFrom:
             - secretRef:
                 name: members-admin-dashboard-production-secrets

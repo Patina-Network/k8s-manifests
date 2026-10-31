@@ -54,8 +54,15 @@ reconcile *args:
 
 # Git hooks are installed on almost every command
 # so that we don't accidentally add unencrypted secrets to the git history.
+# The SOPS merge driver is registered alongside them so merges of secrets.yaml decrypt, merge, and re-encrypt.
 install-pre-scripts:
-  just install-pre-push && just install-pre-commit
+  just install-pre-push && just install-pre-commit && just install-merge-driver
+
+# register the SOPS merge driver referenced by `merge=sops` in .gitattributes
+install-merge-driver:
+  git config merge.sops.name "SOPS three-way merge"
+  git config merge.sops.driver './sops-merge-driver.sh %O %A %B %P'
+  git config merge.sops.recursive binary
 
 install-pre-commit:
   cp pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit

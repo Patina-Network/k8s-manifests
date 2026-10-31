@@ -17,6 +17,10 @@ spec:
           env:
             - name: ENVIRONMENT
               value: staging
+            - name: AZURE_ADMIN_EMAILS
+              value: angela.yu@patinanetwork.onmicrosoft.com,tahmid@patinanetwork.onmicrosoft.com
+            - name: APP_ORIGIN
+              value: https://stg.members-admin-dashboard.vpn.patinanetwork.org
           envFrom:
             - secretRef:
                 name: members-admin-dashboard-staging-secrets

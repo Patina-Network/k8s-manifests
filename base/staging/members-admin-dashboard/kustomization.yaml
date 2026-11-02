@@ -13,7 +13,7 @@ commonLabels:
   environment: staging
 images:
   - name: patinanetwork/members-admin-dashboard-arm
-    newTag: staging-b880d97
+    newTag: staging-c4bc57e
 
 replacements:
   - source:

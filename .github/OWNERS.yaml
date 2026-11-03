@@ -4,6 +4,8 @@ codebloom:
   - "@Patina-Network/dino"
 codebloom-standup-bot:
   - "@Patina-Network/dino"
+codebloom-leetcode-auth-stealer-service:
+  - "@Patina-Network/dino"
 hello-world-grpc-service:
   - "@Patina-Network/dino"
 members-grpc-service:

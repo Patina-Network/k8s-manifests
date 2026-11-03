@@ -18,6 +18,6 @@ server:
 #       # /actuator/* is pwd protected so this is ok
 #       show-values: "always"
 
-# ff:
+ff:
 # duels: true
-# user-metrics: true
+  user-metrics: true

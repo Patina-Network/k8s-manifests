@@ -20,4 +20,4 @@ server:
 
 ff:
 # duels: true
- user-metrics: true
+  user-metrics: true

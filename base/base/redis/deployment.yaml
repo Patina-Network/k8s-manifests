@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: redis
-  namespace: infrastructure
   annotations:
     reloader.stakater.com/auto: "true"
 spec:
@@ -16,11 +15,11 @@ spec:
     metadata:
       labels:
         app: redis
-        version: "N/A" # replaced from kustomization.yaml
+        version: "N/A" # replaced by the overlay kustomization.yaml
     spec:
       containers:
         - name: redis
-          image: redis # replaced from kustomization.yaml
+          image: redis # replaced by the overlay kustomization.yaml
           command:
             - redis-server
             - "--requirepass"

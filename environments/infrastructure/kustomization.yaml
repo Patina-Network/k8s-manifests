@@ -7,7 +7,6 @@ resources:
   - artifact-keeper
   - middleware
   - postgres
-  - redis
   - grafana-prometheus
   - loki
   - fluent-bit

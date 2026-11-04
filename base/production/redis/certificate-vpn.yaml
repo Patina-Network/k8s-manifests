@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: production-redis-vpn-tls
+  namespace: production
+spec:
+  secretName: production-redis-vpn-tls
+  dnsNames:
+    - redis.vpn.patinanetwork.org
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer

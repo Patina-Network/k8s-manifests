@@ -11,7 +11,7 @@ management:
 
 grpc:
   leetcode-auth-service:
-    host: codebloom-leetcode-auth-service:50051
+    host: codebloom-leetcode-auth-service:50052
     tls: false
     timeout: 2m
 

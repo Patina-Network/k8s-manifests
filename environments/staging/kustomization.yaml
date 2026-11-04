@@ -4,6 +4,7 @@ resources:
   - namespace.yaml
   - ./codebloom
   - ./codebloom-leetcode-auth-stealer-service
+  - ./codebloom-leetcode-auth-service
   - ./middleware
   - ./azure
   - ./patchats

@@ -17,3 +17,4 @@ resources:
   - ./hello-world-client-rust
   - ./hello-world-client-java
   - ./networkpolicies
+  - ./redis

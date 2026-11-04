@@ -1,16 +1,17 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: production
 resources:
-  - deployment.yaml
-  # TODO: figure out a solution to low 4 Disk limit for single node
-  # _NOTE_: IF WE NEED PERSISTENCE WE NEED TO FIGURE OUT A SOLUTION
-  # TO SAID PROBLEM
-  # - pvc.yaml
+  - ../../base/redis
+  - certificate-vpn.yaml
+  - ingress-vpn.yaml
   - secrets.yaml
-  - service.yaml
+commonLabels:
+  app: redis
+  environment: production
 images:
   - name: redis
-    newTag: 8.6.2-alpine # update me to change version
+    newTag: 8.6.2-alpine
 
 replacements:
   - source:

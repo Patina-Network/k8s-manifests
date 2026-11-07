@@ -36,7 +36,7 @@ spec:
             maxLines: 1000
         - name: Postgres (codebloom-prod)
           type: postgres
-          url: postgres.infrastructure.svc.cluster.local:5432
+          url: postgres-pool.infrastructure.svc.cluster.local:5432
           access: proxy
           isDefault: false
           user: grafana-all-ro-sa
@@ -48,7 +48,7 @@ spec:
             password: $GRAFANA_RO_DB_PASSWORD
         - name: Postgres (codebloom-stg)
           type: postgres
-          url: postgres.infrastructure.svc.cluster.local:5432
+          url: postgres-pool.infrastructure.svc.cluster.local:5432
           access: proxy
           isDefault: false
           user: grafana-all-ro-sa
@@ -94,7 +94,7 @@ spec:
           allowed_domains: patinanetwork.onmicrosoft.com
         database:
           type: postgres
-          host: postgres.infrastructure.svc.cluster.local:5432
+          host: postgres-pool.infrastructure.svc.cluster.local:5432
           name: grafana
           user: $__env{DB_USER}
           password: $__env{DB_PASSWORD}

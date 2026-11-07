@@ -18,7 +18,7 @@ prefixes:
 database:
   type: postgres
   postgres:
-    host: postgres.infrastructure.svc.cluster.local
+    host: postgres-pool.infrastructure.svc.cluster.local
     port: 5432
     name: headscale
     user: headscale-sa

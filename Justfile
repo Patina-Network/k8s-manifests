@@ -65,7 +65,7 @@ install-merge-driver:
   git config merge.sops.recursive binary
 
 install-pre-commit:
-  cp pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+  if [ -f .git ]; then echo "worktree detected, skipping pre-commit hook install"; else cp pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit; fi
 
 install-pre-push:
-  cp pre-commit .git/hooks/pre-push && chmod +x .git/hooks/pre-push
+  if [ -f .git ]; then echo "worktree detected, skipping pre-push hook install"; else cp pre-commit .git/hooks/pre-push && chmod +x .git/hooks/pre-push; fi

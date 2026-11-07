@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/postgresql.cnpg.io/pooler_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Pooler
+metadata:
+  name: postgres-pool
+  namespace: infrastructure
+# postgres-pool.infrastructure.svc.cluster.local:5432
+spec:
+  cluster:
+    name: postgres
+  instances: 1
+  type: rw
+  pgbouncer:
+    poolMode: session
+  template:
+    spec:
+      containers:
+        # name must be `pgbouncer` for cnpg to merge it into the generated container
+        - name: pgbouncer
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "25m"
+            limits:
+              memory: "128Mi"
+              cpu: "250m"

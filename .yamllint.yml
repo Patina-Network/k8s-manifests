@@ -10,6 +10,7 @@ rules:
     max: 260
     ignore: |
       **/secrets.yaml
+      **/secrets-*.yaml
   document-start: disable
   truthy:
     check-keys: false

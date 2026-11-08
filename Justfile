@@ -64,8 +64,12 @@ install-merge-driver:
   git config merge.sops.driver './sops-merge-driver.sh %O %A %B %P'
   git config merge.sops.recursive binary
 
+# In a worktree, `.git` is a file (`gitdir: <main>/.git/worktrees/<name>`) and hooks are shared
+# from the main checkout's `.git/hooks`. `commondir` inside the worktree gitdir points back to it.
+git_common_dir := `if [ -f .git ]; then cd "$(sed -n 's/^gitdir: //p' .git)" && cd "$(cat commondir)" && pwd; else echo .git; fi`
+
 install-pre-commit:
-  if [ -f .git ]; then echo "worktree detected, skipping pre-commit hook install"; else cp pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit; fi
+  cp pre-commit {{ quote(git_common_dir / "hooks/pre-commit") }} && chmod +x {{ quote(git_common_dir / "hooks/pre-commit") }}
 
 install-pre-push:
-  if [ -f .git ]; then echo "worktree detected, skipping pre-push hook install"; else cp pre-commit .git/hooks/pre-push && chmod +x .git/hooks/pre-push; fi
+  cp pre-commit {{ quote(git_common_dir / "hooks/pre-push") }} && chmod +x {{ quote(git_common_dir / "hooks/pre-push") }}

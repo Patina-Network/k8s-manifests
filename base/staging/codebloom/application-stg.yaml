@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Patina-Network/codebloom/main/src/main/resources/config-schema.json
+
 # shared defaults live in base/base/codebloom/application.yaml
 
 server:

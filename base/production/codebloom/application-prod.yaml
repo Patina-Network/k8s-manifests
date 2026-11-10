@@ -1,8 +1,6 @@
-# shared defaults live in base/base/codebloom/application.yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Patina-Network/codebloom/main/src/main/resources/config-schema.json
 
-leetcode:
-  auth:
-    strategy: direct # can be "direct" or "github"
+# shared defaults live in base/base/codebloom/application.yaml
 
 grpc:
   leetcode-auth-service:

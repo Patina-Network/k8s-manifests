@@ -19,5 +19,8 @@ server:
 #       show-values: "always"
 
 ff:
-# duels: true
+  duels: false
   user-metrics: true
+  ui:
+    duels: false
+    userMetrics: false

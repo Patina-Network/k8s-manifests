@@ -1,0 +1,25 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: only-leetcode-auth-service-to-leetcode-auth-stealer-service
+spec:
+  description: Only codebloom-leetcode-auth-service may call codebloom-leetcode-auth-stealer-service over gRPC; Prometheus may only scrape its metrics port.
+  endpointSelector:
+    matchLabels:
+      app: codebloom-leetcode-auth-stealer-service
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: codebloom-leetcode-auth-service
+      toPorts:
+        - ports:
+            - port: "50051"
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: infrastructure
+            app.kubernetes.io/name: prometheus
+      toPorts:
+        - ports:
+            - port: "8081"
+              protocol: TCP

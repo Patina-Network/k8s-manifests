@@ -12,7 +12,7 @@ commonLabels:
   environment: production
 images:
   - name: patinanetwork/codebloom-leetcode-auth-service-arm
-    newTag: "000000"
+    newTag: 5afc938
 
 replacements:
   - source:

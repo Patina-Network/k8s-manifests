@@ -5,10 +5,10 @@ leetcode:
     strategy: direct # can be "direct" or "github"
 
 grpc:
-  leetcode-auth-stealer-service:
-    host: codebloom-leetcode-auth-stealer-service:50051
-    tls: false
+  leetcode-auth-service:
+    host: codebloom-leetcode-auth-service:50052
     timeout: 2m
+    tls: false
 
 server:
   url: https://codebloom.patinanetwork.org

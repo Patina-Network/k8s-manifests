@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: production
 resources:
   - ../../base/codebloom-leetcode-auth-stealer-service
+  - ciliumnetworkpolicy.yaml
   - certificate-vpn.yaml
   - ingress-vpn.yaml
   - secrets.yaml

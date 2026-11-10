@@ -17,6 +17,10 @@ spec:
         app: redis
         version: "N/A" # replaced by the overlay kustomization.yaml
     spec:
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: redis-pvc
       containers:
         - name: redis
           image: redis # replaced by the overlay kustomization.yaml
@@ -29,6 +33,9 @@ spec:
           ports:
             - containerPort: 6379
               name: redis
+          volumeMounts:
+            - name: data
+              mountPath: /data
           env:
             - name: REDIS_PASSWORD
               valueFrom:

@@ -24,10 +24,22 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`docs.patinanetwork.org`) && PathPrefix(`/`)
+    # /oauth2 needed for OIDC callback
+    - match: >-
+        Host(`docs.patinanetwork.org`) && (
+        PathPrefix(`/oauth2`)
+        || PathPrefix(`/infra/how-to-connect-to-vpn`)
+        )
       kind: Rule
       middlewares:
         - name: azure-oidc
+        - name: basic-rate-limit
+      services:
+        - name: docs
+          port: 80
+    - match: Host(`docs.patinanetwork.org`) && PathPrefix(`/`)
+      kind: Rule
+      middlewares:
         - name: basic-rate-limit
       services:
         - name: docs

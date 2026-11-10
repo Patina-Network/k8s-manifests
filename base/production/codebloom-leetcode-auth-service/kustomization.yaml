@@ -1,0 +1,31 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: production
+resources:
+  - ../../base/codebloom-leetcode-auth-service
+  - ciliumnetworkpolicy.yaml
+  - secrets.yaml
+patches:
+  - path: deployment-patch.yaml
+commonLabels:
+  app: codebloom-leetcode-auth-service
+  environment: production
+images:
+  - name: patinanetwork/codebloom-leetcode-auth-service-arm
+    newTag: "000000"
+
+replacements:
+  - source:
+      kind: Deployment
+      name: codebloom-leetcode-auth-service
+      fieldPath: spec.template.spec.containers.[name=codebloom-leetcode-auth-service].image
+      options:
+        delimiter: ":"
+        index: 1
+    targets:
+      - select:
+          kind: Deployment
+          name: codebloom-leetcode-auth-service
+        fieldPaths:
+          - spec.template.spec.containers.[name=codebloom-leetcode-auth-service].env.[name=VERSION].value
+          - spec.template.metadata.labels.version

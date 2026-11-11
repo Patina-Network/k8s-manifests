@@ -119,6 +119,18 @@ spec:
           folderAnnotation: grafana_folder
           provider:
             foldersFromFilesStructure: true
+      imageRenderer:
+        enabled: true
+        existingSecret: grafana-image-renderer-secrets
+        image:
+          tag: v5.12.10
+          pullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            memory: 1Gi
     prometheus:
       enabled: true
       prometheusSpec:

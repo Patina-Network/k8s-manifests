@@ -4,3 +4,4 @@ resources:
   - release.yaml
   - secrets.yaml
   - podmonitor.yaml
+  - image-renderer

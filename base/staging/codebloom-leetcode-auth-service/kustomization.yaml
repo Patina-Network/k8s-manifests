@@ -13,7 +13,7 @@ commonLabels:
   environment: staging
 images:
   - name: patinanetwork/codebloom-leetcode-auth-service-arm
-    newTag: staging-0ad0228
+    newTag: staging-04f3c12
 
 replacements:
   - source:

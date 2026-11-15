@@ -20,6 +20,7 @@ grpc:
 ff:
   # duels: true
   user-metrics: true
+  message-winners: true
   ui:
     duels: false
     userMetrics: true

@@ -3,7 +3,7 @@
 # shared defaults live in base/base/codebloom/application.yaml
 
 server:
-  url: https://stg.vpn.codebloom.patinanetwork.org
+  url: https://stg.codebloom.vpn.patinanetwork.org/
 
 management:
   endpoint:

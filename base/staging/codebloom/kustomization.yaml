@@ -18,7 +18,7 @@ commonLabels:
   environment: staging
 images:
   - name: patinanetwork/codebloom-arm
-    newTag: staging-bb460c7 # update me to change version
+    newTag: staging-f1aecb9 # update me to change version
 
 replacements:
   - source:

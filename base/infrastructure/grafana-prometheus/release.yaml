@@ -155,6 +155,7 @@ spec:
       enabled: true
     # https://github.com/fluxcd/flux2-monitoring-example
     # exports gotk_resource_info (Ready state per Flux object) alongside the default collectors
+    # exports certmanager_certificate_dns_name_info (one series per spec.dnsNames entry) for the Certs & Domains dashboard
     kube-state-metrics:
       rbac:
         extraRules:
@@ -168,6 +169,11 @@ spec:
               - helmcharts
               - kustomizations
               - helmreleases
+            verbs: ["list", "watch"]
+          - apiGroups:
+              - cert-manager.io
+            resources:
+              - certificates
             verbs: ["list", "watch"]
       customResourceState:
         enabled: true
@@ -276,3 +282,21 @@ spec:
                       revision: [status, artifact, revision]
                       chart_name: [spec, chart]
                       chart_version: [spec, version]
+              - groupVersionKind:
+                  group: cert-manager.io
+                  version: v1
+                  kind: Certificate
+                metricNamePrefix: certmanager
+                metrics:
+                  - name: certificate_dns_name_info
+                    help: A DNS name requested by a cert-manager Certificate.
+                    each:
+                      type: Info
+                      info:
+                        path: [spec, dnsNames]
+                        labelsFromPath:
+                          dns_name: []
+                    labelsFromPath:
+                      name: [metadata, name]
+                      exported_namespace: [metadata, namespace]
+                      secret_name: [spec, secretName]

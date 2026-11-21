@@ -69,7 +69,7 @@ jobs:
           fetch-depth: 1
 
       - name: Setup pipeline
-        uses: tahminator/pipeline/actions/setup@a424f92d486342e1255fcdf377a7569eb230aabe # 1.0.97
+        uses: tahminator/pipeline/actions/setup@f5961a7e43a99ee5646ab7138f8b5cd2bfdeb24b # 1.0.101
         with:
           LINT_CI: true
           SECRETS: ${{ toJSON(secrets) }}
